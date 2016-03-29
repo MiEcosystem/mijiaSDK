@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/titlebar_height"
+    android:id="@+id/title_bar"
+    android:background="@drawable/common_title_bar_bg">
+
+    <ImageView
+        android:id="@+id/miot_login_title_bar_button_return"
+        android:layout_width="@dimen/titlebar_return_area_size"
+        android:layout_height="match_parent"
+        android:layout_gravity="left|center_vertical"
+        android:onClick="onBtnReturn"
+        android:scaleType="center"
+        android:src="@drawable/common_title_bar_return" />
+
+    <TextView
+        android:id="@+id/miot_login_title_bar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/titlebar_return_area_size"
+        android:layout_marginRight="@dimen/titlebar_return_area_size"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_gravity="center"
+        android:textColor="@color/title_bar_text_color"
+        android:textSize="@dimen/title_bar_text_size" />
+</FrameLayout>

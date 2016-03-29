@@ -1,0 +1,14 @@
+miot.api
+miot.api.account
+miot.typedef
+miot.typedef.config
+miot.typedef.device
+miot.typedef.device.firmware
+miot.typedef.device.invocation
+miot.typedef.device.urn
+miot.typedef.devicefactory
+miot.typedef.model
+miot.typedef.people
+miot.typedef.permission
+miot.typedef.power
+miot.typedef.timer

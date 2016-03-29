@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="urn:schemas-mi-com:device-1-0">
+    <specVersion>
+        <major>1</major>
+        <minor>0</minor>
+    </specVersion>
+    <device>
+        <type>urn:schemas-mi-com:device:SmartSocket:Base:1</type>
+        <friendlyName>小米智能插座</friendlyName>
+        <firmwareVersion>1</firmwareVersion>
+        <modelNumber>2014</modelNumber>
+        <modelName>SmartSocket.2014</modelName>
+        <modelDescription>小米智能插座</modelDescription>
+        <modelURL>http://www.com.com</modelURL>
+        <manufacturer>Xiaomi</manufacturer>
+        <manufacturerURL>http://www.com.com</manufacturerURL>
+
+        <serviceList>
+            <service>
+                <type>urn:schemas-mi-com:service:SmartSocket:BaseService:1</type>
+                <description>电力开关服务</description>
+
+                <actionList>
+                    <action>
+                        <friendlyName>setPlugOff</friendlyName>
+                        <internalName>set_off</internalName>
+                        <description>关闭开关</description>
+                        <argumentList/>
+                    </action>
+
+                    <action>
+                        <friendlyName>setPlugOn</friendlyName>
+                        <internalName>set_on</internalName>
+                        <description>打开开关</description>
+                        <argumentList/>
+                    </action>
+
+                    <action>
+                        <friendlyName>setUsbPlugOff</friendlyName>
+                        <internalName>set_usb_off</internalName>
+                        <description>关闭USB开关</description>
+                        <argumentList/>
+                    </action>
+
+                    <action>
+                        <friendlyName>setUsbPlugOn</friendlyName>
+                        <internalName>set_usb_on</internalName>
+                        <description>打开USB开关</description>
+                        <argumentList/>
+                    </action>
+                </actionList>
+
+                <propertyList>
+                    <property gettable="true" notifiable="true">
+                        <friendlyName>PowerStatus</friendlyName>
+                        <description>电力插口状态</description>
+                        <internalName>on</internalName>
+                        <dataType>boolean</dataType>
+                    </property>
+
+                    <property gettable="true" notifiable="true">
+                        <friendlyName>UsbStatus</friendlyName>
+                        <internalName>usb_on</internalName>
+                        <description>USB插口状态</description>
+                        <dataType>boolean</dataType>
+                    </property>
+                </propertyList>
+
+            </service>
+        </serviceList>
+    </device>
+</root>
