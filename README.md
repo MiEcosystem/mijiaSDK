@@ -1,27 +1,54 @@
-﻿# MiotService文档
+﻿# mijiaSDK文档
 ---
+## 目的
+本文档为接入mijiaSDK的第三方开发者提供开发独立App的指导。
 
-## 准备工作
+## 前提条件
+在进行独立App开发前，您需要
+- 了解产品功能描述、产品Model等相关概念 [小米智能硬件开放平台](https://open.home.mi.com/resource.html#/summarize)
+- 完成产品登记，并完成固件调试 [产品登记](https://open.home.mi.com/develop.html#/product)
+- 了解Android开发、上线等一系列流程 [安卓开发](http://developer.android.com/)
+- 完成小米开发者账号的注册和资质认证 [小米开放平台](dev.xiaomi.com)
 
-### 帐号接入
-MiotService目前支持小米帐号登录，Service中已经集成有小米帐号Sdk，开发者需要到[小米帐号开放平台](http://dev.xiaomi.com/docs/passport/ready/)注册自己的App信息，**并在小米帐号系统Oauth权限管理中，申请并审核通过“智能家庭服务”权限，请确保申请通过此权限，否则不能正常使用**。如果在接入过程中遇到问题，可加QQ群385428920咨询。
+## 基础准备
+在您正式进行产品接入前，需要首先完成一下准备工作
 
-### 消息推送
-MiotService中集成有Mipush，主要是用于订阅设备事件。如果App中需要使用，开发者需要到[小米消息推送服务](http://dev.xiaomi.com/doc/?page_id=1670)注册自己的App信息。
+### 1. 帐号接入
+mijiaSDK目前支持小米帐号登录，其中已经集成小米帐号Sdk，开发者需要到[小米帐号开放平台](http://dev.xiaomi.com/docs/passport/ready/)注册自己的App信息，**并在小米帐号系统Oauth权限管理中，申请并审核通过“智能家庭服务”权限，请确保申请通过此权限，否则不能正常使用**。如果在接入过程中遇到问题，可加QQ群385428920咨询。
 
----
+### 2. 消息推送
+mijiaSDK中集成有Mipush，目前主要是用于订阅设备事件。App使用前，开发者需要到[小米消息推送服务](http://dev.xiaomi.com/doc/?page_id=1670)注册自己的App信息。
 
-## SDK使用说明
+### 3. 注册AppId，AppKey以及设备信息
+将应用注册到小米帐号时，会生成相关的AppId和Appkey，需要将这部分信息注册到智能家居后台。
 
-这里简要介绍如何配置和使用MiotService，也可以参考SDK中的demo。
-### 配置AndroidManifest.xml
-* MiotService支持的最低android版本
+## 产品接入
+### 1. 云端配置产品信息
+将应用需要支持的设备信息注册到智能家居后台。
+
+### 2. 撰写设备功能描述文档
+首先，这里简述一下MiotDevice的模型，一个Device包含一个或者多个Service，此处的Service代表设备的一种能力，一个具体的设备可能有多种能力。一个Service包含一系列property，action：
+* property表示该service当前状态，property具有名称，数据类型，默认值，以及其值改变时是否触发事件
+* action表示service可以控制的动作
+撰写一份xml格式的设备功能描述文档，用于描述设备具体功能，可以参考demo中附带的ddd_SmartSocket.xml（小米智能插座）以及ddd_AuxAircondition.xml（奥克斯空调）。
+
+### 3. 生成设备代码
+撰写完设备功能描述文档后，使用提供的脚本codegenerator.jar，运行如下命令
+```
+    java -jar codegenerator.jar src/main/assets/ddd_SmartSocket.xml
+```
+运行时将最后一个变量替换为自己xml文档的相对路径，运行成功后将生成SmartSocketBase.java以及SmartSocketBaseService.java两个文件（生成文件数量与xml中定义的service数量有关）
+
+## 使用SDK开发App
+接下来将简要介绍如何配置和使用mijiaSDK开发自己的App，也可以参考其中的demo。
+### 1. 配置AndroidManifest.xml
+* mijiaSDK支持的最低android版本
 ```xml
      <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="18" />
 ```
-* MiotService需要的权限列表
+* mijiaSDK需要的权限列表
 ```xml
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -49,7 +76,7 @@ MiotService中集成有Mipush，主要是用于订阅设备事件。如果App中
         android:protectionLevel="signature" />
     <uses-permission android:name="com.mi.test.permission.MIPUSH_RECEIVE" />
 ```
-* MiotService需要配置的android组件（这些组件已经在SDK中声明过了，在自己的APP中可以不再声明）
+* mijiaSDK需要配置的android组件（这些组件已经在SDK中声明过了，在自己的APP中可以不再声明）
 ```xml
         <!--小米帐号SDK的组件-->
         <activity
@@ -76,7 +103,6 @@ MiotService中集成有Mipush，主要是用于订阅设备事件。如果App中
             android:name="com.xiaomi.mipush.sdk.MessageHandleService"
             android:enabled="true"
             android:process=":miot"/>
-
         <receiver
             android:name="com.xiaomi.push.service.receivers.NetworkStatusReceiver"
             android:exported="true"
@@ -106,6 +132,7 @@ MiotService中集成有Mipush，主要是用于订阅设备事件。如果App中
                 <action android:name="com.xiaomi.mipush.ERROR"/>
             </intent-filter>
         </receiver>
+        <!--mijiaSDK的组件-->    
         <activity
             android:name="miot.service.connection.wifi.DeviceConnectionUap"
             android:configChanges="keyboardHidden|keyboard|orientation"
@@ -114,7 +141,6 @@ MiotService中集成有Mipush，主要是用于订阅设备事件。如果App中
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="stateHidden|stateAlwaysHidden|adjustPan"/>
-
         <service
             android:name="miot.service.negotiator.NegotiatorService"
             android:enabled="true"
@@ -172,44 +198,32 @@ MiotService中集成有Mipush，主要是用于订阅设备事件。如果App中
         </service>
 ```
 
-### 注册AppId，AppKey以及设备信息
-将应用注册到小米帐号时，会生成相关的AppId和Appkey，需要将这部分信息注册到智能家居后台。此外，还需要将应用需要支持的设备信息注册到智能家居后台。
-
-### 生成设备代码
-首先，这里简述一下MiotDevice的模型，一个Device包含一个或者多个Service，此处的Service代表设备的一种能力，一个具体的设备可能有多种能力。一个Service包含一系列property，action：
-* property表示该service当前状态，property具有名称，数据类型，默认值，以及其值改变时是否触发事件
-* action表示service可以控制的动作
-
-撰写一份xml格式的profile文件，具体可以参见demo中附带的ddd_SmartSocket.xml（小米智能插座）以及ddd_AuxAircondition.xml（奥克斯空调）。然后使用提供的脚本codegenerator.jar，运行如下命令
-```
-    java -jar codegenerator.jar src/main/assets/ddd_SmartSocket.xml
-```
-运行时将最后一个变量替换为自己xml文档的相对路径，运行成功后将生成SmartSocketBase.java以及SmartSocketBaseService.java两个文件（生成文件数量与xml中定义的service数量有关）
-
-### 使用Service
+### 2. 初始化SDK
+这里简单描述如何初始化mijiaSDK，可以参考demo中TestApplication.java
 * 首先初始化MiotManager：
 ```Java
     MiotManager.getInstance().initialize(getApplicationContext());
 ```
-* 然后将小米帐号处的AppId，AppKey设置到Service中：
+* 然后将小米帐号处的AppId，AppKey设置到SDK中：
 ```Java
     AppConfiguration appConfig = new AppConfiguration();
     appConfig.setAppId(AppConfig.APP_ID);
     appConfig.setAppKey(AppConfig.APP_KEY);
     MiotManager.getInstance().setAppConfig(appConfig);
 ```
-* 接着将App需要处理的设备配置到Service中：
+* 接着将App需要处理的设备配置到SDK中：
 ```Java
     try {
-        DeviceModel deviceModel = DeviceModelFactory.createDeviceModel(TestApplication.this, TestConstants.CHUANGMI_PLUG_V1,
-                                                  TestConstants.CHUANGMI_PLUG_V1_URL, SmartSocketBase.class);
-        MiotManager.getInstance().addModel(deviceModel);
+        DeviceModel smartSocket = DeviceModelFactory.createDeviceModel(TestApplication.this,
+                TestConstants.CHUANGMI_PLUG_V1,
+                TestConstants.CHUANGMI_PLUG_V1_URL,
+                SmartSocketBase.class);
+        MiotManager.getInstance().addModel(smartSocket);
     } catch (DeviceModelException e) {
         e.printStackTrace();
     }
 ```
 方法createDeviceModel中的参数依次为：context；model：云端注册的设备model；url：xml格式的profile文档，需要放到项目assets目录下；clazz（Class<?>）：之前生成的设备代码的class
-
 * 最后bindService：
 ```Java
     MiotManager.getInstance().open();
@@ -220,33 +234,46 @@ MiotService中集成有Mipush，主要是用于订阅设备事件。如果App中
 ```
 同上，返回值为0，则为解绑成功
 
-* 将用户信息保存到Service中
-参见小米帐号SDK使用说明
+* 将用户信息保存到Service中，可以参考demo中AccountActivity.java
 ```Java
-    String accessToken = bundle.getString("access_token");
-    String expiresIn = bundle.getString("expires_in");
-    String scope = bundle.getString("scope");
-    String state = bundle.getString("state");
-    String tokenType = bundle.getString("token_type");
-    String macKey = bundle.getString("mac_key");
-    String macAlgorithm = bundle.getString("mac_algorithm");
+private void processAuthResult(XiaomiOAuthResults results) {
+    String accessToken = results.getAccessToken();
+    String expiresIn = results.getExpiresIn();
+    String scope = results.getScopes();
+    String state = results.getState();
+    String tokenType = results.getTokenType();
+    String macKey = results.getMacKey();
+    String macAlgorithm = results.getMacAlgorithm();
 
-    new XiaomiAccountGetPeopleInfoTask(accessToken, expiresIn, macKey, macAlgorithm, this,
+    ...
+
+    new XiaomiAccountGetPeopleInfoTask(accessToken, expiresIn, macKey, macAlgorithm,
             new XiaomiAccountGetPeopleInfoTask.Handler() {
                 @Override
                 public void onSucceed(People people) {
                     Log.d(TAG, "XiaomiAccountGetPeopleInfoTask OK");
                     MiotManager.getPeopleManager().savePeople(people);
+                    initUserInfo();
                 }
 
                 @Override
                 public void onFailed() {
-                    Log.d(TAG, "XiaomiAccountGetPeopleInfoTask Failed");
+                    Log.e(TAG, "XiaomiAccountGetPeopleInfoTask Failed");
                 }
             }).execute();
+}
 ```
-* 获取设备列表
-调用DeviceManager中的设备发现接口，详见demo以及doc文档
+
+### 3. 开发设备相关功能
+SDK目前提供了如下功能：
+1. **获取设备列表**：获取设备
+2. **添加设备**：用于将新设备联网，也就是快连（目前快连默认完成绑定设备）
+3. **绑定设备**: 完成设备与用户的帐号绑定关系
+4. **解绑设备**：允许用户解除与设备的绑定关系
+5. **控制设备**：包括获取设备状态、下发指令和订阅设备事件
+
+#### 获取设备列表
+调用DeviceManager中的设备发现接口，可以参考demo中MiDeviceManager.java相关代码
 ```Java
     List<DiscoveryType> types = new ArrayList<>();
     types.add(DiscoveryType.MIOT_WAN);
@@ -280,39 +307,32 @@ MiotService中集成有Mipush，主要是用于订阅设备事件。如果App中
                 }
             });
 ```
----
 
-### 快连
-1.配置快连图标和文案：将快连图标放置到自己工程的res/drawable-xxhdpi目录下，并命名为kuailian_miio_icon.png。在strings.xml文件添加
-
+#### 添加设备
+* 配置快连图标和文案：将快连图标放置到自己工程的res/drawable-xxhdpi目录下，并命名为kuailian_miio_icon.png。在strings.xml文件添加
+```xml
     <string name="common_mieda_device">（文案）</string>
-
-2.快连设备
-获取到设备列表后，如果设备是待连接的设备，可以调用以下方法连接到云端：
-
+```
+* 快连设备，获取到设备列表后，如果设备是待连接的设备，可以调用以下方法连接到云端，具体可以参考demo中DeviceActivity.class：
 ```Java
-    int ret = abstractDevice.connectToCloud(new CompletionHandler() {
+private void connectDevice(AbstractDevice device) {
+    int ret = MiotManager.getDeviceConnector().connectToCloud(device, new CompletionHandler() {
         @Override
         public void onSucceed() {
-            Log.d(TAG, "connectDevice onSucceed");
+            Log.d(TAG, "connect device onSucceed");
         }
 
         @Override
         public void onFailed(int errCode, String description) {
-            Log.e(TAG, "connectDevice onFailed: " + errCode + " " + description);
+            Log.e(TAG, "connect device onFailed: " + errCode + description);
         }
     });
-    if(ret != ReturnCode.OK) {
-        Log.e(TAG, "connectDevice onFailed: " + ret);
-    }
+    Log.d(TAG, "connectDevice ret: " + ret);
+}
 ```
----
 
-### 设备操作
-操作具体设备之前，首先要绑定该设备：
-
-### 绑定和删除设备
-1.绑定设备，只能用于未绑定的广域网设备（目前快连过程中会默认绑定设备）
+#### 绑定设备
+绑定设备，即为将设备绑定到一个用户帐号下，只能用于未绑定的广域网设备（目前快连过程中会默认绑定设备）
 ```Java
     int ret = MiotManager.getDeviceManager().takeOwnership(abstractDevice, new CompletionHandler() {
                 @Override
@@ -326,7 +346,9 @@ MiotService中集成有Mipush，主要是用于订阅设备事件。如果App中
                 }
             });
 ```
-2.删除设备
+
+#### 解绑设备
+解绑设备，即为从用户名下删除该设备
 ```Java
     int ret = MiotManager.getDeviceManager().disclaimOwnership(abstractDevice, new CompletionHandler() {
                 @Override
@@ -336,12 +358,12 @@ MiotService中集成有Mipush，主要是用于订阅设备事件。如果App中
 
                 @Override
                 public void onFailed(int errCode, String description) {
-                    Log.d(TAG, "disclaimOwnership onFialed: " + errCode + " " + description);
+                    Log.e(TAG, "disclaimOwnership onFialed: " + errCode + " " + description);
                 }
             });
 ```
 
-###操作具体设备
+#### 控制设备
 这里以小米插座为例，简要说明一下，具体可以参见demo中SmartsocketActivity
 * 获取设备状态
 ```Java
@@ -414,3 +436,7 @@ public void subscribeNotification() {
     });
 }
 ```
+
+## 备注
+1. 在进行独立App开发时，您可以通过您在[小米智能硬件开放平台](https://open.home.mi.com/)注册的开发者帐号绑定设备并进行调试，相关文档请参阅小米智能硬件开放平台的相关文档
+2. 如果您在开发中遇到任何问题，可以联系xuxiaotian@xiaomi.com
