@@ -13,6 +13,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            minifyEnabled false
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
@@ -44,6 +47,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'joda-time:joda-time:2.3'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
-    compile project(':miotservice')
-//    compile(name: 'miotservice-release', ext: "aar")
+    compile 'io.netty:netty-all:4.0.4.Final'
+//    compile project(':mijiaSDK')
+    compile(name: 'mijiaSDK-release', ext: "aar")
 }

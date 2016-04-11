@@ -247,7 +247,6 @@ public class MiDeviceManager {
             @Override
             public void onSucceed() {
                 String log = "takeOwnership succeed";
-                Logger.saveLog(log);
 
                 Intent intent = new Intent(TestConstants.ACTION_TAKE_OWNERSHIP_SUCCEED);
                 intent.putExtra(TestConstants.MI_DEVICE_ID, device.getDeviceId());
@@ -258,7 +257,6 @@ public class MiDeviceManager {
             public void onFailed(int errCode, String description) {
                 String log = "takeOwnership onFailed " + errCode + description;
                 Log.e(TAG, log);
-                Logger.saveLog(log);
 
                 Intent intent = new Intent(TestConstants.ACTION_TAKE_OWNERSHIP_FAILED);
                 intent.putExtra(TestConstants.MI_DEVICE_ID, device.getDeviceId());

@@ -393,9 +393,6 @@ public class UniversalDeviceActivity extends BaseActivity {
             ActionInfo actionPowerOn = ActionInfoFactory.create(service.getService(), AirConditionBaseService.ACTION_setPower);
             actionPowerOn.setArgumentValue(AirConditionBaseService.PROPERTY_Power, AirConditionBaseService.Power.on.toString());
             timer.addActionAtTimeStart(actionPowerOn);
-//            ActionInfo actionMode = ActionInfoFactory.create(service.getService(), AirConditionBaseService.ACTION_setMode);
-//            actionMode.setArgumentValue(AirConditionBaseService.PROPERTY_Mode, AirConditionBaseService.Mode.cold.toString());
-//            timer.addActionAtTimeStart(actionMode);
 
             ActionInfo actionPowerOff = ActionInfoFactory.create(service.getService(), AirConditionBaseService.ACTION_setPower);
             actionPowerOff.setArgumentValue(AirConditionBaseService.PROPERTY_Power, AirConditionBaseService.Power.off.toString());

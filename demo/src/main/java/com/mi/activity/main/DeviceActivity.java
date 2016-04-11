@@ -110,7 +110,7 @@ public class DeviceActivity extends BaseActivity {
     }
 
     private void connectDevice(AbstractDevice device) {
-        MiotManager.getDeviceConnector().connectToCloud(device, new CompletionHandler() {
+        int ret = MiotManager.getDeviceConnector().connectToCloud(device, new CompletionHandler() {
             @Override
             public void onSucceed() {
                 Log.d(TAG, "connect device onSucceed");
@@ -118,9 +118,10 @@ public class DeviceActivity extends BaseActivity {
 
             @Override
             public void onFailed(int errCode, String description) {
-                Log.d(TAG, "connect device onFailed: " + errCode + description);
+                Log.e(TAG, "connect device onFailed: " + errCode + description);
             }
         });
+        Log.d(TAG, "connectDevice ret: " + ret);
     }
 
     @Override

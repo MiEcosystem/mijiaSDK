@@ -150,7 +150,7 @@ public class AccountActivity extends BaseActivity {
         Log.d(TAG, "macKey = " + macKey);
         Log.d(TAG, "macAlgorithm = " + macAlgorithm);
 
-        new XiaomiAccountGetPeopleInfoTask(accessToken, expiresIn, macKey, macAlgorithm, this,
+        new XiaomiAccountGetPeopleInfoTask(accessToken, expiresIn, macKey, macAlgorithm,
                 new XiaomiAccountGetPeopleInfoTask.Handler() {
                     @Override
                     public void onSucceed(People people) {

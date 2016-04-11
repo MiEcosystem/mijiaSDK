@@ -15,10 +15,9 @@ import com.mi.device.AuxAirConditionHH;
 import com.mi.device.SmartSocketBase;
 import com.mi.utils.CrashHandler;
 import com.mi.utils.TestConstants;
-import com.xiaomi.channel.commonutils.logger.LoggerInterface;
-import com.xiaomi.mipush.sdk.Logger;
 
 import miot.api.MiotManager;
+import miot.service.common.utils.Logger;
 import miot.typedef.ReturnCode;
 import miot.typedef.config.AppConfiguration;
 import miot.typedef.model.DeviceModel;
@@ -27,7 +26,6 @@ import miot.typedef.model.DeviceModelFactory;
 
 public class TestApplication extends Application {
     private static final String TAG = TestApplication.class.getSimpleName();
-    private static final String MIOTPN_LOG = "Miotpn";
     private LocalBroadcastManager mBindBroadcastManager;
 
     private static TestApplication sInstance;
@@ -36,24 +34,7 @@ public class TestApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        LoggerInterface newLogger = new LoggerInterface() {
-            @Override
-            public void setTag(String tag) {
-            }
-
-            @Override
-            public void log(String content, Throwable t) {
-                Log.d(MIOTPN_LOG, content, t);
-            }
-
-            @Override
-            public void log(String content) {
-                Log.d(MIOTPN_LOG, content);
-            }
-        };
-
-        Logger.setLogger(this, newLogger);
-        // Logger.disablePushFileLog(context);
+        Logger.enableLog(true);
 
         sInstance = this;
         mBindBroadcastManager = LocalBroadcastManager.getInstance(this);
