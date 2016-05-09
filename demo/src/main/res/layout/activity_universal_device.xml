@@ -1,10 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:longClickable="false"
-              android:orientation="vertical"
-              tools:context="com.mi.activity.universal.UniversalDeviceActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:longClickable="false"
+    android:orientation="vertical"
+    tools:context="com.mi.activity.universal.UniversalDeviceActivity">
 
     <TextView
         android:id="@+id/tv_log"
@@ -13,7 +13,7 @@
         android:layout_weight="1"
         android:background="@android:color/darker_gray"
         android:scrollbars="vertical"
-        android:text="TextView"/>
+        android:text="TextView" />
 
     <TextView
         android:id="@+id/tv_service_title"
@@ -22,14 +22,13 @@
         android:background="#ffcdfffb"
         android:gravity="center"
         android:text="@string/ServiceList"
-        android:textSize="24sp"/>
+        android:textSize="24sp" />
 
     <ListView
         android:id="@+id/lv_services"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
-    </ListView>
+        android:layout_weight="1"/>
 
     <Button
         android:id="@+id/btn_device_manager"
@@ -37,7 +36,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
-        android:text="@string/Management"/>
-
+        android:text="@string/Management" />
 
 </LinearLayout>

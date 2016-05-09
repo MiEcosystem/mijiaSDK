@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.mi.device.AuxAirConditionHH;
 import com.mi.device.SmartSocketBase;
+import com.mi.setting.AppConfig;
 import com.mi.utils.CrashHandler;
 import com.mi.utils.TestConstants;
 
@@ -78,16 +79,22 @@ public class TestApplication extends Application {
         @Override
         protected Integer doInBackground(Void... params) {
             AppConfiguration appConfig = new AppConfiguration();
-            appConfig.setAppId(com.mi.setting.AppConfig.OAUTH_APP_ID);
-            appConfig.setAppKey(com.mi.setting.AppConfig.OAUTH_APP_KEY);
+            appConfig.setAppId(AppConfig.OAUTH_APP_ID);
+            appConfig.setAppKey(AppConfig.OAUTH_APP_KEY);
             MiotManager.getInstance().setAppConfig(appConfig);
 
             try {
-                DeviceModel smartSocket = DeviceModelFactory.createDeviceModel(TestApplication.this, TestConstants.CHUANGMI_PLUG_V1,
-                        TestConstants.CHUANGMI_PLUG_V1_URL, SmartSocketBase.class);
+                DeviceModel smartSocket = DeviceModelFactory.createDeviceModel(
+                        TestApplication.this,
+                        TestConstants.CHUANGMI_PLUG_V1,
+                        TestConstants.CHUANGMI_PLUG_V1_URL,
+                        SmartSocketBase.class);
                 MiotManager.getInstance().addModel(smartSocket);
-                DeviceModel aircon = DeviceModelFactory.createDeviceModel(TestApplication.this, TestConstants.AUX_AIRCONDITION_V1,
-                        TestConstants.AUX_AIRCONDITION_V1_URL, AuxAirConditionHH.class);
+                DeviceModel aircon = DeviceModelFactory.createDeviceModel(
+                        TestApplication.this,
+                        TestConstants.AUX_AIRCONDITION_V1,
+                        TestConstants.AUX_AIRCONDITION_V1_URL,
+                        AuxAirConditionHH.class);
                 MiotManager.getInstance().addModel(aircon);
             } catch (DeviceModelException e) {
                 e.printStackTrace();

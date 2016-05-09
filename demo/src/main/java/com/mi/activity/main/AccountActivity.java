@@ -21,8 +21,11 @@ import java.io.IOException;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import miot.api.MiotManager;
-import miot.api.account.XiaomiAccountGetPeopleInfoTask;
+
+import com.mi.account.XiaomiAccountGetPeopleInfoTask;
+
 import miot.typedef.ReturnCode;
+import miot.typedef.exception.MiotException;
 import miot.typedef.people.People;
 
 public class AccountActivity extends BaseActivity {
@@ -67,7 +70,7 @@ public class AccountActivity extends BaseActivity {
                 break;
             }
 
-            userInfo = people.getName() + "  " + people.getUserId();
+            userInfo = people.getUserId();
         } while (false);
 
         tvAccountInfo.setText(userInfo);
@@ -75,7 +78,7 @@ public class AccountActivity extends BaseActivity {
 
     private int accountLogin() {
         if (MiotManager.getPeopleManager().isLogin()) {
-            Log.d(TAG, "people already loged in");
+            Log.d(TAG, "people already login");
             showToast(R.string.already_login);
             return ReturnCode.OK;
         }
@@ -90,8 +93,12 @@ public class AccountActivity extends BaseActivity {
         return ReturnCode.OK;
     }
 
-    private int accountLogout() {
-        return MiotManager.getPeopleManager().deletePeople();
+    private void accountLogout() {
+        try {
+            MiotManager.getPeopleManager().deletePeople();
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
     }
 
     private <V> void waitFutureResult(final XiaomiOAuthFuture<V> future) {
@@ -155,8 +162,12 @@ public class AccountActivity extends BaseActivity {
                     @Override
                     public void onSucceed(People people) {
                         Log.d(TAG, "XiaomiAccountGetPeopleInfoTask OK");
-                        MiotManager.getPeopleManager().savePeople(people);
-                        initUserInfo();
+                        try {
+                            MiotManager.getPeopleManager().savePeople(people);
+                            initUserInfo();
+                        } catch (MiotException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override

@@ -5,6 +5,9 @@ package com.mi.device;
 import android.os.Parcel;
 import android.util.Log;
 
+import com.mi.device.AirConditionAdditionalService;
+import com.mi.device.AirConditionBaseService;
+
 import miot.api.device.AbstractDevice;
 import miot.typedef.device.Device;
 import miot.typedef.device.Service;

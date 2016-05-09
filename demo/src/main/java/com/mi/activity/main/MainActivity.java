@@ -14,13 +14,14 @@ import com.mi.test.R;
 import com.mi.utils.BaseActivity;
 import com.mi.utils.TestConstants;
 
+import java.util.Locale;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import miot.api.MiotManager;
 
 public class MainActivity extends BaseActivity {
     private static String TAG = MainActivity.class.getSimpleName();
-
     @InjectView(R.id.btn_account)
     Button btnAccount;
     @InjectView(R.id.btn_device)
@@ -85,18 +86,12 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onPause() {
-        mLocalBroadcastManager.unregisterReceiver(mReceiver);
         super.onPause();
+        mLocalBroadcastManager.unregisterReceiver(mReceiver);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
     }
 }

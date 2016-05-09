@@ -5,7 +5,6 @@
         <minor>0</minor>
     </specVersion>
     <device>
-        <ui>http://miot.xiaomi.com/demo.html</ui>
         <type>urn:schemas-mi-com:device:AuxAirCondition:HH:1</type>
         <friendlyName>奥克斯智能空调</friendlyName>
         <modelNumber>1</modelNumber>

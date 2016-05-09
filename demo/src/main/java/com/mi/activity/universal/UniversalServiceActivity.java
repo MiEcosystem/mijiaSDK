@@ -29,13 +29,13 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import miot.api.DeviceManipulator;
 import miot.api.MiotManager;
-import miot.typedef.ReturnCode;
 import miot.typedef.device.Action;
 import miot.typedef.device.Service;
 import miot.typedef.device.invocation.ActionInfo;
 import miot.typedef.device.invocation.ActionInfoFactory;
 import miot.typedef.device.invocation.PropertyInfo;
 import miot.typedef.device.invocation.PropertyInfoFactory;
+import miot.typedef.exception.MiotException;
 import miot.typedef.property.AllowedValue;
 import miot.typedef.property.AllowedValueList;
 import miot.typedef.property.Property;
@@ -137,28 +137,28 @@ public class UniversalServiceActivity extends BaseActivity {
 
         showLog(String.format("开始订阅属性: %d", propertyInfo.getProperties().size()));
         DeviceManipulator manipulator = MiotManager.getDeviceManipulator();
-        int ret = manipulator.addPropertyChangedListener(propertyInfo,
-                new DeviceManipulator.CompletionHandler() {
-                    @Override
-                    public void onSucceed() {
-                        showLog("订阅属性成功！");
-                    }
+        try {
+            manipulator.addPropertyChangedListener(propertyInfo,
+                    new DeviceManipulator.CompletionHandler() {
+                        @Override
+                        public void onSucceed() {
+                            showLog("订阅属性成功！");
+                        }
 
-                    @Override
-                    public void onFailed(int errCode, String description) {
-                        showLog(String.format("订阅属性失败： Code: %d %s！", errCode, description));
+                        @Override
+                        public void onFailed(int errCode, String description) {
+                            showLog(String.format("订阅属性失败： Code: %d %s！", errCode, description));
+                        }
+                    },
+                    new DeviceManipulator.PropertyChangedListener() {
+                        @Override
+                        public void onPropertyChanged(PropertyInfo info, String propertyName) {
+                            showLog(String.format("属性发生变化： %s", info.getValue(propertyName).toString()));
+                        }
                     }
-                },
-                new DeviceManipulator.PropertyChangedListener() {
-                    @Override
-                    public void onPropertyChanged(PropertyInfo info, String propertyName) {
-                        showLog(String.format("属性发生变化： %s", info.getValue(propertyName).toString()));
-                    }
-                }
-        );
-
-        if (ret != ReturnCode.OK) {
-            showLog(String.format("订阅属性失败, 返回值： %d", ret));
+            );
+        } catch (MiotException e) {
+            e.printStackTrace();
         }
     }
 
@@ -176,46 +176,44 @@ public class UniversalServiceActivity extends BaseActivity {
         }
 
         DeviceManipulator manipulator = MiotManager.getDeviceManipulator();
-        int ret = manipulator.removePropertyChangedListener(info,
-                new DeviceManipulator.CompletionHandler() {
+        try {
+            manipulator.removePropertyChangedListener(info, new DeviceManipulator.CompletionHandler() {
+                        @Override
+                        public void onSucceed() {
+                            showLog("取消订阅属性成功！");
+                        }
 
-                    @Override
-                    public void onSucceed() {
-                        showLog("取消订阅属性成功！");
+                        @Override
+                        public void onFailed(int errCode, String description) {
+                            showLog(String.format("订阅属性失败： Code: %d %s！", errCode, description));
+                        }
                     }
-
-                    @Override
-                    public void onFailed(int errCode, String description) {
-                        showLog(String.format("订阅属性失败： Code: %d %s！", errCode, description));
-                    }
-                }
-        );
-
-        if (ret != ReturnCode.OK) {
-            showLog(String.format("取消订阅属性失败, 失败代码： %d", ret));
+            );
+        } catch (MiotException e) {
+            e.printStackTrace();
         }
     }
 
     private void getProperties(PropertyInfo propertyInfo) {
         DeviceManipulator manipulator = MiotManager.getDeviceManipulator();
-        int ret = manipulator.readProperty(propertyInfo, new DeviceManipulator.ReadPropertyCompletionHandler() {
-            @Override
-            public void onSucceed(PropertyInfo info) {
-                String ret = "读取属性成功\r\n";
-                for (Property property : info.getProperties()) {
-                    ret += property.getDefinition().getFriendlyName() + "=" + property.getValue() + "\r\n";
+        try {
+            manipulator.readProperty(propertyInfo, new DeviceManipulator.ReadPropertyCompletionHandler() {
+                @Override
+                public void onSucceed(PropertyInfo info) {
+                    String ret = "读取属性成功\r\n";
+                    for (Property property : info.getProperties()) {
+                        ret += property.getDefinition().getFriendlyName() + "=" + property.getValue() + "\r\n";
+                    }
+                    showLog(ret);
                 }
-                showLog(ret);
-            }
 
-            @Override
-            public void onFailed(int errCode, String description) {
-                showLog(String.format("读取属性失败, errCode: %d %s！", errCode, description));
-            }
-        });
-
-        if (ret != ReturnCode.OK) {
-            showLog(String.format("读取属性失败, 失败代码： %d", ret));
+                @Override
+                public void onFailed(int errCode, String description) {
+                    showLog(String.format("读取属性失败, errCode: %d %s！", errCode, description));
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
         }
     }
 
@@ -240,21 +238,21 @@ public class UniversalServiceActivity extends BaseActivity {
     private void getProperty(final Property property) {
         PropertyInfo propertyInfo = PropertyInfoFactory.create(mService, property.getDefinition().getFriendlyName());
         DeviceManipulator manipulator = MiotManager.getDeviceManipulator();
-        int ret = manipulator.readProperty(propertyInfo, new DeviceManipulator.ReadPropertyCompletionHandler() {
-            @Override
-            public void onSucceed(PropertyInfo info) {
-                property.setValue(info.getValue(property.getDefinition().getFriendlyName()));
-                showLog(String.format("读取%s成功: %s！", property.getDefinition().getFriendlyName(), property.getValue().toString()));
-            }
+        try {
+            manipulator.readProperty(propertyInfo, new DeviceManipulator.ReadPropertyCompletionHandler() {
+                @Override
+                public void onSucceed(PropertyInfo info) {
+                    property.setValue(info.getValue(property.getDefinition().getFriendlyName()));
+                    showLog(String.format("读取%s成功: %s！", property.getDefinition().getFriendlyName(), property.getValue().toString()));
+                }
 
-            @Override
-            public void onFailed(int errCode, String description) {
-                showLog(String.format("读取%s失败, errCode: %d %s！", property.getDefinition().getFriendlyName(), errCode, description));
-            }
-        });
-
-        if (ret != ReturnCode.OK) {
-            showLog(String.format("读取属性失败, 失败代码： %d", ret));
+                @Override
+                public void onFailed(int errCode, String description) {
+                    showLog(String.format("读取%s失败, errCode: %d %s！", property.getDefinition().getFriendlyName(), errCode, description));
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
         }
     }
 
@@ -403,20 +401,20 @@ public class UniversalServiceActivity extends BaseActivity {
 
     private void invokeAction(final ActionInfo info) {
         DeviceManipulator manipulator = MiotManager.getDeviceManipulator();
-        int ret = manipulator.invoke(info, new DeviceManipulator.InvokeCompletionHandler() {
-            @Override
-            public void onSucceed(ActionInfo info) {
-                showLog(String.format("执行: %s 成功！", info.getFriendlyName()));
-            }
+        try {
+            manipulator.invoke(info, new DeviceManipulator.InvokeCompletionHandler() {
+                @Override
+                public void onSucceed(ActionInfo info) {
+                    showLog(String.format("执行: %s 成功！", info.getFriendlyName()));
+                }
 
-            @Override
-            public void onFailed(int errCode, String description) {
-                showLog(String.format("执行: %s 失败, errCode: %d %s！", info.getInternalName(), errCode, description));
-            }
-        });
-
-        if (ret != ReturnCode.OK) {
-            showLog(String.format("调用方法失败, 失败代码： %d", ret));
+                @Override
+                public void onFailed(int errCode, String description) {
+                    showLog(String.format("执行: %s 失败, errCode: %d %s！", info.getInternalName(), errCode, description));
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
         }
     }
 

@@ -21,25 +21,25 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/btn_start"
+            android:id="@+id/btn_get_remote_devices"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/Start"/>
+            android:text="@string/get_wan_devices"/>
 
         <Button
-            android:id="@+id/btn_stop"
+            android:id="@+id/btn_start_scan"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/Stop"/>
+            android:text="@string/start_scan"/>
 
         <Button
-            android:id="@+id/btn_refresh"
+            android:id="@+id/btn_stop_scan"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/Refresh"/>
+            android:text="@string/stop_scan"/>
     </LinearLayout>
 
 </LinearLayout>

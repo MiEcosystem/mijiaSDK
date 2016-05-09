@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.mi.application.TestApplication;
 import com.mi.utils.TestConstants;
@@ -19,9 +20,10 @@ import miot.api.MiotManager;
 import miot.api.device.AbstractDevice;
 import miot.service.common.utils.Logger;
 import miot.service.common.utils.NetworkUtils;
-import miot.typedef.ReturnCode;
 import miot.typedef.device.ConnectionType;
 import miot.typedef.device.Device;
+import miot.typedef.device.DiscoveryType;
+import miot.typedef.exception.MiotException;
 
 public class MiDeviceManager {
     private static final String TAG = MiDeviceManager.class.getSimpleName();
@@ -84,93 +86,60 @@ public class MiDeviceManager {
         mWifiDevices.clear();
     }
 
-    public int startDiscovery() {
-        int result = ReturnCode.E_SERVICE_NOT_BOUND;
-        do {
-            if (!NetworkUtils.isNetworkAvailable(mContext)) {
-                result = ReturnCode.E_NETWORK_UNAVAILABLE;
-                break;
-            }
-
-            if (MiotManager.getDeviceManager() != null) {
-                result = MiotManager.getDeviceManager().startDiscovery(mCompletionHandler, mDeviceListener);
-            }
-        } while (false);
-
-        Log.d(TAG, "startDiscovery ret: " + result);
-        return result;
-    }
-
-    public int refreshDiscovery() {
-        int result = ReturnCode.E_SERVICE_NOT_BOUND;
-
-        do {
-            if (!NetworkUtils.isNetworkAvailable(mContext)) {
-                result = ReturnCode.E_NETWORK_UNAVAILABLE;
-                break;
-            }
-
-            if (MiotManager.getDeviceManager() != null) {
-                result = MiotManager.getDeviceManager().refreshDiscovery(mCompletionHandler);
-            }
-        } while (false);
-
-        Log.d(TAG, "refreshDiscovery ret: " + result);
-        return result;
-    }
-
-    public int stopDiscovery() {
-        int result = ReturnCode.E_SERVICE_NOT_BOUND;
-        if (MiotManager.getDeviceManager() != null) {
-            result = MiotManager.getDeviceManager().stopDiscovery(new CompletionHandler() {
-                @Override
-                public void onSucceed() {
-                }
-
-                @Override
-                public void onFailed(int errCode, String description) {
-                    Log.e(TAG, "stopDiscovery onFailed " + errCode + description);
-                }
-            });
+    public void getWanDeviceList() {
+        if (!NetworkUtils.isNetworkAvailable(mContext)) {
+            return;
         }
-        return result;
+
+        if (MiotManager.getDeviceManager() == null) {
+            return;
+        }
+
+        try {
+            mWanDevices.clear();
+            MiotManager.getDeviceManager().getRemoteDeviceList(mDeviceHandler);
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
     }
 
-    private CompletionHandler mCompletionHandler = new CompletionHandler() {
+    public void startScan() {
+        if (MiotManager.getDeviceManager() == null) {
+            return;
+        }
+        List<DiscoveryType> types = new ArrayList<>();
+        types.add(DiscoveryType.MIOT_WIFI);
+        try {
+            MiotManager.getDeviceManager().startScan(types, mDeviceHandler);
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void stopScan() {
+        if (MiotManager.getDeviceManager() == null) {
+            return;
+        }
+        try {
+            MiotManager.getDeviceManager().stopScan();
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private DeviceManager.DeviceHandler mDeviceHandler = new DeviceManager.DeviceHandler() {
         @Override
-        public void onSucceed() {
-            Log.d(TAG, "discovery onSucceed");
+        public void onSucceed(List<AbstractDevice> devices) {
+            foundDevices(devices);
+
             Intent intent = new Intent(TestConstants.ACTION_DISCOVERY_DEVICE_SUCCEED);
             mBroadcastManager.sendBroadcast(intent);
         }
 
         @Override
         public void onFailed(int errCode, String description) {
-            Log.e(TAG, "discovery onFailed " + errCode + description);
+            Logger.e(TAG, "getRemoteDeviceList onFailed: " + errCode + description);
             Intent intent = new Intent(TestConstants.ACTION_DISCOVERY_DEVICE_FAILED);
-            mBroadcastManager.sendBroadcast(intent);
-        }
-    };
-
-    private DeviceManager.DeviceListener mDeviceListener = new DeviceManager.DeviceListener() {
-        @Override
-        public void onDeviceFound(List<AbstractDevice> devices) {
-            foundDevices(devices);
-            Intent intent = new Intent(TestConstants.ACTION_DEVICE_FOUND);
-            mBroadcastManager.sendBroadcast(intent);
-        }
-
-        @Override
-        public void onDeviceLost(List<AbstractDevice> devices) {
-            lostDevices(devices);
-            Intent intent = new Intent(TestConstants.ACTION_DEVICE_LOST);
-            mBroadcastManager.sendBroadcast(intent);
-        }
-
-        @Override
-        public void onDeviceUpdate(List<AbstractDevice> devices) {
-            updateDevices(devices);
-            Intent intent = new Intent(TestConstants.ACTION_DEVICE_UPDATE);
             mBroadcastManager.sendBroadcast(intent);
         }
     };
@@ -199,69 +168,30 @@ public class MiDeviceManager {
         }
     }
 
-    private void lostDevices(List<AbstractDevice> devices) {
-        for (AbstractDevice device : devices) {
-
-            //filter aux devices
-            ConnectionType connectionType = device.getDevice().getConnectionType();
-            Log.d(TAG, "lost device: " + device.getName() + " " + device.getDeviceId() + " " + connectionType);
-
-            switch (connectionType) {
-                case MIOT_WAN:
-                    mWanDevices.remove(device.getDeviceId());
-                    break;
-
-                case MIOT_WIFI:
-                    mWifiDevices.remove(device.getDeviceId());
-                    break;
-            }
-        }
-    }
-
-    private void updateDevices(List<AbstractDevice> devices) {
-        for (AbstractDevice abstractDevice : devices) {
-
-            ConnectionType connectionType = abstractDevice.getDevice().getConnectionType();
-            Log.d(TAG, "update abstractDevice: " + abstractDevice.getName() + " " + abstractDevice.getDeviceId() + " " + connectionType);
-
-            switch (connectionType) {
-                case MIOT_WAN:
-
-                    mWifiDevices.remove(abstractDevice.getDeviceId());
-
-                    if (abstractDevice.getOwnership() == Device.Ownership.NOONES) {
-                        bindDevice(abstractDevice);
-                    } else {
-                        mWanDevices.put(abstractDevice.getDeviceId(), abstractDevice);
-                    }
-
-                    break;
-                case MIOT_WIFI:
-                    break;
-            }
-        }
-    }
-
     private void bindDevice(final AbstractDevice device) {
-        int ret = MiotManager.getDeviceManager().takeOwnership(device, new CompletionHandler() {
-            @Override
-            public void onSucceed() {
-                String log = "takeOwnership succeed";
+        try {
+            MiotManager.getDeviceManager().takeOwnership(device, new CompletionHandler() {
+                @Override
+                public void onSucceed() {
+                    String log = "takeOwnership succeed";
 
-                Intent intent = new Intent(TestConstants.ACTION_TAKE_OWNERSHIP_SUCCEED);
-                intent.putExtra(TestConstants.MI_DEVICE_ID, device.getDeviceId());
-                mBroadcastManager.sendBroadcast(intent);
-            }
+                    Intent intent = new Intent(TestConstants.ACTION_TAKE_OWNERSHIP_SUCCEED);
+                    intent.putExtra(TestConstants.MI_DEVICE_ID, device.getDeviceId());
+                    mBroadcastManager.sendBroadcast(intent);
+                }
 
-            @Override
-            public void onFailed(int errCode, String description) {
-                String log = "takeOwnership onFailed " + errCode + description;
-                Log.e(TAG, log);
+                @Override
+                public void onFailed(int errCode, String description) {
+                    String log = "takeOwnership onFailed " + errCode + description;
+                    Log.e(TAG, log);
 
-                Intent intent = new Intent(TestConstants.ACTION_TAKE_OWNERSHIP_FAILED);
-                intent.putExtra(TestConstants.MI_DEVICE_ID, device.getDeviceId());
-                mBroadcastManager.sendBroadcast(intent);
-            }
-        });
+                    Intent intent = new Intent(TestConstants.ACTION_TAKE_OWNERSHIP_FAILED);
+                    intent.putExtra(TestConstants.MI_DEVICE_ID, device.getDeviceId());
+                    mBroadcastManager.sendBroadcast(intent);
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
     }
 }

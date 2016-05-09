@@ -28,18 +28,23 @@ import butterknife.InjectView;
 import miot.api.CompletionHandler;
 import miot.api.MiotManager;
 import miot.api.device.AbstractDevice;
+import miot.service.common.utils.Logger;
+import miot.typedef.device.Device;
+import miot.typedef.device.Service;
+import miot.typedef.exception.MiotException;
+import miot.typedef.property.Property;
 
 public class DeviceActivity extends BaseActivity {
     private static final String TAG = DeviceActivity.class.getSimpleName();
 
     @InjectView(R.id.lv_devices)
-    ListView lvDevices;
-    @InjectView(R.id.btn_start)
-    Button btnStart;
-    @InjectView(R.id.btn_stop)
-    Button btnStop;
-    @InjectView(R.id.btn_refresh)
-    Button btnRefresh;
+    ListView mLvDevices;
+    @InjectView(R.id.btn_get_remote_devices)
+    Button mBtnGetRemoteDevices;
+    @InjectView(R.id.btn_start_scan)
+    Button mBtnStartScan;
+    @InjectView(R.id.btn_stop_scan)
+    Button mBtnStopScan;
 
     private DeviceAdapter mDeviceAdapter;
     private MiDeviceManager mMiDeviceManager;
@@ -52,8 +57,8 @@ public class DeviceActivity extends BaseActivity {
         ButterKnife.inject(this);
 
         mDeviceAdapter = new DeviceAdapter(this);
-        lvDevices.setAdapter(mDeviceAdapter);
-        lvDevices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mLvDevices.setAdapter(mDeviceAdapter);
+        mLvDevices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 AbstractDevice device = (AbstractDevice) adapterView.getItemAtPosition(position);
@@ -63,34 +68,38 @@ public class DeviceActivity extends BaseActivity {
             }
         });
 
-        btnStart.setOnClickListener(new View.OnClickListener() {
+        mBtnGetRemoteDevices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mMiDeviceManager.startDiscovery();
+                Log.d(TAG, "getRemoteDevice");
+                showToast("getRemoteDevice");
+                mMiDeviceManager.getWanDeviceList();
             }
         });
-        btnStop.setOnClickListener(new View.OnClickListener() {
+        mBtnStartScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mMiDeviceManager.stopDiscovery();
+                mMiDeviceManager.startScan();
             }
         });
-        btnRefresh.setOnClickListener(new View.OnClickListener() {
+        mBtnStopScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mMiDeviceManager.refreshDiscovery();
+                mMiDeviceManager.stopScan();
             }
         });
 
         mBroadcastManager = LocalBroadcastManager.getInstance(this);
         mMiDeviceManager = MiDeviceManager.getInstance();
-        mMiDeviceManager.startDiscovery();
+        mMiDeviceManager.getWanDeviceList();
+
     }
 
     private void clickDevice(AbstractDevice device) {
         switch (device.getConnectionType()) {
             case MIOT_WAN:
                 gotoDevicePage(device);
+
                 break;
             case MIOT_WIFI:
                 connectDevice(device);
@@ -110,25 +119,27 @@ public class DeviceActivity extends BaseActivity {
     }
 
     private void connectDevice(AbstractDevice device) {
-        int ret = MiotManager.getDeviceConnector().connectToCloud(device, new CompletionHandler() {
-            @Override
-            public void onSucceed() {
-                Log.d(TAG, "connect device onSucceed");
-            }
+        try {
+            MiotManager.getDeviceConnector().connectToCloud(device, new CompletionHandler() {
+                @Override
+                public void onSucceed() {
+                    Log.d(TAG, "connect device onSucceed");
+                }
 
-            @Override
-            public void onFailed(int errCode, String description) {
-                Log.e(TAG, "connect device onFailed: " + errCode + description);
-            }
-        });
-        Log.d(TAG, "connectDevice ret: " + ret);
+                @Override
+                public void onFailed(int errCode, String description) {
+                    Log.e(TAG, "connect device onFailed: " + errCode + description);
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         registerReceiver();
-//        mMiDeviceManager.refreshDiscovery();
     }
 
     @Override
@@ -161,18 +172,20 @@ public class DeviceActivity extends BaseActivity {
                     break;
 
                 case TestConstants.ACTION_DISCOVERY_DEVICE_SUCCEED:
+                    showToast("discovery device succeed");
+                    List<AbstractDevice> wanDevices = mMiDeviceManager.getWanDevices();
+                    mDeviceAdapter.setItems(wanDevices);
+                    List<AbstractDevice> wifiDevices = mMiDeviceManager.getWifiDevices();
+                    mDeviceAdapter.addItems(wifiDevices);
                     break;
                 case TestConstants.ACTION_DISCOVERY_DEVICE_FAILED:
+                    showToast("discovery device failed");
                     break;
 
                 //TODO: currently same logic
                 case TestConstants.ACTION_DEVICE_FOUND:
                 case TestConstants.ACTION_DEVICE_LOST:
                 case TestConstants.ACTION_DEVICE_UPDATE:
-                    List<AbstractDevice> wanDevices = mMiDeviceManager.getWanDevices();
-                    mDeviceAdapter.setItems(wanDevices);
-                    List<AbstractDevice> wifiDevices = mMiDeviceManager.getWifiDevices();
-                    mDeviceAdapter.addItems(wifiDevices);
                     break;
             }
         }

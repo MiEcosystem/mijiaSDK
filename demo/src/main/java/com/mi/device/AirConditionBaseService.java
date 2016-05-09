@@ -2,6 +2,11 @@
 
 package com.mi.device;
 
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import miot.api.CompletionHandler;
 import miot.api.DeviceManipulator;
 import miot.api.MiotManager;
@@ -14,6 +19,7 @@ import miot.typedef.device.invocation.PropertyInfo;
 import miot.typedef.device.invocation.PropertyInfoFactory;
 import miot.typedef.property.Property;
 import miot.typedef.property.PropertyDefinition;
+import miot.typedef.exception.MiotException;
 
 public class AirConditionBaseService extends AbstractService {
     private static final String TAG = "AirConditionBaseService";
@@ -36,19 +42,18 @@ public class AirConditionBaseService extends AbstractService {
     public static final String PROPERTY_IndoorTemp = "IndoorTemp";
     public static final String PROPERTY_Power = "Power";
 
-    private AbstractDevice device = null;
+    private AbstractDevice mDevice = null;
 
     public AirConditionBaseService(AbstractDevice device) {
-        this.device = device;
+        mDevice = device;
     }
 
     //-------------------------------------------------------
     // Property value defined
     //-------------------------------------------------------
-
     /**
-     * 模式（自动|制冷|除湿|送风|制暖）
-     */
+    * 模式（自动|制冷|除湿|送风|制暖）
+    */
     public enum Mode {
         undefined,
         auto,
@@ -59,8 +64,8 @@ public class AirConditionBaseService extends AbstractService {
     }
 
     /**
-     * 开关状态（on|off）
-     */
+    * 开关状态（on|off）
+    */
     public enum Power {
         undefined,
         on,
@@ -77,22 +82,18 @@ public class AirConditionBaseService extends AbstractService {
          * 温度（16,32） 发生改变
          */
         void onTempChanged(Double temp);
-
         /**
          * 模式（自动|制冷|除湿|送风|制暖） 发生改变
          */
         void onModeChanged(Mode mode);
-
         /**
          * 风速（自动|低风|中低风|中风|中高|高风） 发生改变
          */
         void onWindSpeedChanged(Long windSpeed);
-
         /**
          * 室内温度 发生改变
          */
         void onIndoorTempChanged(Double indoorTemp);
-
         /**
          * 开关状态（on|off） 发生改变
          */
@@ -102,7 +103,7 @@ public class AirConditionBaseService extends AbstractService {
     //-------------------------------------------------------
     // Property: subscribeNotifications
     //-------------------------------------------------------
-    public void subscribeNotifications(final CompletionHandler handler, final PropertyNotificationListener listener) {
+    public void subscribeNotifications(final CompletionHandler handler, final PropertyNotificationListener listener) throws MiotException {
         if (handler == null) {
             throw new IllegalArgumentException("handler is null");
         }
@@ -167,7 +168,7 @@ public class AirConditionBaseService extends AbstractService {
     //-------------------------------------------------------
     // Property: unsubscribeNotifications
     //-------------------------------------------------------
-    public void unsubscribeNotifications(final CompletionHandler handler) {
+    public void unsubscribeNotifications(final CompletionHandler handler) throws MiotException {
         if (handler == null) {
             throw new IllegalArgumentException("handler is null");
         }
@@ -181,24 +182,22 @@ public class AirConditionBaseService extends AbstractService {
         }
 
         DeviceManipulator op = MiotManager.getDeviceManipulator();
-        op.removePropertyChangedListener(propertyInfo,
-                new DeviceManipulator.CompletionHandler() {
-                    @Override
-                    public void onSucceed() {
-                        handler.onSucceed();
-                    }
+        op.removePropertyChangedListener(propertyInfo, new DeviceManipulator.CompletionHandler() {
+            @Override
+            public void onSucceed() {
+                handler.onSucceed();
+            }
 
-                    @Override
-                    public void onFailed(int errCode, String description) {
-                        handler.onFailed(errCode, description);
-                    }
-                });
+            @Override
+            public void onFailed(int errCode, String description) {
+                handler.onFailed(errCode, description);
+            }
+        });
     }
 
     //-------------------------------------------------------
     // Properties Getter
     //-------------------------------------------------------
-
     /**
      * 回调接口： 读取所有可读属性
      */
@@ -211,51 +210,40 @@ public class AirConditionBaseService extends AbstractService {
     /**
      * 读取所有可读属性
      */
-    public int getProperties(final GetPropertiesCompletionHandler handler) {
-        int ret = 0;
+    public void getProperties(final GetPropertiesCompletionHandler handler) throws MiotException {
+        if (!mDevice.isConnectionEstablished()) {
+            throw new MiotException("device not configurated connection");
+        }
 
-        do {
-            if (!this.device.isConnectionEstablished()) {
-                ret = ReturnCode.E_DEVICE_NOT_CONFIGURATE_CONNECTION;
-                break;
+        PropertyInfo propertyInfo = PropertyInfoFactory.create(getService());
+        propertyInfo.addProperty(getService().getProperty(PROPERTY_Temp));
+        propertyInfo.addProperty(getService().getProperty(PROPERTY_Mode));
+        propertyInfo.addProperty(getService().getProperty(PROPERTY_WindSpeed));
+        propertyInfo.addProperty(getService().getProperty(PROPERTY_IndoorTemp));
+        propertyInfo.addProperty(getService().getProperty(PROPERTY_Power));
+
+        DeviceManipulator op = MiotManager.getDeviceManipulator();
+        op.readProperty(propertyInfo, new DeviceManipulator.ReadPropertyCompletionHandler() {
+            @Override
+            public void onSucceed(PropertyInfo info) {
+                Double temp = (Double) info.getValue(PROPERTY_Temp);
+                Mode mode = Mode.valueOf((String) info.getValue(PROPERTY_Mode));
+                Long windSpeed = (Long) info.getValue(PROPERTY_WindSpeed);
+                Double indoorTemp = (Double) info.getValue(PROPERTY_IndoorTemp);
+                Power power = Power.valueOf((String) info.getValue(PROPERTY_Power));
+                handler.onSucceed(temp, mode, windSpeed, indoorTemp, power);
             }
 
-            PropertyInfo propertyInfo = PropertyInfoFactory.create(getService());
-            propertyInfo.addProperty(getService().getProperty(PROPERTY_Temp));
-            propertyInfo.addProperty(getService().getProperty(PROPERTY_Mode));
-            propertyInfo.addProperty(getService().getProperty(PROPERTY_WindSpeed));
-            propertyInfo.addProperty(getService().getProperty(PROPERTY_IndoorTemp));
-            propertyInfo.addProperty(getService().getProperty(PROPERTY_Power));
-
-            DeviceManipulator op = MiotManager.getDeviceManipulator();
-            ret = op.readProperty(propertyInfo,
-                    new DeviceManipulator.ReadPropertyCompletionHandler() {
-                        @Override
-                        public void onSucceed(PropertyInfo info) {
-                            Double temp = (Double) info.getValue(PROPERTY_Temp);
-                            Mode mode = Mode.valueOf((String) info.getValue(PROPERTY_Mode));
-                            Long windSpeed = (Long) info.getValue(PROPERTY_WindSpeed);
-                            Double indoorTemp = (Double) info.getValue(PROPERTY_IndoorTemp);
-                            Power power = Power.valueOf((String) info.getValue(PROPERTY_Power));
-                            handler.onSucceed(temp, mode, windSpeed, indoorTemp, power);
-                        }
-
-                        @Override
-                        public void onFailed(int errCode, String description) {
-                            handler.onFailed(errCode, description);
-                        }
-                    }
-            );
-
-        } while (false);
-
-        return ret;
+            @Override
+            public void onFailed(int errCode, String description) {
+                handler.onFailed(errCode, description);
+            }
+        });
     }
 
     //-------------------------------------------------------
     // Property Getters
     //-------------------------------------------------------
-
     /**
      * 回调接口： 读取Temp
      */
@@ -268,42 +256,26 @@ public class AirConditionBaseService extends AbstractService {
     /**
      * 读取温度（16,32）
      */
-    public int getTemp(final GetTempCompletionHandler handler) {
-        int ret = 0;
+    public void getTemp(final GetTempCompletionHandler handler) throws MiotException {
+        if (!mDevice.isConnectionEstablished()) {
+            throw new MiotException("device not configurated connection");
+        }
 
-        do {
-            if (!this.device.isConnectionEstablished()) {
-                ret = ReturnCode.E_DEVICE_NOT_CONFIGURATE_CONNECTION;
-                break;
+        PropertyInfo propertyInfo = PropertyInfoFactory.create(getService(), PROPERTY_Temp);
+        DeviceManipulator op = MiotManager.getDeviceManipulator();
+        op.readProperty(propertyInfo, new DeviceManipulator.ReadPropertyCompletionHandler() {
+            @Override
+            public void onSucceed(PropertyInfo info) {
+                Double temp = (Double) info.getValue(PROPERTY_Temp);
+                handler.onSucceed(temp);
             }
 
-            PropertyInfo propertyInfo = PropertyInfoFactory.create(getService(), PROPERTY_Temp);
-            if (propertyInfo == null) {
-                ret = ReturnCode.E_PROPERTY_INVALID;
-                break;
+            @Override
+            public void onFailed(int errCode, String description) {
+                handler.onFailed(errCode, description);
             }
-
-            DeviceManipulator op = MiotManager.getDeviceManipulator();
-            ret = op.readProperty(propertyInfo,
-                    new DeviceManipulator.ReadPropertyCompletionHandler() {
-                        @Override
-                        public void onSucceed(PropertyInfo info) {
-                            Double temp = (Double) info.getValue(PROPERTY_Temp);
-                            handler.onSucceed(temp);
-                        }
-
-                        @Override
-                        public void onFailed(int errCode, String description) {
-                            handler.onFailed(errCode, description);
-                        }
-                    }
-            );
-
-        } while (false);
-
-        return ret;
+        });
     }
-
     /**
      * 回调接口： 读取Mode
      */
@@ -316,42 +288,26 @@ public class AirConditionBaseService extends AbstractService {
     /**
      * 读取模式（自动|制冷|除湿|送风|制暖）
      */
-    public int getMode(final GetModeCompletionHandler handler) {
-        int ret = 0;
+    public void getMode(final GetModeCompletionHandler handler) throws MiotException {
+        if (!mDevice.isConnectionEstablished()) {
+            throw new MiotException("device not configurated connection");
+        }
 
-        do {
-            if (!this.device.isConnectionEstablished()) {
-                ret = ReturnCode.E_DEVICE_NOT_CONFIGURATE_CONNECTION;
-                break;
+        PropertyInfo propertyInfo = PropertyInfoFactory.create(getService(), PROPERTY_Mode);
+        DeviceManipulator op = MiotManager.getDeviceManipulator();
+        op.readProperty(propertyInfo, new DeviceManipulator.ReadPropertyCompletionHandler() {
+            @Override
+            public void onSucceed(PropertyInfo info) {
+                Mode mode = Mode.valueOf((String) info.getValue(PROPERTY_Mode));
+                handler.onSucceed(mode);
             }
 
-            PropertyInfo propertyInfo = PropertyInfoFactory.create(getService(), PROPERTY_Mode);
-            if (propertyInfo == null) {
-                ret = ReturnCode.E_PROPERTY_INVALID;
-                break;
+            @Override
+            public void onFailed(int errCode, String description) {
+                handler.onFailed(errCode, description);
             }
-
-            DeviceManipulator op = MiotManager.getDeviceManipulator();
-            ret = op.readProperty(propertyInfo,
-                    new DeviceManipulator.ReadPropertyCompletionHandler() {
-                        @Override
-                        public void onSucceed(PropertyInfo info) {
-                            Mode mode = Mode.valueOf((String) info.getValue(PROPERTY_Mode));
-                            handler.onSucceed(mode);
-                        }
-
-                        @Override
-                        public void onFailed(int errCode, String description) {
-                            handler.onFailed(errCode, description);
-                        }
-                    }
-            );
-
-        } while (false);
-
-        return ret;
+        });
     }
-
     /**
      * 回调接口： 读取WindSpeed
      */
@@ -364,42 +320,26 @@ public class AirConditionBaseService extends AbstractService {
     /**
      * 读取风速（自动|低风|中低风|中风|中高|高风）
      */
-    public int getWindSpeed(final GetWindSpeedCompletionHandler handler) {
-        int ret = 0;
+    public void getWindSpeed(final GetWindSpeedCompletionHandler handler) throws MiotException {
+        if (!mDevice.isConnectionEstablished()) {
+            throw new MiotException("device not configurated connection");
+        }
 
-        do {
-            if (!this.device.isConnectionEstablished()) {
-                ret = ReturnCode.E_DEVICE_NOT_CONFIGURATE_CONNECTION;
-                break;
+        PropertyInfo propertyInfo = PropertyInfoFactory.create(getService(), PROPERTY_WindSpeed);
+        DeviceManipulator op = MiotManager.getDeviceManipulator();
+        op.readProperty(propertyInfo, new DeviceManipulator.ReadPropertyCompletionHandler() {
+            @Override
+            public void onSucceed(PropertyInfo info) {
+                Long windSpeed = (Long) info.getValue(PROPERTY_WindSpeed);
+                handler.onSucceed(windSpeed);
             }
 
-            PropertyInfo propertyInfo = PropertyInfoFactory.create(getService(), PROPERTY_WindSpeed);
-            if (propertyInfo == null) {
-                ret = ReturnCode.E_PROPERTY_INVALID;
-                break;
+            @Override
+            public void onFailed(int errCode, String description) {
+                handler.onFailed(errCode, description);
             }
-
-            DeviceManipulator op = MiotManager.getDeviceManipulator();
-            ret = op.readProperty(propertyInfo,
-                    new DeviceManipulator.ReadPropertyCompletionHandler() {
-                        @Override
-                        public void onSucceed(PropertyInfo info) {
-                            Long windSpeed = (Long) info.getValue(PROPERTY_WindSpeed);
-                            handler.onSucceed(windSpeed);
-                        }
-
-                        @Override
-                        public void onFailed(int errCode, String description) {
-                            handler.onFailed(errCode, description);
-                        }
-                    }
-            );
-
-        } while (false);
-
-        return ret;
+        });
     }
-
     /**
      * 回调接口： 读取IndoorTemp
      */
@@ -412,42 +352,26 @@ public class AirConditionBaseService extends AbstractService {
     /**
      * 读取室内温度
      */
-    public int getIndoorTemp(final GetIndoorTempCompletionHandler handler) {
-        int ret = 0;
+    public void getIndoorTemp(final GetIndoorTempCompletionHandler handler) throws MiotException {
+        if (!mDevice.isConnectionEstablished()) {
+            throw new MiotException("device not configurated connection");
+        }
 
-        do {
-            if (!this.device.isConnectionEstablished()) {
-                ret = ReturnCode.E_DEVICE_NOT_CONFIGURATE_CONNECTION;
-                break;
+        PropertyInfo propertyInfo = PropertyInfoFactory.create(getService(), PROPERTY_IndoorTemp);
+        DeviceManipulator op = MiotManager.getDeviceManipulator();
+        op.readProperty(propertyInfo, new DeviceManipulator.ReadPropertyCompletionHandler() {
+            @Override
+            public void onSucceed(PropertyInfo info) {
+                Double indoorTemp = (Double) info.getValue(PROPERTY_IndoorTemp);
+                handler.onSucceed(indoorTemp);
             }
 
-            PropertyInfo propertyInfo = PropertyInfoFactory.create(getService(), PROPERTY_IndoorTemp);
-            if (propertyInfo == null) {
-                ret = ReturnCode.E_PROPERTY_INVALID;
-                break;
+            @Override
+            public void onFailed(int errCode, String description) {
+                handler.onFailed(errCode, description);
             }
-
-            DeviceManipulator op = MiotManager.getDeviceManipulator();
-            ret = op.readProperty(propertyInfo,
-                    new DeviceManipulator.ReadPropertyCompletionHandler() {
-                        @Override
-                        public void onSucceed(PropertyInfo info) {
-                            Double indoorTemp = (Double) info.getValue(PROPERTY_IndoorTemp);
-                            handler.onSucceed(indoorTemp);
-                        }
-
-                        @Override
-                        public void onFailed(int errCode, String description) {
-                            handler.onFailed(errCode, description);
-                        }
-                    }
-            );
-
-        } while (false);
-
-        return ret;
+        });
     }
-
     /**
      * 回调接口： 读取Power
      */
@@ -460,251 +384,187 @@ public class AirConditionBaseService extends AbstractService {
     /**
      * 读取开关状态（on|off）
      */
-    public int getPower(final GetPowerCompletionHandler handler) {
-        int ret = 0;
+    public void getPower(final GetPowerCompletionHandler handler) throws MiotException {
+        if (!mDevice.isConnectionEstablished()) {
+            throw new MiotException("device not configurated connection");
+        }
 
-        do {
-            if (!this.device.isConnectionEstablished()) {
-                ret = ReturnCode.E_DEVICE_NOT_CONFIGURATE_CONNECTION;
-                break;
+        PropertyInfo propertyInfo = PropertyInfoFactory.create(getService(), PROPERTY_Power);
+        DeviceManipulator op = MiotManager.getDeviceManipulator();
+        op.readProperty(propertyInfo, new DeviceManipulator.ReadPropertyCompletionHandler() {
+            @Override
+            public void onSucceed(PropertyInfo info) {
+                Power power = Power.valueOf((String) info.getValue(PROPERTY_Power));
+                handler.onSucceed(power);
             }
 
-            PropertyInfo propertyInfo = PropertyInfoFactory.create(getService(), PROPERTY_Power);
-            if (propertyInfo == null) {
-                ret = ReturnCode.E_PROPERTY_INVALID;
-                break;
+            @Override
+            public void onFailed(int errCode, String description) {
+                handler.onFailed(errCode, description);
             }
-
-            DeviceManipulator op = MiotManager.getDeviceManipulator();
-            ret = op.readProperty(propertyInfo,
-                    new DeviceManipulator.ReadPropertyCompletionHandler() {
-                        @Override
-                        public void onSucceed(PropertyInfo info) {
-                            Power power = Power.valueOf((String) info.getValue(PROPERTY_Power));
-                            handler.onSucceed(power);
-                        }
-
-                        @Override
-                        public void onFailed(int errCode, String description) {
-                            handler.onFailed(errCode, description);
-                        }
-                    }
-            );
-
-        } while (false);
-
-        return ret;
+        });
     }
 
     //-------------------------------------------------------
     // Actions
     //-------------------------------------------------------
-
     /**
      * 设置温度
      */
-    public int setTemp(Double temp, final CompletionHandler handler) {
-        int ret = 0;
+    public void setTemp(Double temp, final CompletionHandler handler) throws MiotException {
+        if (!mDevice.isConnectionEstablished()) {
+            throw new MiotException("device not configurated connection");
+        }
 
-        do {
-            if (!this.device.isConnectionEstablished()) {
-                ret = ReturnCode.E_DEVICE_NOT_CONFIGURATE_CONNECTION;
-                break;
+        final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setTemp);
+        if(actionInfo == null) {
+            throw new MiotException("actionInfo is null");
+        }
+
+        if (!actionInfo.setArgumentValue(PROPERTY_Temp, temp)) {
+            throw new MiotException("invalid value");
+        }
+        DeviceManipulator op = MiotManager.getDeviceManipulator();
+        op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
+            @Override
+            public void onSucceed(ActionInfo info) {
+                 handler.onSucceed();
             }
 
-            final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setTemp);
-            if (actionInfo == null) {
-                ret = ReturnCode.E_ACTION_NOT_SUPPORT;
-                break;
+            @Override
+            public void onFailed(final int errCode, final String description) {
+                handler.onFailed(errCode, description);
             }
-
-            if (!actionInfo.setArgumentValue(PROPERTY_Temp, temp)) {
-                ret = ReturnCode.E_ACTION_ARGUMENT_INVALID;
-                break;
-            }
-            DeviceManipulator op = MiotManager.getDeviceManipulator();
-            ret = op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
-                @Override
-                public void onSucceed(ActionInfo info) {
-                    handler.onSucceed();
-                }
-
-                @Override
-                public void onFailed(final int errCode, final String description) {
-                    handler.onFailed(errCode, description);
-                }
-            });
-        } while (false);
-
-        return ret;
+        });
     }
 
     /**
      * 设置云端定时开
      */
-    public int setPowerModeTempSpeed(Power power, Mode mode, Double temp, Long windSpeed, final CompletionHandler handler) {
-        int ret = 0;
+    public void setPowerModeTempSpeed(Power power, Mode mode, Double temp, Long windSpeed, final CompletionHandler handler) throws MiotException {
+        if (!mDevice.isConnectionEstablished()) {
+            throw new MiotException("device not configurated connection");
+        }
 
-        do {
-            if (!this.device.isConnectionEstablished()) {
-                ret = ReturnCode.E_DEVICE_NOT_CONFIGURATE_CONNECTION;
-                break;
+        final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setPowerModeTempSpeed);
+        if(actionInfo == null) {
+            throw new MiotException("actionInfo is null");
+        }
+
+        if (!actionInfo.setArgumentValue(PROPERTY_Power, power.toString())) {
+            throw new MiotException("invalid value");
+        }
+        if (!actionInfo.setArgumentValue(PROPERTY_Mode, mode.toString())) {
+            throw new MiotException("invalid value");
+        }
+        if (!actionInfo.setArgumentValue(PROPERTY_Temp, temp)) {
+            throw new MiotException("invalid value");
+        }
+        if (!actionInfo.setArgumentValue(PROPERTY_WindSpeed, windSpeed)) {
+            throw new MiotException("invalid value");
+        }
+        DeviceManipulator op = MiotManager.getDeviceManipulator();
+        op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
+            @Override
+            public void onSucceed(ActionInfo info) {
+                 handler.onSucceed();
             }
 
-            final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setPowerModeTempSpeed);
-            if (actionInfo == null) {
-                ret = ReturnCode.E_ACTION_NOT_SUPPORT;
-                break;
+            @Override
+            public void onFailed(final int errCode, final String description) {
+                handler.onFailed(errCode, description);
             }
-
-            if (!actionInfo.setArgumentValue(PROPERTY_Power, power.toString())) {
-                ret = ReturnCode.E_ACTION_ARGUMENT_INVALID;
-                break;
-            }
-            if (!actionInfo.setArgumentValue(PROPERTY_Mode, mode.toString())) {
-                ret = ReturnCode.E_ACTION_ARGUMENT_INVALID;
-                break;
-            }
-            if (!actionInfo.setArgumentValue(PROPERTY_Temp, temp)) {
-                ret = ReturnCode.E_ACTION_ARGUMENT_INVALID;
-                break;
-            }
-            if (!actionInfo.setArgumentValue(PROPERTY_WindSpeed, windSpeed)) {
-                ret = ReturnCode.E_ACTION_ARGUMENT_INVALID;
-                break;
-            }
-            DeviceManipulator op = MiotManager.getDeviceManipulator();
-            ret = op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
-                @Override
-                public void onSucceed(ActionInfo info) {
-                    handler.onSucceed();
-                }
-
-                @Override
-                public void onFailed(final int errCode, final String description) {
-                    handler.onFailed(errCode, description);
-                }
-            });
-        } while (false);
-
-        return ret;
+        });
     }
 
     /**
      * 设置模式
      */
-    public int setMode(Mode mode, final CompletionHandler handler) {
-        int ret = 0;
+    public void setMode(Mode mode, final CompletionHandler handler) throws MiotException {
+        if (!mDevice.isConnectionEstablished()) {
+            throw new MiotException("device not configurated connection");
+        }
 
-        do {
-            if (!this.device.isConnectionEstablished()) {
-                ret = ReturnCode.E_DEVICE_NOT_CONFIGURATE_CONNECTION;
-                break;
+        final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setMode);
+        if(actionInfo == null) {
+            throw new MiotException("actionInfo is null");
+        }
+
+        if (!actionInfo.setArgumentValue(PROPERTY_Mode, mode.toString())) {
+            throw new MiotException("invalid value");
+        }
+        DeviceManipulator op = MiotManager.getDeviceManipulator();
+        op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
+            @Override
+            public void onSucceed(ActionInfo info) {
+                 handler.onSucceed();
             }
 
-            final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setMode);
-            if (actionInfo == null) {
-                ret = ReturnCode.E_ACTION_NOT_SUPPORT;
-                break;
+            @Override
+            public void onFailed(final int errCode, final String description) {
+                handler.onFailed(errCode, description);
             }
-
-            if (!actionInfo.setArgumentValue(PROPERTY_Mode, mode.toString())) {
-                ret = ReturnCode.E_ACTION_ARGUMENT_INVALID;
-                break;
-            }
-            DeviceManipulator op = MiotManager.getDeviceManipulator();
-            ret = op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
-                @Override
-                public void onSucceed(ActionInfo info) {
-                    handler.onSucceed();
-                }
-
-                @Override
-                public void onFailed(final int errCode, final String description) {
-                    handler.onFailed(errCode, description);
-                }
-            });
-        } while (false);
-
-        return ret;
+        });
     }
 
     /**
      * 开关
      */
-    public int setPower(Power power, final CompletionHandler handler) {
-        int ret = 0;
+    public void setPower(Power power, final CompletionHandler handler) throws MiotException {
+        if (!mDevice.isConnectionEstablished()) {
+            throw new MiotException("device not configurated connection");
+        }
 
-        do {
-            if (!this.device.isConnectionEstablished()) {
-                ret = ReturnCode.E_DEVICE_NOT_CONFIGURATE_CONNECTION;
-                break;
+        final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setPower);
+        if(actionInfo == null) {
+            throw new MiotException("actionInfo is null");
+        }
+
+        if (!actionInfo.setArgumentValue(PROPERTY_Power, power.toString())) {
+            throw new MiotException("invalid value");
+        }
+        DeviceManipulator op = MiotManager.getDeviceManipulator();
+        op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
+            @Override
+            public void onSucceed(ActionInfo info) {
+                 handler.onSucceed();
             }
 
-            final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setPower);
-            if (actionInfo == null) {
-                ret = ReturnCode.E_ACTION_NOT_SUPPORT;
-                break;
+            @Override
+            public void onFailed(final int errCode, final String description) {
+                handler.onFailed(errCode, description);
             }
-
-            if (!actionInfo.setArgumentValue(PROPERTY_Power, power.toString())) {
-                ret = ReturnCode.E_ACTION_ARGUMENT_INVALID;
-                break;
-            }
-            DeviceManipulator op = MiotManager.getDeviceManipulator();
-            ret = op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
-                @Override
-                public void onSucceed(ActionInfo info) {
-                    handler.onSucceed();
-                }
-
-                @Override
-                public void onFailed(final int errCode, final String description) {
-                    handler.onFailed(errCode, description);
-                }
-            });
-        } while (false);
-
-        return ret;
+        });
     }
 
     /**
      * 设置风速
      */
-    public int setWindSpeed(Long windSpeed, final CompletionHandler handler) {
-        int ret = 0;
+    public void setWindSpeed(Long windSpeed, final CompletionHandler handler) throws MiotException {
+        if (!mDevice.isConnectionEstablished()) {
+            throw new MiotException("device not configurated connection");
+        }
 
-        do {
-            if (!this.device.isConnectionEstablished()) {
-                ret = ReturnCode.E_DEVICE_NOT_CONFIGURATE_CONNECTION;
-                break;
+        final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setWindSpeed);
+        if(actionInfo == null) {
+            throw new MiotException("actionInfo is null");
+        }
+
+        if (!actionInfo.setArgumentValue(PROPERTY_WindSpeed, windSpeed)) {
+            throw new MiotException("invalid value");
+        }
+        DeviceManipulator op = MiotManager.getDeviceManipulator();
+        op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
+            @Override
+            public void onSucceed(ActionInfo info) {
+                 handler.onSucceed();
             }
 
-            final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setWindSpeed);
-            if (actionInfo == null) {
-                ret = ReturnCode.E_ACTION_NOT_SUPPORT;
-                break;
+            @Override
+            public void onFailed(final int errCode, final String description) {
+                handler.onFailed(errCode, description);
             }
-
-            if (!actionInfo.setArgumentValue(PROPERTY_WindSpeed, windSpeed)) {
-                ret = ReturnCode.E_ACTION_ARGUMENT_INVALID;
-                break;
-            }
-            DeviceManipulator op = MiotManager.getDeviceManipulator();
-            ret = op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
-                @Override
-                public void onSucceed(ActionInfo info) {
-                    handler.onSucceed();
-                }
-
-                @Override
-                public void onFailed(final int errCode, final String description) {
-                    handler.onFailed(errCode, description);
-                }
-            });
-        } while (false);
-
-        return ret;
+        });
     }
 
 }

@@ -2,6 +2,11 @@
 
 package com.mi.device;
 
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import miot.api.CompletionHandler;
 import miot.api.DeviceManipulator;
 import miot.api.MiotManager;
@@ -14,6 +19,7 @@ import miot.typedef.device.invocation.PropertyInfo;
 import miot.typedef.device.invocation.PropertyInfoFactory;
 import miot.typedef.property.Property;
 import miot.typedef.property.PropertyDefinition;
+import miot.typedef.exception.MiotException;
 
 public class SmartSocketBaseService extends AbstractService {
     private static final String TAG = "SmartSocketBaseService";
@@ -32,10 +38,10 @@ public class SmartSocketBaseService extends AbstractService {
     public static final String PROPERTY_UsbStatus = "UsbStatus";
     public static final String PROPERTY_PowerStatus = "PowerStatus";
 
-    private AbstractDevice device = null;
+    private AbstractDevice mDevice = null;
 
     public SmartSocketBaseService(AbstractDevice device) {
-        this.device = device;
+        mDevice = device;
     }
 
     //-------------------------------------------------------
@@ -60,7 +66,7 @@ public class SmartSocketBaseService extends AbstractService {
     //-------------------------------------------------------
     // Property: subscribeNotifications
     //-------------------------------------------------------
-    public void subscribeNotifications(final CompletionHandler handler, final PropertyNotificationListener listener) {
+    public void subscribeNotifications(final CompletionHandler handler, final PropertyNotificationListener listener) throws MiotException {
         if (handler == null) {
             throw new IllegalArgumentException("handler is null");
         }
@@ -113,7 +119,7 @@ public class SmartSocketBaseService extends AbstractService {
     //-------------------------------------------------------
     // Property: unsubscribeNotifications
     //-------------------------------------------------------
-    public void unsubscribeNotifications(final CompletionHandler handler) {
+    public void unsubscribeNotifications(final CompletionHandler handler) throws MiotException {
         if (handler == null) {
             throw new IllegalArgumentException("handler is null");
         }
@@ -127,18 +133,17 @@ public class SmartSocketBaseService extends AbstractService {
         }
 
         DeviceManipulator op = MiotManager.getDeviceManipulator();
-        op.removePropertyChangedListener(propertyInfo,
-                new DeviceManipulator.CompletionHandler() {
-                    @Override
-                    public void onSucceed() {
-                        handler.onSucceed();
-                    }
+        op.removePropertyChangedListener(propertyInfo, new DeviceManipulator.CompletionHandler() {
+            @Override
+            public void onSucceed() {
+                handler.onSucceed();
+            }
 
-                    @Override
-                    public void onFailed(int errCode, String description) {
-                        handler.onFailed(errCode, description);
-                    }
-                });
+            @Override
+            public void onFailed(int errCode, String description) {
+                handler.onFailed(errCode, description);
+            }
+        });
     }
 
     //-------------------------------------------------------
@@ -156,39 +161,29 @@ public class SmartSocketBaseService extends AbstractService {
     /**
      * 读取所有可读属性
      */
-    public int getProperties(final GetPropertiesCompletionHandler handler) {
-        int ret = 0;
+    public void getProperties(final GetPropertiesCompletionHandler handler) throws MiotException {
+        if (!mDevice.isConnectionEstablished()) {
+            throw new MiotException("device not configurated connection");
+        }
 
-        do {
-            if (!this.device.isConnectionEstablished()) {
-                ret = ReturnCode.E_DEVICE_NOT_CONFIGURATE_CONNECTION;
-                break;
+        PropertyInfo propertyInfo = PropertyInfoFactory.create(getService());
+        propertyInfo.addProperty(getService().getProperty(PROPERTY_UsbStatus));
+        propertyInfo.addProperty(getService().getProperty(PROPERTY_PowerStatus));
+
+        DeviceManipulator op = MiotManager.getDeviceManipulator();
+        op.readProperty(propertyInfo, new DeviceManipulator.ReadPropertyCompletionHandler() {
+            @Override
+            public void onSucceed(PropertyInfo info) {
+                Boolean usbStatus = (Boolean) info.getValue(PROPERTY_UsbStatus);
+                Boolean powerStatus = (Boolean) info.getValue(PROPERTY_PowerStatus);
+                handler.onSucceed(usbStatus, powerStatus);
             }
 
-            PropertyInfo propertyInfo = PropertyInfoFactory.create(getService());
-            propertyInfo.addProperty(getService().getProperty(PROPERTY_UsbStatus));
-            propertyInfo.addProperty(getService().getProperty(PROPERTY_PowerStatus));
-
-            DeviceManipulator op = MiotManager.getDeviceManipulator();
-            ret = op.readProperty(propertyInfo,
-                    new DeviceManipulator.ReadPropertyCompletionHandler() {
-                        @Override
-                        public void onSucceed(PropertyInfo info) {
-                            Boolean usbStatus = (Boolean) info.getValue(PROPERTY_UsbStatus);
-                            Boolean powerStatus = (Boolean) info.getValue(PROPERTY_PowerStatus);
-                            handler.onSucceed(usbStatus, powerStatus);
-                        }
-
-                        @Override
-                        public void onFailed(int errCode, String description) {
-                            handler.onFailed(errCode, description);
-                        }
-                    }
-            );
-
-        } while (false);
-
-        return ret;
+            @Override
+            public void onFailed(int errCode, String description) {
+                handler.onFailed(errCode, description);
+            }
+        });
     }
 
     //-------------------------------------------------------
@@ -206,42 +201,26 @@ public class SmartSocketBaseService extends AbstractService {
     /**
      * 读取USB插口状态
      */
-    public int getUsbStatus(final GetUsbStatusCompletionHandler handler) {
-        int ret = 0;
+    public void getUsbStatus(final GetUsbStatusCompletionHandler handler) throws MiotException {
+        if (!mDevice.isConnectionEstablished()) {
+            throw new MiotException("device not configurated connection");
+        }
 
-        do {
-            if (!this.device.isConnectionEstablished()) {
-                ret = ReturnCode.E_DEVICE_NOT_CONFIGURATE_CONNECTION;
-                break;
+        PropertyInfo propertyInfo = PropertyInfoFactory.create(getService(), PROPERTY_UsbStatus);
+        DeviceManipulator op = MiotManager.getDeviceManipulator();
+        op.readProperty(propertyInfo, new DeviceManipulator.ReadPropertyCompletionHandler() {
+            @Override
+            public void onSucceed(PropertyInfo info) {
+                Boolean usbStatus = (Boolean) info.getValue(PROPERTY_UsbStatus);
+                handler.onSucceed(usbStatus);
             }
 
-            PropertyInfo propertyInfo = PropertyInfoFactory.create(getService(), PROPERTY_UsbStatus);
-            if (propertyInfo == null) {
-                ret = ReturnCode.E_PROPERTY_INVALID;
-                break;
+            @Override
+            public void onFailed(int errCode, String description) {
+                handler.onFailed(errCode, description);
             }
-
-            DeviceManipulator op = MiotManager.getDeviceManipulator();
-            ret = op.readProperty(propertyInfo,
-                    new DeviceManipulator.ReadPropertyCompletionHandler() {
-                        @Override
-                        public void onSucceed(PropertyInfo info) {
-                            Boolean usbStatus = (Boolean) info.getValue(PROPERTY_UsbStatus);
-                            handler.onSucceed(usbStatus);
-                        }
-
-                        @Override
-                        public void onFailed(int errCode, String description) {
-                            handler.onFailed(errCode, description);
-                        }
-                    }
-            );
-
-        } while (false);
-
-        return ret;
+        });
     }
-
     /**
      * 回调接口： 读取PowerStatus
      */
@@ -254,42 +233,26 @@ public class SmartSocketBaseService extends AbstractService {
     /**
      * 读取电力插口状态
      */
-    public int getPowerStatus(final GetPowerStatusCompletionHandler handler) {
-        int ret = 0;
+    public void getPowerStatus(final GetPowerStatusCompletionHandler handler) throws MiotException {
+        if (!mDevice.isConnectionEstablished()) {
+            throw new MiotException("device not configurated connection");
+        }
 
-        do {
-            if (!this.device.isConnectionEstablished()) {
-                ret = ReturnCode.E_DEVICE_NOT_CONFIGURATE_CONNECTION;
-                break;
+        PropertyInfo propertyInfo = PropertyInfoFactory.create(getService(), PROPERTY_PowerStatus);
+        DeviceManipulator op = MiotManager.getDeviceManipulator();
+        op.readProperty(propertyInfo, new DeviceManipulator.ReadPropertyCompletionHandler() {
+            @Override
+            public void onSucceed(PropertyInfo info) {
+                Boolean powerStatus = (Boolean) info.getValue(PROPERTY_PowerStatus);
+                handler.onSucceed(powerStatus);
             }
 
-            PropertyInfo propertyInfo = PropertyInfoFactory.create(getService(), PROPERTY_PowerStatus);
-            if (propertyInfo == null) {
-                ret = ReturnCode.E_PROPERTY_INVALID;
-                break;
+            @Override
+            public void onFailed(int errCode, String description) {
+                handler.onFailed(errCode, description);
             }
-
-            DeviceManipulator op = MiotManager.getDeviceManipulator();
-            ret = op.readProperty(propertyInfo,
-                    new DeviceManipulator.ReadPropertyCompletionHandler() {
-                        @Override
-                        public void onSucceed(PropertyInfo info) {
-                            Boolean powerStatus = (Boolean) info.getValue(PROPERTY_PowerStatus);
-                            handler.onSucceed(powerStatus);
-                        }
-
-                        @Override
-                        public void onFailed(int errCode, String description) {
-                            handler.onFailed(errCode, description);
-                        }
-                    }
-            );
-
-        } while (false);
-
-        return ret;
+        });
     }
-
 
     //-------------------------------------------------------
     // Actions
@@ -297,141 +260,109 @@ public class SmartSocketBaseService extends AbstractService {
     /**
      * 打开USB开关
      */
-    public int setUsbPlugOn(final CompletionHandler handler) {
-        int ret = 0;
+    public void setUsbPlugOn(final CompletionHandler handler) throws MiotException {
+        if (!mDevice.isConnectionEstablished()) {
+            throw new MiotException("device not configurated connection");
+        }
 
-        do {
-            if (!this.device.isConnectionEstablished()) {
-                ret = ReturnCode.E_DEVICE_NOT_CONFIGURATE_CONNECTION;
-                break;
+        final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setUsbPlugOn);
+        if(actionInfo == null) {
+            throw new MiotException("actionInfo is null");
+        }
+
+        DeviceManipulator op = MiotManager.getDeviceManipulator();
+        op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
+            @Override
+            public void onSucceed(ActionInfo info) {
+                 handler.onSucceed();
             }
 
-            final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setUsbPlugOn);
-            if (actionInfo == null) {
-                ret = ReturnCode.E_ACTION_NOT_SUPPORT;
-                break;
+            @Override
+            public void onFailed(final int errCode, final String description) {
+                handler.onFailed(errCode, description);
             }
-
-            DeviceManipulator op = MiotManager.getDeviceManipulator();
-            ret = op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
-                @Override
-                public void onSucceed(ActionInfo info) {
-                    handler.onSucceed();
-                }
-
-                @Override
-                public void onFailed(final int errCode, final String description) {
-                    handler.onFailed(errCode, description);
-                }
-            });
-        } while (false);
-
-        return ret;
+        });
     }
 
     /**
      * 关闭USB开关
      */
-    public int setUsbPlugOff(final CompletionHandler handler) {
-        int ret = 0;
+    public void setUsbPlugOff(final CompletionHandler handler) throws MiotException {
+        if (!mDevice.isConnectionEstablished()) {
+            throw new MiotException("device not configurated connection");
+        }
 
-        do {
-            if (!this.device.isConnectionEstablished()) {
-                ret = ReturnCode.E_DEVICE_NOT_CONFIGURATE_CONNECTION;
-                break;
+        final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setUsbPlugOff);
+        if(actionInfo == null) {
+            throw new MiotException("actionInfo is null");
+        }
+
+        DeviceManipulator op = MiotManager.getDeviceManipulator();
+        op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
+            @Override
+            public void onSucceed(ActionInfo info) {
+                 handler.onSucceed();
             }
 
-            final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setUsbPlugOff);
-            if (actionInfo == null) {
-                ret = ReturnCode.E_ACTION_NOT_SUPPORT;
-                break;
+            @Override
+            public void onFailed(final int errCode, final String description) {
+                handler.onFailed(errCode, description);
             }
-
-            DeviceManipulator op = MiotManager.getDeviceManipulator();
-            ret = op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
-                @Override
-                public void onSucceed(ActionInfo info) {
-                    handler.onSucceed();
-                }
-
-                @Override
-                public void onFailed(final int errCode, final String description) {
-                    handler.onFailed(errCode, description);
-                }
-            });
-        } while (false);
-
-        return ret;
+        });
     }
 
     /**
      * 关闭开关
      */
-    public int setPlugOff(final CompletionHandler handler) {
-        int ret = 0;
+    public void setPlugOff(final CompletionHandler handler) throws MiotException {
+        if (!mDevice.isConnectionEstablished()) {
+            throw new MiotException("device not configurated connection");
+        }
 
-        do {
-            if (!this.device.isConnectionEstablished()) {
-                ret = ReturnCode.E_DEVICE_NOT_CONFIGURATE_CONNECTION;
-                break;
+        final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setPlugOff);
+        if(actionInfo == null) {
+            throw new MiotException("actionInfo is null");
+        }
+
+        DeviceManipulator op = MiotManager.getDeviceManipulator();
+        op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
+            @Override
+            public void onSucceed(ActionInfo info) {
+                 handler.onSucceed();
             }
 
-            final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setPlugOff);
-            if (actionInfo == null) {
-                ret = ReturnCode.E_ACTION_NOT_SUPPORT;
-                break;
+            @Override
+            public void onFailed(final int errCode, final String description) {
+                handler.onFailed(errCode, description);
             }
-
-            DeviceManipulator op = MiotManager.getDeviceManipulator();
-            ret = op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
-                @Override
-                public void onSucceed(ActionInfo info) {
-                    handler.onSucceed();
-                }
-
-                @Override
-                public void onFailed(final int errCode, final String description) {
-                    handler.onFailed(errCode, description);
-                }
-            });
-        } while (false);
-
-        return ret;
+        });
     }
 
     /**
      * 打开开关
      */
-    public int setPlugOn(final CompletionHandler handler) {
-        int ret = 0;
+    public void setPlugOn(final CompletionHandler handler) throws MiotException {
+        if (!mDevice.isConnectionEstablished()) {
+            throw new MiotException("device not configurated connection");
+        }
 
-        do {
-            if (!this.device.isConnectionEstablished()) {
-                ret = ReturnCode.E_DEVICE_NOT_CONFIGURATE_CONNECTION;
-                break;
+        final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setPlugOn);
+        if(actionInfo == null) {
+            throw new MiotException("actionInfo is null");
+        }
+
+        DeviceManipulator op = MiotManager.getDeviceManipulator();
+        op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
+            @Override
+            public void onSucceed(ActionInfo info) {
+                 handler.onSucceed();
             }
 
-            final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setPlugOn);
-            if (actionInfo == null) {
-                ret = ReturnCode.E_ACTION_NOT_SUPPORT;
-                break;
+            @Override
+            public void onFailed(final int errCode, final String description) {
+                handler.onFailed(errCode, description);
             }
-
-            DeviceManipulator op = MiotManager.getDeviceManipulator();
-            ret = op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
-                @Override
-                public void onSucceed(ActionInfo info) {
-                    handler.onSucceed();
-                }
-
-                @Override
-                public void onFailed(final int errCode, final String description) {
-                    handler.onFailed(errCode, description);
-                }
-            });
-        } while (false);
-
-        return ret;
+        });
     }
 
 }

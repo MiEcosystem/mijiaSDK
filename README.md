@@ -14,7 +14,7 @@
 在您正式进行产品接入前，需要首先完成一下准备工作
 
 ### 1. 帐号接入
-mijiaSDK目前支持小米帐号登录，其中已经集成小米帐号Sdk，开发者需要到[小米帐号开放平台](http://dev.xiaomi.com/docs/passport/ready/)注册自己的App信息，**并在小米帐号系统Oauth权限管理中，申请并审核通过“智能家庭服务”权限，请确保申请通过此权限，否则不能正常使用**。如果在接入过程中遇到问题，可加QQ群385428920咨询。
+mijiaSDK目前支持小米帐号登陆，开发者需要到[小米帐号开放平台](http://dev.xiaomi.com/docs/passport/ready/)注册自己的App信息，**并在小米帐号系统Oauth权限管理中，申请并审核通过“智能家庭服务”权限，请确保申请通过此权限，否则不能正常使用**。如果在接入过程中遇到问题，可加QQ群385428920咨询。然后下载[小米帐号最新版SDK](https://github.com/xiaomipassport/oauth-Android-sdk)，并集成到自己应用中。
 
 ### 2. 消息推送
 mijiaSDK中集成有Mipush，目前主要是用于订阅设备事件。App使用前，开发者需要到[小米消息推送服务](http://dev.xiaomi.com/doc/?page_id=1670)注册自己的App信息。
@@ -142,58 +142,14 @@ mijiaSDK中集成有Mipush，目前主要是用于订阅设备事件。App使用
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="stateHidden|stateAlwaysHidden|adjustPan"/>
         <service
-            android:name="miot.service.negotiator.NegotiatorService"
+            android:name="miot.service.MiotService"
             android:enabled="true"
             android:exported="true"
             android:label="NegotiatorService"
             android:permission="android.permission.INTERNET"
             android:process=":miot">
             <intent-filter>
-                <action android:name="miot.aidl.INegotiatorService"/>
-            </intent-filter>
-        </service>
-        <service
-            android:name="miot.service.manager.DeviceManagerService"
-            android:enabled="true"
-            android:exported="true"
-            android:label="DeviceManagerService"
-            android:permission="android.permission.INTERNET"
-            android:process=":miot">
-            <intent-filter>
-                <action android:name="miot.aidl.IDeviceManagerService"/>
-            </intent-filter>
-        </service>
-        <service
-            android:name="miot.service.manipulator.DeviceManipulatorService"
-            android:enabled="true"
-            android:exported="true"
-            android:label="DeviceManipulatorService"
-            android:permission="android.permission.INTERNET"
-            android:process=":miot">
-            <intent-filter>
-                <action android:name="miot.aidl.IDeviceManipulatorService"/>
-            </intent-filter>
-        </service>
-        <service
-            android:name="miot.service.connection.DeviceConnectionService"
-            android:enabled="true"
-            android:exported="true"
-            android:label="DeviceConnectionService"
-            android:permission="android.permission.INTERNET"
-            android:process=":miot">
-            <intent-filter>
-                <action android:name="miot.aidl.IDeviceConnectionService"/>
-            </intent-filter>
-        </service>
-        <service
-            android:name="miot.service.people.PeopleManagerService"
-            android:enabled="true"
-            android:exported="true"
-            android:label="PeopleManagerService"
-            android:permission="android.permission.INTERNET"
-            android:process=":miot">
-            <intent-filter>
-                <action android:name="miot.aidl.IPeopleManagerService"/>
+                <action android:name="miot.aidl.IBinderPool"/>
             </intent-filter>
         </service>
 ```
@@ -252,13 +208,17 @@ private void processAuthResult(XiaomiOAuthResults results) {
                 @Override
                 public void onSucceed(People people) {
                     Log.d(TAG, "XiaomiAccountGetPeopleInfoTask OK");
-                    MiotManager.getPeopleManager().savePeople(people);
-                    initUserInfo();
+                    try {
+                        MiotManager.getPeopleManager().savePeople(people);
+                        initUserInfo();
+                    } catch (MiotException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override
                 public void onFailed() {
-                    Log.e(TAG, "XiaomiAccountGetPeopleInfoTask Failed");
+                    Log.d(TAG, "XiaomiAccountGetPeopleInfoTask Failed");
                 }
             }).execute();
 }
@@ -267,7 +227,7 @@ private void processAuthResult(XiaomiOAuthResults results) {
 ### 3. 开发设备相关功能
 SDK目前提供了如下功能：
 1. **获取设备列表**：获取设备
-2. **添加设备**：用于将新设备联网，也就是快连（目前快连默认完成绑定设备）
+2. **快连设备**：用于将新设备联网，也就是快连（目前快连默认完成绑定设备）
 3. **绑定设备**: 完成设备与用户的帐号绑定关系
 4. **解绑设备**：允许用户解除与设备的绑定关系
 5. **控制设备**：包括获取设备状态、下发指令和订阅设备事件
@@ -275,40 +235,44 @@ SDK目前提供了如下功能：
 #### 获取设备列表
 调用DeviceManager中的设备发现接口，可以参考demo中MiDeviceManager.java相关代码
 ```Java
-    List<DiscoveryType> types = new ArrayList<>();
-    types.add(DiscoveryType.MIOT_WAN);
-    types.add(DiscoveryType.MIOT_WIFI);
-    int result = MiotManager.getDeviceManager().startDiscovery(types,
-            new CompletionHandler() {
-                @Override
-                public void onSucceed() {
-                    Log.d(TAG, "discovery onSucceed");
-                }
+    try {
+        MiotManager.getDeviceManager().getRemoteDeviceList(new DeviceManager.DeviceHandler() {
+            @Override
+            public void onSucceed(List<AbstractDevice> devices) {
+                //TODO
+            }
 
-                @Override
-                public void onFailed(int errCode, String description) {
-                    Log.e(TAG, "discovery onFailed " + errCode + description);
-                }
-            },
-            new DeviceManager.DeviceListener() {
-                @Override
-                public void onDeviceFound(List<AbstractDevice> devices) {
-                    //TODO: found devices
-                }
-
-                @Override
-                public void onDeviceLost(List<AbstractDevice> devices) {
-                    //TODO: lost devices
-                }
-
-                @Override
-                public void onDeviceUpdate(List<AbstractDevice> devices) {
-                    //TODO: update devices
-                }
-            });
+            @Override
+            public void onFailed(int errCode, String description) {
+                //TODO
+            }
+        });
+    } catch (MiotException e) {
+        e.printStackTrace();
+    }
 ```
 
-#### 添加设备
+#### 快连设备
+* 发现待连接设备
+调用DeviceManager中的设备扫描接口，可以参考demo中MiDeviceManager.java相关代码
+```Java
+    List<DiscoveryType> types = new ArrayList<>();
+    types.add(DiscoveryType.MIOT_WIFI);
+    try {
+        MiotManager.getDeviceManager().startScan(types, new DeviceManager.DeviceHandler() {
+            @Override
+            public void onSucceed(List<AbstractDevice> devices) {
+                //TODO
+            }
+
+            @Override
+            public void onFailed(int errCode, String description) {
+                //TODO
+            });
+    } catch (MiotException e) {
+        e.printStackTrace();
+    }
+```
 * 配置快连图标和文案：将快连图标放置到自己工程的res/drawable-xxhdpi目录下，并命名为kuailian_miio_icon.png。在strings.xml文件添加
 ```xml
     <string name="common_mieda_device">（文案）</string>
@@ -316,51 +280,62 @@ SDK目前提供了如下功能：
 * 快连设备，获取到设备列表后，如果设备是待连接的设备，可以调用以下方法连接到云端，具体可以参考demo中DeviceActivity.class：
 ```Java
 private void connectDevice(AbstractDevice device) {
-    int ret = MiotManager.getDeviceConnector().connectToCloud(device, new CompletionHandler() {
-        @Override
-        public void onSucceed() {
-            Log.d(TAG, "connect device onSucceed");
-        }
+    try {
+        MiotManager.getDeviceConnector().connectToCloud(device, new CompletionHandler() {
+            @Override
+            public void onSucceed() {
+                Logger.d(TAG, "connect device onSucceed");
+            }
 
-        @Override
-        public void onFailed(int errCode, String description) {
-            Log.e(TAG, "connect device onFailed: " + errCode + description);
-        }
-    });
-    Log.d(TAG, "connectDevice ret: " + ret);
+            @Override
+            public void onFailed(int errCode, String description) {
+                Logger.e(TAG, "connect device onFailed: " + errCode + description);
+            }
+        });
+    } catch (MiotException e) {
+        e.printStackTrace();
+    }
 }
 ```
 
 #### 绑定设备
 绑定设备，即为将设备绑定到一个用户帐号下，只能用于未绑定的广域网设备（目前快连过程中会默认绑定设备）
 ```Java
-    int ret = MiotManager.getDeviceManager().takeOwnership(abstractDevice, new CompletionHandler() {
-                @Override
-                public void onSucceed() {
-                    Log.d(TAG, "takeOwnership onSucceed");
-                }
+    try {
+        MiotManager.getDeviceManager().takeOwnership(abstractDevice, new CompletionHandler() {
+            @Override
+            public void onSucceed() {
+                Logger.d(TAG, "takeOwnership onSucceed");
+            }
 
-                @Override
-                public void onFailed(int errCode, String description) {
-                    Log.e(TAG, "takeOwnership onFialed: " + errCode + " " + description);
-                }
-            });
+            @Override
+            public void onFailed(int errCode, String description) {
+                Logger.e(TAG, "takeOwnership onFialed: " + errCode + " " + description);
+            }
+        });      
+    } catch (MiotException e) {
+        e.printStackTrace();
+    }
 ```
 
 #### 解绑设备
-解绑设备，即为从用户名下删除该设备
+解绑设备，即为从用户名下删除该设备，并重置该设备
 ```Java
-    int ret = MiotManager.getDeviceManager().disclaimOwnership(abstractDevice, new CompletionHandler() {
-                @Override
-                public void onSucceed() {
-                    Log.d(TAG, "disclaimOwnership onSucceed");
-                }
+    try {
+        MiotManager.getDeviceManager().disclaimOwnership(abstractDevice, new CompletionHandler() {
+            @Override
+            public void onSucceed() {
+                Logger.d(TAG, "disclaimOwnership onSucceed");
+            }
 
-                @Override
-                public void onFailed(int errCode, String description) {
-                    Log.e(TAG, "disclaimOwnership onFialed: " + errCode + " " + description);
-                }
-            });
+            @Override
+            public void onFailed(int errCode, String description) {
+                Logger.e(TAG, "disclaimOwnership onFialed: " + errCode + " " + description);
+            }
+        });      
+    } catch (MiotException e) {
+        e.printStackTrace();
+    }
 ```
 
 #### 控制设备
@@ -368,42 +343,42 @@ private void connectDevice(AbstractDevice device) {
 * 获取设备状态
 ```Java
 public void getProperties() {
-    int ret = mSmartSocketBaseService.getProperties(new SmartSocketBaseService.GetPropertiesCompletionHandler() {
-        @Override
-        public void onSucceed(final Boolean usbStatus, final Boolean powerStatus) {
-            Log.d(TAG， String.format("getProperties usbStatus=%s powerStatus=%s", usbStatus, powerStatus));
-            ...
-        }
+    try {
+        mSmartSocketBaseService.getProperties(new SmartSocketBaseService.GetPropertiesCompletionHandler() {
+            @Override
+            public void onSucceed(final Boolean usbStatus, final Boolean powerStatus) {
+                Logger.d(TAG， String.format("getProperties usbStatus=%s powerStatus=%s", usbStatus, powerStatus));
+                ...
+            }
 
-        @Override
-        public void onFailed(int errCode, String description) {
-            Log.e(TAG， String.format("getProperties Failed, code: %d %s", errCode, description));
-        }
-    });
-    if (ret != ReturnCode.OK) {
-        Log.e(TAG， String.format("getProperties failed: %d", ret));
+            @Override
+            public void onFailed(int errCode, String description) {
+                Logger.e(TAG， String.format("getProperties Failed, code: %d %s", errCode, description));
+            }
+        });
+    } catch(MiotException e) {
+        e.printStackTrace();
     }
 }
 ```
 * 下发命令
 ```Java
 public void setPlugOn() {
-    int ret = mSmartSocketBaseService.setPlugOn(new CompletionHandler() {
-        @Override
-        public void onSucceed() {
-            Log.d(TAG, "setPlugOn OK");
-            ...
-        }
+    try {
+        mSmartSocketBaseService.setPlugOn(new CompletionHandler() {
+            @Override
+            public void onSucceed() {
+                Logger.d(TAG, "setPlugOn OK");
+                ...
+            }
 
-        @Override
-        public void onFailed(int errCode, String description) {
-            Log.e(TAG， String.format("setPlugOn Failed, code: %d %s", errCode, description));
-        }
-
-    });
-
-    if (ret != ReturnCode.OK) {
-        Log.e(TAG, String.format("setPlugOn failed: %d", ret));
+            @Override
+            public void onFailed(int errCode, String description) {
+                Logger.e(TAG， String.format("setPlugOn Failed, code: %d %s", errCode, description));
+            }
+        });
+    } catch (MiotException e) {
+        e.printStackTrace();
     }
 }
 ```
@@ -411,29 +386,33 @@ public void setPlugOn() {
 需要注意的是订阅部分使用的是MiPush的服务，其与应用包名绑定。
 ```Java
 public void subscribeNotification() {
-    mSmartSocketBaseService.subscribeNotifications(new CompletionHandler() {
-        @Override
-        public void onSucceed() {
-            Log.d(TAG, "subscribe OK");
-        }
+    try {
+        mSmartSocketBaseService.subscribeNotifications(new CompletionHandler() {
+            @Override
+            public void onSucceed() {
+                Logger.d(TAG, "subscribe OK");
+            }
 
-        @Override
-        public void onFailed(int errCode, String description) {
-            Log.d(TAG, String.format("subscribe Failed, code: %d %s", errCode, description));
-        }
-    }, new SmartSocketBaseService.PropertyNotificationListener() {
-        @Override
-        public void onUsbStatusChanged(final Boolean usbStatus) {
-            Log.d("usbStatusChanged: ", String.valueOf(usbStatus));
-            ...
-        }
+            @Override
+            public void onFailed(int errCode, String description) {
+                Logger.d(TAG, String.format("subscribe Failed, code: %d %s", errCode, description));
+            }
+        }, new SmartSocketBaseService.PropertyNotificationListener() {
+            @Override
+            public void onUsbStatusChanged(final Boolean usbStatus) {
+                Logger.d("usbStatusChanged: ", String.valueOf(usbStatus));
+                ...
+            }
 
-        @Override
-        public void onPowerStatusChanged(final Boolean powerStatus) {
-            Log.d("powerStatusChanged: ", String.valueOf(powerStatus));
-            ...
-        }
-    });
+            @Override
+            public void onPowerStatusChanged(final Boolean powerStatus) {
+                Logger.d("powerStatusChanged: ", String.valueOf(powerStatus));
+                ...
+            }
+        });
+    } catch (MiotException e) {
+        e.printStackTrace();
+    }
 }
 ```
 

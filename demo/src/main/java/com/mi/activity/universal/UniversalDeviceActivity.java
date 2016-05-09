@@ -32,6 +32,7 @@ import miot.typedef.device.Service;
 import miot.typedef.device.firmware.MiotFirmware;
 import miot.typedef.device.invocation.ActionInfo;
 import miot.typedef.device.invocation.ActionInfoFactory;
+import miot.typedef.exception.MiotException;
 import miot.typedef.property.Property;
 import miot.typedef.timer.CrontabTime;
 import miot.typedef.timer.DayOfWeek;
@@ -146,9 +147,8 @@ public class UniversalDeviceActivity extends BaseActivity {
     }
 
     private void initLog() {
-        String log = String.format("设备ID: %s\r\n距离: %s\r\n状态: %s\r\n设备类型: %s\r\n设备主人: %s\r\n",
+        String log = String.format("设备ID: %s\r\n状态: %s\r\n设备类型: %s\r\n设备主人: %s\r\n",
                 mAbstractDevice.getDeviceId(),
-                mAbstractDevice.getDevice().getDistance().toString(),
                 mAbstractDevice.getDevice().isOnline() ? "在线" : "离线",
                 mAbstractDevice.getDevice().getConnectionType().toString(),
                 mAbstractDevice.getDevice().getOwnerShip().toString());
@@ -207,18 +207,21 @@ public class UniversalDeviceActivity extends BaseActivity {
             return;
         }
 
-        MiotManager.getDeviceManager().takeOwnership(mAbstractDevice,
-                new CompletionHandler() {
-                    @Override
-                    public void onSucceed() {
-                        showLog("takeOwnership: OK");
-                    }
+        try {
+            MiotManager.getDeviceManager().takeOwnership(mAbstractDevice, new CompletionHandler() {
+                @Override
+                public void onSucceed() {
+                    showLog("takeOwnership: OK");
+                }
 
-                    @Override
-                    public void onFailed(int errCode, String description) {
-                        showLog(String.format("takeOwnership Failed, code: %d %s", errCode, description));
-                    }
-                });
+                @Override
+                public void onFailed(int errCode, String description) {
+                    showLog(String.format("takeOwnership Failed, code: %d %s", errCode, description));
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
     }
 
     private void disclaimOwnership() {
@@ -230,137 +233,139 @@ public class UniversalDeviceActivity extends BaseActivity {
             return;
         }
 
-        MiotManager.getDeviceManager().disclaimOwnership(mAbstractDevice,
-                new CompletionHandler() {
-                    @Override
-                    public void onSucceed() {
-                        showLog("disclaimOwnership: OK");
-                    }
+        try {
+            MiotManager.getDeviceManager().disclaimOwnership(mAbstractDevice, new CompletionHandler() {
+                @Override
+                public void onSucceed() {
+                    showLog("disclaimOwnership: OK");
+                }
 
-                    @Override
-                    public void onFailed(int errCode, String description) {
-                        showLog(String.format("disclaimOwnership Failed, code: %d %s", errCode, description));
-                    }
-                });
+                @Override
+                public void onFailed(int errCode, String description) {
+                    showLog(String.format("disclaimOwnership Failed, code: %d %s", errCode, description));
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
     }
 
     private void queryFirmware() {
         MiotFirmware firmware = mAbstractDevice.getMiotFirmware();
         if (firmware != null) {
-            showLog("getMiotFirmware: OK");
-            String log = String.format("isUpgrading: %s\r\n", Boolean.toString(firmware.isUpgrading()))
-                    + String.format("currentVersion: %s\r\n", firmware.getCurrentVersion())
-                    + String.format("latestVersion: %s\r\n", firmware.getLatestVersion())
-                    + String.format("isLatestVersion: %s\r\n", firmware.isLatestVersion())
-                    + String.format("ota_progress: %d\r\n", firmware.getOtaProgress())
-                    + String.format("ota_status: %s\r\n", firmware.getOtaStatus())
-                    + String.format("description: %s\r\n", firmware.getDescription());
-            showLog(log);
+            logFirmware(firmware);
             return;
         }
 
-        mAbstractDevice.queryFirmwareInfo(new DeviceManager.QueryFirmwareHandler() {
-            @Override
-            public void onSucceed(MiotFirmware firmware) {
-                showLog("queryFirmwareUpgradeInfo: OK");
-                String log = String.format("isUpgrading: %s\r\n", Boolean.toString(firmware.isUpgrading()))
-                        + String.format("currentVersion: %s\r\n", firmware.getCurrentVersion())
-                        + String.format("latestVersion: %s\r\n", firmware.getLatestVersion())
-                        + String.format("isLatestVersion: %s\r\n", firmware.isLatestVersion())
-                        + String.format("ota_progress: %d\r\n", firmware.getOtaProgress())
-                        + String.format("ota_status: %s\r\n", firmware.getOtaStatus())
-                        + String.format("description: %s\r\n", firmware.getDescription());
-                showLog(log);
-            }
+        try {
+            mAbstractDevice.queryFirmwareInfo(new DeviceManager.QueryFirmwareHandler() {
+                @Override
+                public void onSucceed(MiotFirmware firmware) {
+                    showLog("queryFirmwareUpgradeInfo: OK");
+                    logFirmware(firmware);
+                }
 
-            @Override
-            public void onFailed(int errCode, String description) {
-                showLog(String.format("queryFirmwareInfo Failed, code: %d %s", errCode, description));
-            }
-        });
+                @Override
+                public void onFailed(int errCode, String description) {
+                    showLog(String.format("queryFirmwareInfo Failed, code: %d %s", errCode, description));
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
     }
 
     private void upgradeFirmware() {
-        mAbstractDevice.startUpgradeFirmware(new CompletionHandler() {
-            @Override
-            public void onSucceed() {
-                showLog("startUpgradeFirmware: OK");
-            }
+        try {
+            mAbstractDevice.startUpgradeFirmware(new CompletionHandler() {
+                @Override
+                public void onSucceed() {
+                    showLog("startUpgradeFirmware: OK");
+                }
 
-            @Override
-            public void onFailed(int errCode, String description) {
-                showLog(String.format("startUpgradeFirmware Failed, code: %d %s", errCode, description));
-            }
-        });
+                @Override
+                public void onFailed(int errCode, String description) {
+                    showLog(String.format("startUpgradeFirmware Failed, code: %d %s", errCode, description));
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
     }
 
     private void queryFirmwareUpgradingInfo() {
-        mAbstractDevice.queryFirmwareUpgradeInfo(new DeviceManager.QueryFirmwareHandler() {
-            @Override
-            public void onSucceed(MiotFirmware firmware) {
-                showLog("queryFirmwareUpgradeInfo: OK");
-                String log = String.format("isUpgrading: %s\r\n", Boolean.toString(firmware.isUpgrading()))
-                        + String.format("currentVersion: %s\r\n", firmware.getCurrentVersion())
-                        + String.format("latestVersion: %s\r\n", firmware.getLatestVersion())
-                        + String.format("isLatestVersion: %s\r\n", firmware.isLatestVersion())
-                        + String.format("ota_progress: %d\r\n", firmware.getOtaProgress())
-                        + String.format("ota_status: %s\r\n", firmware.getOtaStatus())
-                        + String.format("description: %s\r\n", firmware.getDescription());
-                showLog(log);
-            }
+        try {
+            mAbstractDevice.queryFirmwareUpgradeInfo(new DeviceManager.QueryFirmwareHandler() {
+                @Override
+                public void onSucceed(MiotFirmware firmware) {
+                    showLog("queryFirmwareUpgradeInfo: OK");
+                    logFirmware(firmware);
+                }
 
-            @Override
-            public void onFailed(int errCode, String description) {
-                showLog(String.format("queryFirmwareUpgradeInfo Failed, code: %d %s", errCode, description));
-            }
-        });
+                @Override
+                public void onFailed(int errCode, String description) {
+                    showLog(String.format("queryFirmwareUpgradeInfo Failed, code: %d %s", errCode, description));
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void logFirmware(MiotFirmware firmware) {
+        String log = String.format("isUpgrading: %s\r\n", Boolean.toString(firmware.isUpgrading()))
+                + String.format("currentVersion: %s\r\n", firmware.getCurrentVersion())
+                + String.format("latestVersion: %s\r\n", firmware.getLatestVersion())
+                + String.format("isLatestVersion: %s\r\n", firmware.isLatestVersion())
+                + String.format("ota_progress: %d\r\n", firmware.getOtaProgress())
+                + String.format("ota_status: %s\r\n", firmware.getOtaStatus())
+                + String.format("description: %s\r\n", firmware.getDescription());
+        showLog(log);
     }
 
     private void getTimerList() {
-        MiotManager.getDeviceManager().queryTimerList(mAbstractDevice.getDeviceId(), new DeviceManager.TimerListener() {
-            @Override
-            public void onSucceed(List<Timer> timers) {
-                showLog("queryTimerList: OK: " + timers.size());
-                for (Timer timer : timers) {
-                    Log.d(TAG, "timerId: " + timer.getTimerId() + " description: " + timer.getDescription());
-                    CrontabTime startTime = timer.getStartTime();
-
-                    Log.d(TAG, "startTime");
-                    Log.d(TAG, startTime.getHours().toString() + ":" + startTime.getMinutes().toString());
-                    for (DayOfWeek w : startTime.getDayOfWeeks()) {
-                        Log.d(TAG, w.toString());
-                    }
-
-                    for (ActionInfo actionInfo : timer.getActionsAtTimeStart()) {
-                        Log.d(TAG, "start: " + actionInfo.getFriendlyName());
-                        for (Property p : actionInfo.getArguments()) {
-                            Log.d(TAG, p.getDefinition().getFriendlyName() + " " + p.getValue().toString());
-                        }
-                    }
-
-
-                    CrontabTime endTime = timer.getEndTime();
-
-                    Log.d(TAG, "endTime");
-                    Log.d(TAG, endTime.getHours().toString() + ":" + endTime.getMinutes().toString());
-                    for (DayOfWeek w : endTime.getDayOfWeeks()) {
-                        Log.d(TAG, w.toString());
-                    }
-
-                    for (ActionInfo actionInfo : timer.getActionsAtTimeEnd()) {
-                        Log.d(TAG, "end: " + actionInfo.getFriendlyName());
-                        for (Property p : actionInfo.getArguments()) {
-                            Log.d(TAG, p.getDefinition().getFriendlyName() + " " + p.getValue().toString());
-                        }
+        try {
+            MiotManager.getDeviceManager().queryTimerList(mAbstractDevice.getDeviceId(), new DeviceManager.TimerListener() {
+                @Override
+                public void onSucceed(List<Timer> timers) {
+                    showLog("queryTimerList: OK: " + timers.size());
+                    for (Timer timer : timers) {
+                        logTimer(timer);
                     }
                 }
-            }
 
-            @Override
-            public void onFailed(int errCode, String description) {
-                showLog("queryTimerList: failed: " + errCode + " - " + description);
+                @Override
+                public void onFailed(int errCode, String description) {
+                    showLog("queryTimerList: failed: " + errCode + " - " + description);
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void logTimer(Timer timer) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("timerId: ");
+        sb.append(timer.getTimerId());
+        sb.append(" description: ");
+        sb.append(timer.getDescription());
+
+        sb.append(" startTime: ");
+        CrontabTime startTime = timer.getStartTime();
+        sb.append(startTime.getHours().toString());
+        sb.append(":");
+        sb.append(startTime.getMinutes().toString());
+        sb.append(" startAction: ");
+        for (ActionInfo actionInfo : timer.getActionsAtTimeStart()) {
+            for (Property p : actionInfo.getArguments()) {
+                sb.append(p.getDefinition().getFriendlyName());
+                sb.append(" ");
+                sb.append(p.getValue().toString());
+                sb.append("  ");
             }
-        });
+        }
+        Log.d(TAG, sb.toString());
     }
 
     //TODO: 以下代码仅供参考，这里用空调作一个例子，具体使用使用自己设备代替
@@ -408,17 +413,21 @@ public class UniversalDeviceActivity extends BaseActivity {
         endTime.addDayOfWeek(DayOfWeek.THURSDAY);
         endTime.addDayOfWeek(DayOfWeek.FRIDAY);
         timer.setEndTime(endTime);
-        MiotManager.getDeviceManager().addTimer(timer, new DeviceManager.AddTimerCompletionHandler() {
-            @Override
-            public void onSucceed(int timerId) {
-                showLog("addTimer: onSucceed: " + timerId);
-            }
+        try {
+            MiotManager.getDeviceManager().addTimer(timer, new DeviceManager.AddTimerCompletionHandler() {
+                @Override
+                public void onSucceed(int timerId) {
+                    showLog("addTimer: onSucceed: " + timerId);
+                }
 
-            @Override
-            public void onFailed(int errCode, String description) {
-                showLog("addTimer: failed: " + errCode + " - " + description);
-            }
-        });
+                @Override
+                public void onFailed(int errCode, String description) {
+                    showLog("addTimer: failed: " + errCode + " - " + description);
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
     }
 
     private void editTimer() {
@@ -428,16 +437,20 @@ public class UniversalDeviceActivity extends BaseActivity {
 
     private void removeTimer() {
         int timerId = 100000;
-        MiotManager.getDeviceManager().removeTimer(timerId, new CompletionHandler() {
-            @Override
-            public void onSucceed() {
-                showLog("removeTimer: onSucceed");
-            }
+        try {
+            MiotManager.getDeviceManager().removeTimer(timerId, new CompletionHandler() {
+                @Override
+                public void onSucceed() {
+                    showLog("removeTimer: onSucceed");
+                }
 
-            @Override
-            public void onFailed(int errCode, String description) {
-                showLog("removeTimer: failed: " + errCode + " - " + description);
-            }
-        });
+                @Override
+                public void onFailed(int errCode, String description) {
+                    showLog("removeTimer: failed: " + errCode + " - " + description);
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -4,8 +4,9 @@
     <string name="app_name">小米智能管家</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    <string name="Start">Start</string>
-    <string name="Stop">Stop</string>
+    <string name="get_wan_devices">Get Remote Devices</string>
+    <string name="start_scan">start scan</string>
+    <string name="stop_scan">stop scan</string>
     <string name="Refresh">Refresh</string>
     <string name="title_activity_smartsocket">SmartsocketActivity</string>
     <string name="title_activity_devicemanager">DeviceManagerActivity</string>

@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.mi.test"
-        minSdkVersion 19
+        minSdkVersion 18
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -47,7 +47,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'joda-time:joda-time:2.3'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
-    compile 'io.netty:netty-all:4.0.4.Final'
-//    compile project(':mijiaSDK')
-    compile(name: 'mijiaSDK-release', ext: "aar")
+    compile 'com.google.code.gson:gson:1.7.2'
+    compile(name: 'mijiaSDK-2-1-0', ext: "aar")
+    compile files('libs/oauth-xiaomiopenauth.jar')
 }

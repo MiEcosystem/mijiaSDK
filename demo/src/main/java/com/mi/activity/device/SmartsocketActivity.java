@@ -18,6 +18,7 @@ import miot.api.CompletionHandler;
 import miot.api.MiotManager;
 import miot.api.device.AbstractDevice;
 import miot.typedef.ReturnCode;
+import miot.typedef.exception.MiotException;
 
 public class SmartsocketActivity extends BaseActivity {
     private static String TAG = SmartsocketActivity.class.getSimpleName();
@@ -131,185 +132,196 @@ public class SmartsocketActivity extends BaseActivity {
     }
 
     public void bind() {
-        MiotManager.getDeviceManager().takeOwnership(this.mSmartSocket, new CompletionHandler() {
-            @Override
-            public void onSucceed() {
-                show("takeOwnership", "OK");
-            }
+        try {
+            MiotManager.getDeviceManager().takeOwnership(mSmartSocket, new CompletionHandler() {
+                @Override
+                public void onSucceed() {
+                    show("takeOwnership", "OK");
+                }
 
-            @Override
-            public void onFailed(int errCode, String description) {
-                show("takeOwnership",
-                        String.format("Failed, code: %d %s", errCode, description));
-            }
-        });
+                @Override
+                public void onFailed(int errCode, String description) {
+                    show("takeOwnership",
+                            String.format("Failed, code: %d %s", errCode, description));
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
     }
 
     public void unBind() {
-        MiotManager.getDeviceManager().disclaimOwnership(this.mSmartSocket, new CompletionHandler() {
-            @Override
-            public void onSucceed() {
-                show("disclaimOwnership", "OK");
-            }
+        try {
+            MiotManager.getDeviceManager().disclaimOwnership(mSmartSocket, new CompletionHandler() {
+                @Override
+                public void onSucceed() {
+                    show("disclaimOwnership", "OK");
+                }
 
-            @Override
-            public void onFailed(int errCode, String description) {
-                show("disclaimOwnership",
-                        String.format("Failed, code: %d %s", errCode, description));
-            }
-        });
+                @Override
+                public void onFailed(int errCode, String description) {
+                    show("disclaimOwnership",
+                            String.format("Failed, code: %d %s", errCode, description));
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
     }
 
     public void getProperties() {
-        int ret = mSmartSocketBaseService.getProperties(new SmartSocketBaseService.GetPropertiesCompletionHandler() {
-            @Override
-            public void onSucceed(final Boolean usbStatus, final Boolean powerStatus) {
-                show("getProperties", String.format("usbStatus=%s powerStatus=%s", usbStatus, powerStatus));
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        tvPower.setText(String.valueOf(powerStatus));
-                        tvUsb.setText(String.valueOf(usbStatus));
-                    }
-                });
-            }
+        try {
+            mSmartSocketBaseService.getProperties(new SmartSocketBaseService.GetPropertiesCompletionHandler() {
+                @Override
+                public void onSucceed(final Boolean usbStatus, final Boolean powerStatus) {
+                    show("getProperties", String.format("usbStatus=%s powerStatus=%s", usbStatus, powerStatus));
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvPower.setText(String.valueOf(powerStatus));
+                            tvUsb.setText(String.valueOf(usbStatus));
+                        }
+                    });
+                }
 
-            @Override
-            public void onFailed(int errCode, String description) {
-                show("getProperties", String.format("Failed, code: %d %s", errCode, description));
-            }
-        });
-        if (ret != ReturnCode.OK) {
-            show("getProperties", String.format("invoke failed: %d", ret));
+                @Override
+                public void onFailed(int errCode, String description) {
+                    show("getProperties", String.format("Failed, code: %d %s", errCode, description));
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
         }
     }
 
     public void subscribeNotification() {
-        mSmartSocketBaseService.subscribeNotifications(new CompletionHandler() {
-            @Override
-            public void onSucceed() {
-                show("subscribe", "OK");
-            }
+        try {
+            mSmartSocketBaseService.subscribeNotifications(new CompletionHandler() {
+                @Override
+                public void onSucceed() {
+                    show("subscribe", "OK");
+                }
 
-            @Override
-            public void onFailed(int errCode, String description) {
-                show("subscribe", String.format("Failed, code: %d %s", errCode, description));
-            }
-        }, new SmartSocketBaseService.PropertyNotificationListener() {
-            @Override
-            public void onUsbStatusChanged(final Boolean usbStatus) {
-                show("usbStatusChanged: ", String.valueOf(usbStatus));
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        tvUsb.setText(String.valueOf(usbStatus));
-                    }
-                });
-            }
+                @Override
+                public void onFailed(int errCode, String description) {
+                    show("subscribe", String.format("Failed, code: %d %s", errCode, description));
+                }
+            }, new SmartSocketBaseService.PropertyNotificationListener() {
+                @Override
+                public void onUsbStatusChanged(final Boolean usbStatus) {
+                    show("usbStatusChanged: ", String.valueOf(usbStatus));
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvUsb.setText(String.valueOf(usbStatus));
+                        }
+                    });
+                }
 
-            @Override
-            public void onPowerStatusChanged(final Boolean powerStatus) {
-                show("powerStatusChanged: ", String.valueOf(powerStatus));
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        tvPower.setText(String.valueOf(powerStatus));
-                    }
-                });
-            }
-        });
+                @Override
+                public void onPowerStatusChanged(final Boolean powerStatus) {
+                    show("powerStatusChanged: ", String.valueOf(powerStatus));
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvPower.setText(String.valueOf(powerStatus));
+                        }
+                    });
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
     }
 
     public void unSubscribeNotification() {
-        mSmartSocketBaseService.unsubscribeNotifications(new CompletionHandler() {
-            @Override
-            public void onSucceed() {
-                show("unSubscribe", "OK");
-            }
+        try {
+            mSmartSocketBaseService.unsubscribeNotifications(new CompletionHandler() {
+                @Override
+                public void onSucceed() {
+                    show("unSubscribe", "OK");
+                }
 
-            @Override
-            public void onFailed(int errCode, String description) {
-                show("unSubscribe", String.format("Failed, code: %d %s", errCode, description));
-            }
-        });
+                @Override
+                public void onFailed(int errCode, String description) {
+                    show("unSubscribe", String.format("Failed, code: %d %s", errCode, description));
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setPlugOn() {
-        int ret = mSmartSocketBaseService.setPlugOn(new CompletionHandler() {
-            @Override
-            public void onSucceed() {
-                show("setPlugOn", "OK");
-            }
+        try {
+            mSmartSocketBaseService.setPlugOn(new CompletionHandler() {
+                @Override
+                public void onSucceed() {
+                    show("setPlugOn", "OK");
+                }
 
-            @Override
-            public void onFailed(int errCode, String description) {
-                show("setPlugOn", String.format("Failed, code: %d %s", errCode, description));
-            }
+                @Override
+                public void onFailed(int errCode, String description) {
+                    show("setPlugOn", String.format("Failed, code: %d %s", errCode, description));
+                }
 
-        });
-
-        if (ret != ReturnCode.OK) {
-            show("setPlugOn", String.format("invoke failed: %d", ret));
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
         }
     }
 
     public void setPlugOff() {
-        Log.d(TAG, "setPlugOff");
+        try {
+            mSmartSocketBaseService.setPlugOff(new CompletionHandler() {
+                @Override
+                public void onSucceed() {
+                    show("setPlugOff", "OK");
+                }
 
-        int ret = mSmartSocketBaseService.setPlugOff(new CompletionHandler() {
-
-            @Override
-            public void onSucceed() {
-                show("setPlugOff", "OK");
-            }
-
-            @Override
-            public void onFailed(int errCode, String description) {
-                show("setPlugOff", String.format("Failed, code: %d %s", errCode, description));
-            }
-
-        });
-
-        if (ret != ReturnCode.OK) {
-            show("setPlugOff", String.format("invoke failed: %d", ret));
+                @Override
+                public void onFailed(int errCode, String description) {
+                    show("setPlugOff", String.format("Failed, code: %d %s", errCode, description));
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
         }
     }
 
     public void setUsbOn() {
-        int ret = mSmartSocketBaseService.setUsbPlugOn(new CompletionHandler() {
-            @Override
-            public void onSucceed() {
-                show("setUsbPlugOn", "OK");
-            }
+        try {
+            mSmartSocketBaseService.setUsbPlugOn(new CompletionHandler() {
+                @Override
+                public void onSucceed() {
+                    show("setUsbPlugOn", "OK");
+                }
 
-            @Override
-            public void onFailed(int errCode, String description) {
-                show("setUsbPlugOn", String.format("Failed, code: %d %s", errCode, description));
-            }
-        });
-
-        if (ret != ReturnCode.OK) {
-            show("setUsbPlugOn", String.format("invoke failed: %d", ret));
+                @Override
+                public void onFailed(int errCode, String description) {
+                    show("setUsbPlugOn", String.format("Failed, code: %d %s", errCode, description));
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
         }
     }
 
     public void setUsbOff() {
-        int ret = mSmartSocketBaseService.setUsbPlugOff(new CompletionHandler() {
+        try {
+            mSmartSocketBaseService.setUsbPlugOff(new CompletionHandler() {
+                @Override
+                public void onSucceed() {
+                    show("setUsbPlugOff", "OK");
+                }
 
-            @Override
-            public void onSucceed() {
-                show("setUsbPlugOff", "OK");
-            }
-
-            @Override
-            public void onFailed(int errCode, String description) {
-                show("setUsbPlugOff", String.format("Failed, code: %d %s", errCode, description));
-            }
-
-        });
-
-        if (ret != ReturnCode.OK) {
-            show("setUsbPlugOff", String.format("invoke failed: %d", ret));
+                @Override
+                public void onFailed(int errCode, String description) {
+                    show("setUsbPlugOff", String.format("Failed, code: %d %s", errCode, description));
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
         }
     }
 }

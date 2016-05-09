@@ -5,6 +5,8 @@ package com.mi.device;
 import android.os.Parcel;
 import android.util.Log;
 
+import com.mi.device.SmartSocketBaseService;
+
 import miot.api.device.AbstractDevice;
 import miot.typedef.device.Device;
 import miot.typedef.device.Service;
