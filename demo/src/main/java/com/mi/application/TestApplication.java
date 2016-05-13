@@ -90,6 +90,7 @@ public class TestApplication extends Application {
                         TestConstants.CHUANGMI_PLUG_V1_URL,
                         SmartSocketBase.class);
                 MiotManager.getInstance().addModel(smartSocket);
+
                 DeviceModel aircon = DeviceModelFactory.createDeviceModel(
                         TestApplication.this,
                         TestConstants.AUX_AIRCONDITION_V1,

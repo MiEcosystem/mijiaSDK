@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.mi.application.TestApplication;
 import com.mi.utils.TestConstants;
@@ -48,9 +47,7 @@ public class MiDeviceManager {
     }
 
     public List<AbstractDevice> getWanDevices() {
-        List<AbstractDevice> devices = new ArrayList<>();
-        devices.addAll(mWanDevices.values());
-        return devices;
+        return new ArrayList<>(mWanDevices.values());
     }
 
     public AbstractDevice getWanDevice(String deviceId) {
@@ -66,15 +63,11 @@ public class MiDeviceManager {
     }
 
     public List<AbstractDevice> getWifiDevices() {
-        List<AbstractDevice> devices = new ArrayList<>();
-        for (AbstractDevice device : mWifiDevices.values()) {
-            devices.add(device);
-        }
-        return devices;
+        return new ArrayList<>(mWifiDevices.values());
     }
 
-    public AbstractDevice getWifiDevice(String deviceId) {
-        return mWifiDevices.get(deviceId);
+    public AbstractDevice getWifiDevice(String address) {
+        return mWifiDevices.get(address);
     }
 
     public void clearWifiDevices() {
@@ -161,7 +154,7 @@ public class MiDeviceManager {
 
                 case MIOT_WIFI:
                     if (!mWifiDevices.containsKey(abstractDevice.getDeviceId())) {
-                        mWifiDevices.put(abstractDevice.getDeviceId(), abstractDevice);
+                        mWifiDevices.put(abstractDevice.getAddress(), abstractDevice);
                     }
                     break;
             }
@@ -173,21 +166,10 @@ public class MiDeviceManager {
             MiotManager.getDeviceManager().takeOwnership(device, new CompletionHandler() {
                 @Override
                 public void onSucceed() {
-                    String log = "takeOwnership succeed";
-
-                    Intent intent = new Intent(TestConstants.ACTION_TAKE_OWNERSHIP_SUCCEED);
-                    intent.putExtra(TestConstants.MI_DEVICE_ID, device.getDeviceId());
-                    mBroadcastManager.sendBroadcast(intent);
                 }
 
                 @Override
                 public void onFailed(int errCode, String description) {
-                    String log = "takeOwnership onFailed " + errCode + description;
-                    Log.e(TAG, log);
-
-                    Intent intent = new Intent(TestConstants.ACTION_TAKE_OWNERSHIP_FAILED);
-                    intent.putExtra(TestConstants.MI_DEVICE_ID, device.getDeviceId());
-                    mBroadcastManager.sendBroadcast(intent);
                 }
             });
         } catch (MiotException e) {

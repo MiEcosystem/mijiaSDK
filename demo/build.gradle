@@ -47,7 +47,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'joda-time:joda-time:2.3'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
-    compile 'com.google.code.gson:gson:1.7.2'
-    compile(name: 'mijiaSDK-2-1-0', ext: "aar")
+    compile 'com.google.code.gson:gson:2.4'
+    compile(name: 'mijiaSDK-release', ext: "aar")
     compile files('libs/oauth-xiaomiopenauth.jar')
 }

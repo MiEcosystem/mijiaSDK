@@ -96,6 +96,7 @@ public class UniversalServiceActivity extends BaseActivity {
                 PropertyInfo info = PropertyInfoFactory.create(mService);
                 for (Property property : mService.getProperties()) {
                     if (property.getDefinition().isGettable()) {
+                        Log.d(TAG, "property: " + property.getFriendlyName());
                         info.addProperty(property);
                     }
                 }

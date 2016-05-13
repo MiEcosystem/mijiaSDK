@@ -35,11 +35,6 @@ public class XiaomiAccountGetPeopleInfoTask extends AsyncTask<Void, Void, People
         void onFailed();
     }
 
-    @Deprecated
-    public XiaomiAccountGetPeopleInfoTask(String accessToken, String expiresIn, String macKey, String macAlgorithm, Context context, Handler handler) {
-        this(accessToken, expiresIn, macKey, macAlgorithm, handler);
-    }
-
     public XiaomiAccountGetPeopleInfoTask(String accessToken, String expiresIn, String macKey, String macAlgorithm, Handler handler) {
         mAccessToken = accessToken;
         mExpiresIn = Long.valueOf(expiresIn);
@@ -97,8 +92,18 @@ public class XiaomiAccountGetPeopleInfoTask extends AsyncTask<Void, Void, People
                 Logger.d(TAG, "data: " + data.toString());
                 String userId = data.optString("userId");
                 String name = data.optString("miliaoNick");
+                String icon = data.optString("miliaoIcon");
                 String icon75 = data.optString("miliaoIcon_75");
+                String icon90 = data.optString("miliaoIcon_90");
+                String icon120 = data.optString("miliaoIcon_120");
+                String icon320 = data.optString("miliaoIcon_320");
                 people = PeopleFactory.createOauthPeople(accessToken, userId, mExpiresIn, macKey, macAlgorithm);
+                people.setUserName(name);
+                people.setIcon(icon);
+                people.setIcon75(icon75);
+                people.setIcon90(icon90);
+                people.setIcon120(icon120);
+                people.setIcon320(icon320);
             }
         } while (false);
 

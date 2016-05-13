@@ -23,6 +23,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import miot.api.CommonHandler;
 import miot.api.CompletionHandler;
 import miot.api.DeviceManager;
 import miot.api.MiotManager;
@@ -34,6 +35,7 @@ import miot.typedef.device.invocation.ActionInfo;
 import miot.typedef.device.invocation.ActionInfoFactory;
 import miot.typedef.exception.MiotException;
 import miot.typedef.property.Property;
+import miot.typedef.scene.Scene;
 import miot.typedef.timer.CrontabTime;
 import miot.typedef.timer.DayOfWeek;
 import miot.typedef.timer.Timer;
@@ -85,7 +87,7 @@ public class UniversalDeviceActivity extends BaseActivity {
                 "5: 读取定时器列表",
                 "6: 添加定时器",
                 "7: 删除定时器",
-                "8: 修改定时器",
+                "8: 修改定时器"
         };
 
         AlertDialog alert = new AlertDialog.Builder(this)
@@ -280,12 +282,12 @@ public class UniversalDeviceActivity extends BaseActivity {
             mAbstractDevice.startUpgradeFirmware(new CompletionHandler() {
                 @Override
                 public void onSucceed() {
-                    showLog("startUpgradeFirmware: OK");
+                    showLog("upgradeFirmware: OK");
                 }
 
                 @Override
                 public void onFailed(int errCode, String description) {
-                    showLog(String.format("startUpgradeFirmware Failed, code: %d %s", errCode, description));
+                    showLog(String.format("upgradeFirmware Failed, code: %d %s", errCode, description));
                 }
             });
         } catch (MiotException e) {
@@ -452,5 +454,35 @@ public class UniversalDeviceActivity extends BaseActivity {
         } catch (MiotException e) {
             e.printStackTrace();
         }
+    }
+
+    private void getSceneList() {
+        try {
+            MiotManager.getDeviceManager().querySceneList(new CommonHandler<List<Scene>>() {
+                @Override
+                public void onSucceed(List<Scene> scenes) {
+                    showLog("querySceneList: OK: " + scenes.size());
+                    for (Scene scene : scenes) {
+                        logScene(scene);
+                    }
+                }
+
+                @Override
+                public void onFailed(int errCode, String description) {
+                    showLog("queryTimerList: failed: " + errCode + " - " + description);
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void logScene(Scene scene) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("name: ");
+        sb.append(scene.getName());
+        sb.append(" sceneId: ");
+        sb.append(scene.getSceneId());
+        Log.d(TAG, sb.toString());
     }
 }

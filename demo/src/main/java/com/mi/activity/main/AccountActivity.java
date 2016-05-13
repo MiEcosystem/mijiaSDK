@@ -70,7 +70,7 @@ public class AccountActivity extends BaseActivity {
                 break;
             }
 
-            userInfo = people.getUserId();
+            userInfo = people.getUserName() + " " + people.getUserId();
         } while (false);
 
         tvAccountInfo.setText(userInfo);

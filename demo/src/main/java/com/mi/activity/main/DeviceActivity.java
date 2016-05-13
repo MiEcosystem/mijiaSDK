@@ -20,6 +20,8 @@ import com.mi.device.SmartSocketBase;
 import com.mi.test.R;
 import com.mi.utils.BaseActivity;
 import com.mi.utils.TestConstants;
+import com.xiaomi.mipush.sdk.Logger;
+import com.xiaomi.mipush.sdk.MiPushClient;
 
 import java.util.List;
 
@@ -28,11 +30,7 @@ import butterknife.InjectView;
 import miot.api.CompletionHandler;
 import miot.api.MiotManager;
 import miot.api.device.AbstractDevice;
-import miot.service.common.utils.Logger;
-import miot.typedef.device.Device;
-import miot.typedef.device.Service;
 import miot.typedef.exception.MiotException;
-import miot.typedef.property.Property;
 
 public class DeviceActivity extends BaseActivity {
     private static final String TAG = DeviceActivity.class.getSimpleName();
@@ -92,7 +90,6 @@ public class DeviceActivity extends BaseActivity {
         mBroadcastManager = LocalBroadcastManager.getInstance(this);
         mMiDeviceManager = MiDeviceManager.getInstance();
         mMiDeviceManager.getWanDeviceList();
-
     }
 
     private void clickDevice(AbstractDevice device) {
@@ -154,9 +151,6 @@ public class DeviceActivity extends BaseActivity {
         filter.addAction(TestConstants.ACTION_BIND_SERVICE_FAILED);
         filter.addAction(TestConstants.ACTION_DISCOVERY_DEVICE_SUCCEED);
         filter.addAction(TestConstants.ACTION_DISCOVERY_DEVICE_FAILED);
-        filter.addAction(TestConstants.ACTION_DEVICE_FOUND);
-        filter.addAction(TestConstants.ACTION_DEVICE_LOST);
-        filter.addAction(TestConstants.ACTION_DEVICE_UPDATE);
         mBroadcastManager.registerReceiver(mReceiver, filter);
     }
 
@@ -180,12 +174,6 @@ public class DeviceActivity extends BaseActivity {
                     break;
                 case TestConstants.ACTION_DISCOVERY_DEVICE_FAILED:
                     showToast("discovery device failed");
-                    break;
-
-                //TODO: currently same logic
-                case TestConstants.ACTION_DEVICE_FOUND:
-                case TestConstants.ACTION_DEVICE_LOST:
-                case TestConstants.ACTION_DEVICE_UPDATE:
                     break;
             }
         }
