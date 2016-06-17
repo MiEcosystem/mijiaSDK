@@ -129,6 +129,9 @@ mijiaSDK中集成有Mipush，目前主要是用于订阅设备事件。App使用
                 <action android:name="com.xiaomi.mipush.RECEIVE_MESSAGE"/>
             </intent-filter>
             <intent-filter>
+                <action android:name="com.xiaomi.mipush.MESSAGE_ARRIVED" />
+            </intent-filter>
+            <intent-filter>
                 <action android:name="com.xiaomi.mipush.ERROR"/>
             </intent-filter>
         </receiver>
@@ -230,7 +233,8 @@ SDK目前提供了如下功能：
 2. **快连设备**：用于将新设备联网，也就是快连（目前快连默认完成绑定设备）
 3. **绑定设备**: 完成设备与用户的帐号绑定关系
 4. **解绑设备**：允许用户解除与设备的绑定关系
-5. **控制设备**：包括获取设备状态、下发指令和订阅设备事件
+5. **分享设备**：用户可以将设备分享给其他人（目前仅小米帐号）
+6. **控制设备**：包括获取设备状态、下发指令和订阅设备事件
 
 #### 获取设备列表
 调用DeviceManager中的设备发现接口，可以参考demo中MiDeviceManager.java相关代码
@@ -273,10 +277,12 @@ SDK目前提供了如下功能：
         e.printStackTrace();
     }
 ```
+
 * 配置快连图标和文案：将快连图标放置到自己工程的res/drawable-xxhdpi目录下，并命名为kuailian_miio_icon.png。在strings.xml文件添加
 ```xml
     <string name="common_mieda_device">（文案）</string>
 ```
+
 * 快连设备，获取到设备列表后，如果设备是待连接的设备，可以调用以下方法连接到云端，具体可以参考demo中DeviceActivity.class：
 ```Java
 private void connectDevice(AbstractDevice device) {
@@ -337,6 +343,107 @@ private void connectDevice(AbstractDevice device) {
         e.printStackTrace();
     }
 ```
+
+#### 分享设备
+* 将设备分享给其他人
+```Java
+    try {
+        MiotManager.getDeviceManager().shareDevice(mAbstractDevice, userId, new CompletionHandler() {
+            @Override
+            public void onSucceed() {
+                Logger.d(TAG, "shareDevice onSucceed");
+            }
+
+            @Override
+            public void onFailed(int errCode, String description) {
+                Logger.e(TAG, "shareDevice onFailed: " + errCode + " " + description);
+            }
+        });
+    } catch (MiotException e) {
+        e.printStackTrace();
+    }
+```
+其中userId为用户小米帐号ID。
+
+* 取消分享
+```Java
+    try {
+        MiotManager.getDeviceManager().cancelShare(mAbstractDevice, userId, new CompletionHandler() {
+            @Override
+            public void onSucceed() {
+                Logger.d(TAG, "cancelShare onSucceed");
+            }
+
+            @Override
+            public void onFailed(int errCode, String description) {
+                Logger.e(TAG, "cancelShare onFailed: " + errCode + " " + description);
+            }
+        });
+    } catch (MiotException e) {
+        e.printStackTrace();
+    }
+```
+
+* 查看设备被分享用户列表
+```Java
+    try {
+        MiotManager.getDeviceManager().querySharedUsers(mAbstractDevice, new CommonHandler<List<SharedUser>>() {
+            @Override
+            public void onSucceed(List<SharedUser> result) {
+                Logger.d(TAG, "querySharedUsers onSucceed");
+                ...
+            }
+
+            @Override
+            public void onFailed(int errCode, String description) {
+                Logger.e(TAG, "querySharedUsers onFailed: " + errCode + " " + description);
+            }
+        });
+    } catch (MiotException e) {
+        e.printStackTrace();
+    }
+```
+
+* 被分享者查看设备分享邀请
+```Java
+    try {
+        MiotManager.getDeviceManager().querySharedRequests(new CommonHandler<List<SharedRequest>>() {
+            @Override
+            public void onSucceed(List<SharedRequest> result) {
+                Logger.d(TAG, "querySharedRequests onSucceed");
+                ...
+            }
+
+            @Override
+            public void onFailed(int errCode, String description) {
+                Logger.e(TAG, "querySharedRequests: " + errCode + description);
+            }
+        });
+    } catch (MiotException e) {
+        e.printStackTrace();
+    }
+```
+
+* 接受或者拒绝设备分享邀请
+```Java
+    sharedRequest.setShareStatus(ShareStatus.accept);
+    try {
+        MiotManager.getDeviceManager().replySharedRequest(sharedRequest, new CompletionHandler() {
+            @Override
+            public void onSucceed() {
+                Logger.d(TAG, "replySharedRequest onSucceed");
+            }
+
+            @Override
+            public void onFailed(int errCode, String description) {
+                Logger.e(TAG, "replySharedRequest: " + errCode + description);
+            }
+        });
+    } catch (MiotException e) {
+        e.printStackTrace();
+    }
+```
+其中ShareStatus中accept为接受邀请，reject为拒绝邀请。
 
 #### 控制设备
 这里以小米插座为例，简要说明一下，具体可以参见demo中SmartsocketActivity

@@ -97,6 +97,7 @@ public class TestApplication extends Application {
                         TestConstants.AUX_AIRCONDITION_V1_URL,
                         AuxAirConditionHH.class);
                 MiotManager.getInstance().addModel(aircon);
+
             } catch (DeviceModelException e) {
                 e.printStackTrace();
             }

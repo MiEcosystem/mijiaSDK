@@ -492,12 +492,6 @@
                             <maximum>100</maximum>
                         </allowedValueRange>
                     </property>
-                    <property gettable="false" notifiable="true">
-                        <friendlyName>FaultDetail</friendlyName>
-                        <internalName>fault</internalName>
-                        <description>故障代码</description>
-                        <dataType>ui4</dataType>
-                    </property>
                 </propertyList>
             </service>
         </serviceList>

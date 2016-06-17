@@ -28,14 +28,13 @@ import miot.api.CompletionHandler;
 import miot.api.DeviceManager;
 import miot.api.MiotManager;
 import miot.api.device.AbstractDevice;
+import miot.typedef.device.Action;
 import miot.typedef.device.Device.Ownership;
 import miot.typedef.device.Service;
 import miot.typedef.device.firmware.MiotFirmware;
-import miot.typedef.device.invocation.ActionInfo;
-import miot.typedef.device.invocation.ActionInfoFactory;
 import miot.typedef.exception.MiotException;
 import miot.typedef.property.Property;
-import miot.typedef.scene.Scene;
+import miot.typedef.share.SharedUser;
 import miot.typedef.timer.CrontabTime;
 import miot.typedef.timer.DayOfWeek;
 import miot.typedef.timer.Timer;
@@ -87,7 +86,9 @@ public class UniversalDeviceActivity extends BaseActivity {
                 "5: 读取定时器列表",
                 "6: 添加定时器",
                 "7: 删除定时器",
-                "8: 修改定时器"
+                "8: 分享设备",
+                "9: 取消分享",
+                "10: 获取被分享者",
         };
 
         AlertDialog alert = new AlertDialog.Builder(this)
@@ -131,7 +132,15 @@ public class UniversalDeviceActivity extends BaseActivity {
                                 break;
 
                             case 8:
-                                editTimer();
+                                shareDevice();
+                                break;
+
+                            case 9:
+                                cancelShare();
+                                break;
+
+                            case 10:
+                                queryShareUsers();
                                 break;
                         }
                     }
@@ -153,7 +162,7 @@ public class UniversalDeviceActivity extends BaseActivity {
                 mAbstractDevice.getDeviceId(),
                 mAbstractDevice.getDevice().isOnline() ? "在线" : "离线",
                 mAbstractDevice.getDevice().getConnectionType().toString(),
-                mAbstractDevice.getDevice().getOwnerShip().toString());
+                mAbstractDevice.getDevice().getOwnership().toString());
         tvLog.setText(log);
         tvLog.setMovementMethod(new ScrollingMovementMethod());
     }
@@ -325,6 +334,7 @@ public class UniversalDeviceActivity extends BaseActivity {
         showLog(log);
     }
 
+
     private void getTimerList() {
         try {
             MiotManager.getDeviceManager().queryTimerList(mAbstractDevice.getDeviceId(), new DeviceManager.TimerListener() {
@@ -347,25 +357,37 @@ public class UniversalDeviceActivity extends BaseActivity {
     }
 
     private void logTimer(Timer timer) {
+        if (timer == null) {
+            return;
+        }
         StringBuilder sb = new StringBuilder();
         sb.append("timerId: ");
         sb.append(timer.getTimerId());
-        sb.append(" description: ");
-        sb.append(timer.getDescription());
+        sb.append(" name: ");
+        sb.append(timer.getName());
+
 
         sb.append(" startTime: ");
         CrontabTime startTime = timer.getStartTime();
-        sb.append(startTime.getHours().toString());
+        sb.append(startTime.getHour());
         sb.append(":");
-        sb.append(startTime.getMinutes().toString());
+        sb.append(startTime.getMinute());
+        sb.append(" repeat: ");
+        sb.append(startTime.getDayOfWeeks());
         sb.append(" startAction: ");
-        for (ActionInfo actionInfo : timer.getActionsAtTimeStart()) {
-            for (Property p : actionInfo.getArguments()) {
-                sb.append(p.getDefinition().getFriendlyName());
-                sb.append(" ");
-                sb.append(p.getValue().toString());
-                sb.append("  ");
-            }
+        Action startAction = timer.getStartAction();
+        for (Property p : startAction.getInArguments()) {
+            sb.append(p.getDefinition().getFriendlyName());
+            sb.append(" ");
+            sb.append(p.getValue().toString());
+            sb.append("  ");
+        }
+        Action endAction = timer.getEndAction();
+        for (Property p : endAction.getInArguments()) {
+            sb.append(p.getDefinition().getFriendlyName());
+            sb.append(" ");
+            sb.append(p.getValue().toString());
+            sb.append("  ");
         }
         Log.d(TAG, sb.toString());
     }
@@ -373,7 +395,7 @@ public class UniversalDeviceActivity extends BaseActivity {
     //TODO: 以下代码仅供参考，这里用空调作一个例子，具体使用使用自己设备代替
     private void addTimer() {
         Timer timer = new Timer();
-        timer.setDescription("星期一到星期三，晚上８点半开始打开空调，制冷模式，最低风速，调到２４°，５个小时后再关闭空调");
+        timer.setName("星期一到星期三，晚上８点半开始打开灯泡，５个小时后再关闭灯泡");
         timer.setDeviceId(mAbstractDevice.getDeviceId());
         timer.setPushEnabled(false);
         //定时的开关
@@ -384,8 +406,8 @@ public class UniversalDeviceActivity extends BaseActivity {
         timer.setTimerEndEnabled(true);
 
         CrontabTime startTime = new CrontabTime();
-        startTime.setHours(15);
-        startTime.setMinutes(20);
+        startTime.setHour(15);
+        startTime.setMinute(20);
         startTime.addDayOfWeek(DayOfWeek.MONDAY);
         startTime.addDayOfWeek(DayOfWeek.TUESDAY);
         startTime.addDayOfWeek(DayOfWeek.WEDNESDAY);
@@ -393,22 +415,24 @@ public class UniversalDeviceActivity extends BaseActivity {
         startTime.addDayOfWeek(DayOfWeek.FRIDAY);
         timer.setStartTime(startTime);
 
-        //TODO: actionInfo是和具体的设备关联的，这里仅供参考
+        //TODO: action是和具体的设备关联的，这里仅供参考
         if (mAbstractDevice instanceof AuxAirConditionHH) {
             AirConditionBaseService service = ((AuxAirConditionHH) mAbstractDevice).mAirConditionBaseService;
 
-            ActionInfo actionPowerOn = ActionInfoFactory.create(service.getService(), AirConditionBaseService.ACTION_setPower);
-            actionPowerOn.setArgumentValue(AirConditionBaseService.PROPERTY_Power, AirConditionBaseService.Power.on.toString());
-            timer.addActionAtTimeStart(actionPowerOn);
+            Action actionOn = service.newAction(AirConditionBaseService.ACTION_setPower);
+            actionOn.setArgumentValue(AirConditionBaseService.PROPERTY_Power, AirConditionBaseService.Power.on.toString());
+            actionOn.setDescription("打开灯泡");
+            timer.setStartAction(actionOn);
 
-            ActionInfo actionPowerOff = ActionInfoFactory.create(service.getService(), AirConditionBaseService.ACTION_setPower);
-            actionPowerOff.setArgumentValue(AirConditionBaseService.PROPERTY_Power, AirConditionBaseService.Power.off.toString());
-            timer.addActionAtTimeEnd(actionPowerOff);
+            Action actionOff = service.newAction(AirConditionBaseService.ACTION_setPower);
+            actionOff.setArgumentValue(AirConditionBaseService.PROPERTY_Power, AirConditionBaseService.Power.off.toString());
+            actionOff.setDescription("关闭灯泡");
+            timer.setEndAction(actionOff);
         }
 
         CrontabTime endTime = new CrontabTime();
-        endTime.setHours(15);
-        endTime.setMinutes(40);
+        endTime.setHour(15);
+        endTime.setMinute(40);
         endTime.addDayOfWeek(DayOfWeek.MONDAY);
         endTime.addDayOfWeek(DayOfWeek.TUESDAY);
         endTime.addDayOfWeek(DayOfWeek.WEDNESDAY);
@@ -438,7 +462,7 @@ public class UniversalDeviceActivity extends BaseActivity {
     }
 
     private void removeTimer() {
-        int timerId = 100000;
+        int timerId = 15825126;
         try {
             MiotManager.getDeviceManager().removeTimer(timerId, new CompletionHandler() {
                 @Override
@@ -456,20 +480,19 @@ public class UniversalDeviceActivity extends BaseActivity {
         }
     }
 
-    private void getSceneList() {
+    private String mUserId = ".....";
+
+    public void shareDevice() {
         try {
-            MiotManager.getDeviceManager().querySceneList(new CommonHandler<List<Scene>>() {
+            MiotManager.getDeviceManager().shareDevice(mAbstractDevice, mUserId, new CompletionHandler() {
                 @Override
-                public void onSucceed(List<Scene> scenes) {
-                    showLog("querySceneList: OK: " + scenes.size());
-                    for (Scene scene : scenes) {
-                        logScene(scene);
-                    }
+                public void onSucceed() {
+                    showLog("shareDevice: onSucceed");
                 }
 
                 @Override
                 public void onFailed(int errCode, String description) {
-                    showLog("queryTimerList: failed: " + errCode + " - " + description);
+                    showLog("shareDevice: failed: " + errCode + " - " + description);
                 }
             });
         } catch (MiotException e) {
@@ -477,12 +500,42 @@ public class UniversalDeviceActivity extends BaseActivity {
         }
     }
 
-    private void logScene(Scene scene) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("name: ");
-        sb.append(scene.getName());
-        sb.append(" sceneId: ");
-        sb.append(scene.getSceneId());
-        Log.d(TAG, sb.toString());
+    public void cancelShare() {
+        try {
+            MiotManager.getDeviceManager().cancelShare(mAbstractDevice, mUserId, new CompletionHandler() {
+                @Override
+                public void onSucceed() {
+                    showLog("cancelShare: onSucceed");
+                }
+
+                @Override
+                public void onFailed(int errCode, String description) {
+                    showLog("cancelShare: failed: " + errCode + " - " + description);
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void queryShareUsers() {
+        try {
+            MiotManager.getDeviceManager().querySharedUsers(mAbstractDevice, new CommonHandler<List<SharedUser>>() {
+                @Override
+                public void onSucceed(List<SharedUser> result) {
+                    for (SharedUser sharedUser : result) {
+                        Log.d(TAG, sharedUser.getUserId() + "  " + sharedUser.getUserName() + " " + sharedUser.getStatus());
+                    }
+                    showLog("queryShareUsers: onSucceed");
+                }
+
+                @Override
+                public void onFailed(int errCode, String description) {
+                    showLog("queryShareUsers: failed: " + errCode + " - " + description);
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
     }
 }

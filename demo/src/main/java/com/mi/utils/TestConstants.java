@@ -8,22 +8,6 @@ public class TestConstants {
     public static final String AUX_AIRCONDITION_HC1 = "aux.aircondition.hc1";      // aux空调：冷暖柜机
     public static final String AUX_AIRCONDITION_V1_URL = "ddd_AuxAircondition.xml";      // aux空调
 
-    public static final String LUMI_GATEWAY = "lumi.gateway.v3";
-    public static final String LUMI_GATEWAY_URL = "ddd_Lumi_Gateway_v1.xml";
-    public static final String LUMI_PLUG = "lumi.plug.v1";
-    public static final String LUMI_PLUG_URL = "ddd_Lumi_plug.xml";
-
-    public static final String YEELINK_LAMP_V1 = "yeelink.light.lamp1";
-    public static final String YEELINK_LAMP_V1_URL = "YeelightLamp1.xml";
-
-    public static final String CHUANGMI_RADIO_V1 = "chuangmi.radio.v1";
-    public static final String CHUANGMI_RADIO_V1_URL = "ddd_Chuangmi_radio.xml";
-
-    public static final String YUNMI_WATER_PURI_LX2 = "yunmi.waterpuri.lx2";
-    public static final String YUNMI_WATER_PURI_LX3 = "yunmi.waterpuri.lx3";
-    public static final String YUNMI_WATER_PURI_V3 = "yunmi.waterpurifier.v3";
-    public static final String YUNMI_WATER_URL = "ddd_Yunmi_waterpurifier.xml";
-
     public static final String ACTION_BIND_SERVICE_SUCCEED = "con.mi.test.action.BIND_SERVICE_SUCCEED";
     public static final String ACTION_BIND_SERVICE_FAILED = "con.mi.test.action.BIND_SERVICE_FAILED";
     public static final String ACTION_LOGIN_SUCCEED = "con.mi.test.action.LOGIN_SUCCEED";

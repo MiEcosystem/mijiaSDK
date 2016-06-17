@@ -20,8 +20,6 @@ import com.mi.device.SmartSocketBase;
 import com.mi.test.R;
 import com.mi.utils.BaseActivity;
 import com.mi.utils.TestConstants;
-import com.xiaomi.mipush.sdk.Logger;
-import com.xiaomi.mipush.sdk.MiPushClient;
 
 import java.util.List;
 
@@ -32,8 +30,8 @@ import miot.api.MiotManager;
 import miot.api.device.AbstractDevice;
 import miot.typedef.exception.MiotException;
 
-public class DeviceActivity extends BaseActivity {
-    private static final String TAG = DeviceActivity.class.getSimpleName();
+public class DeviceListActivity extends BaseActivity {
+    private static final String TAG = DeviceListActivity.class.getSimpleName();
 
     @InjectView(R.id.lv_devices)
     ListView mLvDevices;
@@ -51,7 +49,7 @@ public class DeviceActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_device);
+        setContentView(R.layout.activity_device_list);
         ButterKnife.inject(this);
 
         mDeviceAdapter = new DeviceAdapter(this);
@@ -69,11 +67,10 @@ public class DeviceActivity extends BaseActivity {
         mBtnGetRemoteDevices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "getRemoteDevice");
-                showToast("getRemoteDevice");
                 mMiDeviceManager.getWanDeviceList();
             }
         });
+
         mBtnStartScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,12 +104,10 @@ public class DeviceActivity extends BaseActivity {
     private void gotoDevicePage(AbstractDevice device) {
         Intent intent = new Intent(this, UniversalDeviceActivity.class);
         if (device instanceof SmartSocketBase) {
-            Log.d(TAG, "smartSocket");
             intent = new Intent(this, SmartsocketActivity.class);
         }
         intent.putExtra(TestConstants.EXTRA_DEVICE, device);
         startActivity(intent);
-
     }
 
     private void connectDevice(AbstractDevice device) {
