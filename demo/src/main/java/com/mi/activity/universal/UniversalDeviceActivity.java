@@ -162,7 +162,7 @@ public class UniversalDeviceActivity extends BaseActivity {
                 mAbstractDevice.getDeviceId(),
                 mAbstractDevice.getDevice().isOnline() ? "在线" : "离线",
                 mAbstractDevice.getDevice().getConnectionType().toString(),
-                mAbstractDevice.getDevice().getOwnership().toString());
+                mAbstractDevice.getDevice().getOwnerInfo().getUserId());
         tvLog.setText(log);
         tvLog.setMovementMethod(new ScrollingMovementMethod());
     }

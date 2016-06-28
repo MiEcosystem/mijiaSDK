@@ -203,7 +203,9 @@ public class UniversalServiceActivity extends BaseActivity {
                 public void onSucceed(PropertyInfo info) {
                     String ret = "读取属性成功\r\n";
                     for (Property property : info.getProperties()) {
-                        ret += property.getDefinition().getFriendlyName() + "=" + property.getValue() + "\r\n";
+                        if (property.isValueValid()) {
+                            ret += property.getDefinition().getFriendlyName() + "=" + property.getValue() + "\r\n";
+                        }
                     }
                     showLog(ret);
                 }

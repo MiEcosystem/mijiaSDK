@@ -8,6 +8,9 @@ public class TestConstants {
     public static final String AUX_AIRCONDITION_HC1 = "aux.aircondition.hc1";      // aux空调：冷暖柜机
     public static final String AUX_AIRCONDITION_V1_URL = "ddd_AuxAircondition.xml";      // aux空调
 
+    public static final String ZHIMI_AIR = "zhimi.airpurifier.m1";
+    public static final String ZHIMI_AIR_URL = "ddd_airpurifier_m1.xml";
+
     public static final String ACTION_BIND_SERVICE_SUCCEED = "con.mi.test.action.BIND_SERVICE_SUCCEED";
     public static final String ACTION_BIND_SERVICE_FAILED = "con.mi.test.action.BIND_SERVICE_FAILED";
     public static final String ACTION_LOGIN_SUCCEED = "con.mi.test.action.LOGIN_SUCCEED";

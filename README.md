@@ -278,6 +278,43 @@ SDK目前提供了如下功能：
     }
 ```
 
+需要注意的是，Android6.0加入运行时权限，扫描Wifi设备需要运行时权限的支持，关于运行时权限，详见[google文档](https://developer.android.com/about/versions/marshmallow/android-6.0-changes.html?hl=zh-cn#behavior-runtime-permissions)，demo中有一个简单的示例，代码如下所示：
+
+```Java
+    private static final int REQUEST_LOCATION_PERMISSION = 10000;
+
+    @TargetApi(23)
+    private boolean hasPermission() {
+        return Build.VERSION.SDK_INT < 23 ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    @TargetApi(23)
+    private void requestPermission() {
+        if (Build.VERSION.SDK_INT < 23) {
+            return;
+        }
+        String[] permissions = new String[]{
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+        };
+        ActivityCompat.requestPermissions(this, permissions, REQUEST_LOCATION_PERMISSION);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_LOCATION_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    MiDeviceManager.getInstance().startScan();
+                } else {
+                    Log.e(TAG, "on permission to scan device");
+                }
+        }
+    }
+```
+
 * 配置快连图标和文案：将快连图标放置到自己工程的res/drawable-xxhdpi目录下，并命名为kuailian_miio_icon.png。在strings.xml文件添加
 ```xml
     <string name="common_mieda_device">（文案）</string>

@@ -1,10 +1,17 @@
 package com.mi.activity.main;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
@@ -12,7 +19,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.mi.activity.device.SmartsocketActivity;
 import com.mi.activity.universal.UniversalDeviceActivity;
 import com.mi.adapter.DeviceAdapter;
 import com.mi.adapter.MiDeviceManager;
@@ -67,6 +73,7 @@ public class DeviceListActivity extends BaseActivity {
         mBtnGetRemoteDevices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "getRemoteDevice");
                 mMiDeviceManager.getWanDeviceList();
             }
         });
@@ -74,12 +81,17 @@ public class DeviceListActivity extends BaseActivity {
         mBtnStartScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mMiDeviceManager.startScan();
+                if (hasPermission()) {
+                    mMiDeviceManager.startScan();
+                } else {
+                    requestPermission();
+                }
             }
         });
         mBtnStopScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 mMiDeviceManager.stopScan();
             }
         });
@@ -87,6 +99,39 @@ public class DeviceListActivity extends BaseActivity {
         mBroadcastManager = LocalBroadcastManager.getInstance(this);
         mMiDeviceManager = MiDeviceManager.getInstance();
         mMiDeviceManager.getWanDeviceList();
+    }
+
+    private static final int REQUEST_LOCATION_PERMISSION = 10000;
+
+    @TargetApi(23)
+    private boolean hasPermission() {
+        return Build.VERSION.SDK_INT < 23 ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    @TargetApi(23)
+    private void requestPermission() {
+        if (Build.VERSION.SDK_INT < 23) {
+            return;
+        }
+        String[] permissions = new String[]{
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+        };
+        ActivityCompat.requestPermissions(this, permissions, REQUEST_LOCATION_PERMISSION);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_LOCATION_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    MiDeviceManager.getInstance().startScan();
+                } else {
+                    Log.e(TAG, "on permission to scan device");
+                }
+        }
     }
 
     private void clickDevice(AbstractDevice device) {
@@ -104,7 +149,7 @@ public class DeviceListActivity extends BaseActivity {
     private void gotoDevicePage(AbstractDevice device) {
         Intent intent = new Intent(this, UniversalDeviceActivity.class);
         if (device instanceof SmartSocketBase) {
-            intent = new Intent(this, SmartsocketActivity.class);
+//            intent = new Intent(this, SmartsocketActivity.class);
         }
         intent.putExtra(TestConstants.EXTRA_DEVICE, device);
         startActivity(intent);
