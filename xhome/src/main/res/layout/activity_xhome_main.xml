@@ -1,0 +1,86 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#3b3a3a"
+    android:padding="1dp"
+    tools:context=".ui.XHomeMain">
+
+    <!-- The primary full-screen view. This can be replaced with whatever view
+         is needed to present your content, e.g. VideoView, SurfaceView,
+         TextureView, etc. -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:overScrollMode="never">
+
+        <HorizontalScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </HorizontalScrollView>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/floating_panel"
+        style="?metaButtonBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:orientation="horizontal"
+        android:layout_marginBottom="2dp"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/button_open"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:padding="10dp"
+            android:src="@drawable/button_open" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="180"
+            android:background="@drawable/buttonpanel_bg"
+            android:orientation="horizontal"
+            android:layout_marginRight="2dp"
+            android:padding="1dp">
+
+            <!--<TextView-->
+                <!--android:id="@+id/button_spaces"-->
+                <!--style="@style/ToolbarButton"-->
+                <!--android:layout_marginLeft="5dp"-->
+                <!--android:drawableTop="@drawable/button_spaces"-->
+                <!--android:text="@string/button_spaces" />-->
+
+            <TextView
+                android:id="@+id/button_add"
+                style="@style/ToolbarButton"
+                android:drawableTop="@drawable/button_add"
+                android:text="@string/button_add" />
+
+            <TextView
+                android:id="@+id/button_edit"
+                style="@style/ToolbarButton"
+                android:drawableTop="@drawable/button_edit"
+                android:text="@string/button_edit" />
+
+            <!--<TextView-->
+                <!--android:id="@+id/button_account"-->
+                <!--style="@style/ToolbarButton"-->
+                <!--android:drawableTop="@drawable/button_account"-->
+                <!--android:text="@string/button_account" />-->
+
+            <TextView
+                android:id="@+id/button_setting"
+                style="@style/ToolbarButton"
+                android:drawableTop="@drawable/button_setting"
+                android:text="@string/button_settings" />
+
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>
