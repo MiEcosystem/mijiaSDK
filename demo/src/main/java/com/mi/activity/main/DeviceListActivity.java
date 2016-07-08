@@ -19,10 +19,11 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.mi.activity.device.PlugActivity;
 import com.mi.activity.universal.UniversalDeviceActivity;
 import com.mi.adapter.DeviceAdapter;
 import com.mi.adapter.MiDeviceManager;
-import com.mi.device.SmartSocketBase;
+import com.mi.device.ChuangmiPlugM1;
 import com.mi.test.R;
 import com.mi.utils.BaseActivity;
 import com.mi.utils.TestConstants;
@@ -148,8 +149,8 @@ public class DeviceListActivity extends BaseActivity {
 
     private void gotoDevicePage(AbstractDevice device) {
         Intent intent = new Intent(this, UniversalDeviceActivity.class);
-        if (device instanceof SmartSocketBase) {
-//            intent = new Intent(this, SmartsocketActivity.class);
+        if (device instanceof ChuangmiPlugM1) {
+            intent = new Intent(this, PlugActivity.class);
         }
         intent.putExtra(TestConstants.EXTRA_DEVICE, device);
         startActivity(intent);

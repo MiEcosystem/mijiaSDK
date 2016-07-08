@@ -21,32 +21,49 @@ import miot.typedef.property.Property;
 import miot.typedef.property.PropertyDefinition;
 import miot.typedef.exception.MiotException;
 
-public class SmartSocketBaseService extends AbstractService {
-    private static final String TAG = "SmartSocketBaseService";
+public class PlugBaseService extends AbstractService {
+    private static final String TAG = "PlugBaseService";
 
     //-------------------------------------------------------
     // Action Name
     //-------------------------------------------------------
-    public static final String ACTION_setUsbPlugOn = "setUsbPlugOn";
-    public static final String ACTION_setUsbPlugOff = "setUsbPlugOff";
-    public static final String ACTION_setPlugOff = "setPlugOff";
-    public static final String ACTION_setPlugOn = "setPlugOn";
+    public static final String ACTION_setPower = "setPower";
+    public static final String ACTION_setWifiLed = "setWifiLed";
 
     //-------------------------------------------------------
     // Property Name
     //-------------------------------------------------------
-    public static final String PROPERTY_UsbStatus = "UsbStatus";
-    public static final String PROPERTY_PowerStatus = "PowerStatus";
+    public static final String PROPERTY_Power = "Power";
+    public static final String PROPERTY_WifiLed = "WifiLed";
+    public static final String PROPERTY_Temperature = "Temperature";
 
     private AbstractDevice mDevice = null;
 
-    public SmartSocketBaseService(AbstractDevice device) {
+    public PlugBaseService(AbstractDevice device) {
         mDevice = device;
     }
 
     //-------------------------------------------------------
     // Property value defined
     //-------------------------------------------------------
+    /**
+    * 开关状态（on|off）
+    */
+    public enum Power {
+        undefined,
+        on,
+        off,
+    }
+
+    /**
+    * wifi指示灯开关
+    */
+    public enum WifiLed {
+        undefined,
+        on,
+        off,
+    }
+
 
     //-------------------------------------------------------
     // Property: Notifications
@@ -54,13 +71,17 @@ public class SmartSocketBaseService extends AbstractService {
     public interface PropertyNotificationListener {
 
         /**
-         * USB插口状态 发生改变
+         * 开关状态（on|off） 发生改变
          */
-        void onUsbStatusChanged(Boolean usbStatus);
+        void onPowerChanged(Power power);
         /**
-         * 电力插口状态 发生改变
+         * wifi指示灯开关 发生改变
          */
-        void onPowerStatusChanged(Boolean powerStatus);
+        void onWifiLedChanged(WifiLed wifiLed);
+        /**
+         * 温度 发生改变
+         */
+        void onTemperatureChanged(Integer temperature);
     }
 
     //-------------------------------------------------------
@@ -100,13 +121,17 @@ public class SmartSocketBaseService extends AbstractService {
                     @Override
                     public void onPropertyChanged(PropertyInfo info, String propertyName) {
                         switch (propertyName) {
-                            case PROPERTY_UsbStatus:
-                                Boolean usbStatus = (Boolean) info.getValue(PROPERTY_UsbStatus);
-                                listener.onUsbStatusChanged(usbStatus);
+                            case PROPERTY_Power:
+                                Power power = Power.valueOf((String) info.getValue(PROPERTY_Power));
+                                listener.onPowerChanged(power);
                                 break;
-                            case PROPERTY_PowerStatus:
-                                Boolean powerStatus = (Boolean) info.getValue(PROPERTY_PowerStatus);
-                                listener.onPowerStatusChanged(powerStatus);
+                            case PROPERTY_WifiLed:
+                                WifiLed wifiLed = WifiLed.valueOf((String) info.getValue(PROPERTY_WifiLed));
+                                listener.onWifiLedChanged(wifiLed);
+                                break;
+                            case PROPERTY_Temperature:
+                                Integer temperature = (Integer) info.getValue(PROPERTY_Temperature);
+                                listener.onTemperatureChanged(temperature);
                                 break;
 
                             default:
@@ -152,8 +177,9 @@ public class SmartSocketBaseService extends AbstractService {
     /**
      * 回调接口： 读取所有可读属性
      */
+
     public interface GetPropertiesCompletionHandler {
-        void onSucceed(Boolean usbStatus, Boolean powerStatus);
+        void onSucceed(Power power, WifiLed wifiLed, Integer temperature);
 
         void onFailed(int errCode, String description);
     }
@@ -167,16 +193,33 @@ public class SmartSocketBaseService extends AbstractService {
         }
 
         PropertyInfo propertyInfo = PropertyInfoFactory.create(getService());
-        propertyInfo.addProperty(getService().getProperty(PROPERTY_UsbStatus));
-        propertyInfo.addProperty(getService().getProperty(PROPERTY_PowerStatus));
+        propertyInfo.addProperty(getService().getProperty(PROPERTY_Power));
+        propertyInfo.addProperty(getService().getProperty(PROPERTY_WifiLed));
+        propertyInfo.addProperty(getService().getProperty(PROPERTY_Temperature));
 
         DeviceManipulator op = MiotManager.getDeviceManipulator();
         op.readProperty(propertyInfo, new DeviceManipulator.ReadPropertyCompletionHandler() {
             @Override
             public void onSucceed(PropertyInfo info) {
-                Boolean usbStatus = (Boolean) info.getValue(PROPERTY_UsbStatus);
-                Boolean powerStatus = (Boolean) info.getValue(PROPERTY_PowerStatus);
-                handler.onSucceed(usbStatus, powerStatus);
+                Property powerProp = info.getProperty(PROPERTY_Power);
+                Power power = null;
+                if(powerProp.isValueValid()) {
+                    power = Power.valueOf((String) powerProp.getValue());
+                }
+
+                Property wifiLedProp = info.getProperty(PROPERTY_WifiLed);
+                WifiLed wifiLed = null;
+                if(wifiLedProp.isValueValid()) {
+                    wifiLed = WifiLed.valueOf((String) wifiLedProp.getValue());
+                }
+
+                Property temperatureProp = info.getProperty(PROPERTY_Temperature);
+                Integer temperature = null;
+                if(temperatureProp.isValueValid()) {
+                    temperature = (Integer) temperatureProp.getValue();
+                }
+
+                handler.onSucceed(power, wifiLed, temperature);
             }
 
             @Override
@@ -190,29 +233,34 @@ public class SmartSocketBaseService extends AbstractService {
     // Property Getters
     //-------------------------------------------------------
     /**
-     * 回调接口： 读取UsbStatus
+     * 回调接口： 读取Power
      */
-    public interface GetUsbStatusCompletionHandler {
-        void onSucceed(Boolean usbStatus);
+    public interface GetPowerCompletionHandler {
+        void onSucceed(Power power);
 
         void onFailed(int errCode, String description);
     }
 
     /**
-     * 读取USB插口状态
+     * 读取开关状态（on|off）
      */
-    public void getUsbStatus(final GetUsbStatusCompletionHandler handler) throws MiotException {
+    public void getPower(final GetPowerCompletionHandler handler) throws MiotException {
         if (!mDevice.isConnectionEstablished()) {
             throw new MiotException("device not configurated connection");
         }
 
-        PropertyInfo propertyInfo = PropertyInfoFactory.create(getService(), PROPERTY_UsbStatus);
+        PropertyInfo propertyInfo = PropertyInfoFactory.create(getService(), PROPERTY_Power);
         DeviceManipulator op = MiotManager.getDeviceManipulator();
         op.readProperty(propertyInfo, new DeviceManipulator.ReadPropertyCompletionHandler() {
             @Override
             public void onSucceed(PropertyInfo info) {
-                Boolean usbStatus = (Boolean) info.getValue(PROPERTY_UsbStatus);
-                handler.onSucceed(usbStatus);
+                Property power = info.getProperty(PROPERTY_Power);
+                if(power.isValueValid()) {
+                    handler.onSucceed(Power.valueOf((String) info.getValue(PROPERTY_Power)));
+                } else {
+                    handler.onFailed(ReturnCode.E_INVALID_DATA, "device response valid: " + power.getValue());
+                }
+
             }
 
             @Override
@@ -222,29 +270,71 @@ public class SmartSocketBaseService extends AbstractService {
         });
     }
     /**
-     * 回调接口： 读取PowerStatus
+     * 回调接口： 读取WifiLed
      */
-    public interface GetPowerStatusCompletionHandler {
-        void onSucceed(Boolean powerStatus);
+    public interface GetWifiLedCompletionHandler {
+        void onSucceed(WifiLed wifiLed);
 
         void onFailed(int errCode, String description);
     }
 
     /**
-     * 读取电力插口状态
+     * 读取wifi指示灯开关
      */
-    public void getPowerStatus(final GetPowerStatusCompletionHandler handler) throws MiotException {
+    public void getWifiLed(final GetWifiLedCompletionHandler handler) throws MiotException {
         if (!mDevice.isConnectionEstablished()) {
             throw new MiotException("device not configurated connection");
         }
 
-        PropertyInfo propertyInfo = PropertyInfoFactory.create(getService(), PROPERTY_PowerStatus);
+        PropertyInfo propertyInfo = PropertyInfoFactory.create(getService(), PROPERTY_WifiLed);
         DeviceManipulator op = MiotManager.getDeviceManipulator();
         op.readProperty(propertyInfo, new DeviceManipulator.ReadPropertyCompletionHandler() {
             @Override
             public void onSucceed(PropertyInfo info) {
-                Boolean powerStatus = (Boolean) info.getValue(PROPERTY_PowerStatus);
-                handler.onSucceed(powerStatus);
+                Property wifiLed = info.getProperty(PROPERTY_WifiLed);
+                if(wifiLed.isValueValid()) {
+                    handler.onSucceed(WifiLed.valueOf((String) info.getValue(PROPERTY_WifiLed)));
+                } else {
+                    handler.onFailed(ReturnCode.E_INVALID_DATA, "device response valid: " + wifiLed.getValue());
+                }
+
+            }
+
+            @Override
+            public void onFailed(int errCode, String description) {
+                handler.onFailed(errCode, description);
+            }
+        });
+    }
+    /**
+     * 回调接口： 读取Temperature
+     */
+    public interface GetTemperatureCompletionHandler {
+        void onSucceed(Integer temperature);
+
+        void onFailed(int errCode, String description);
+    }
+
+    /**
+     * 读取温度
+     */
+    public void getTemperature(final GetTemperatureCompletionHandler handler) throws MiotException {
+        if (!mDevice.isConnectionEstablished()) {
+            throw new MiotException("device not configurated connection");
+        }
+
+        PropertyInfo propertyInfo = PropertyInfoFactory.create(getService(), PROPERTY_Temperature);
+        DeviceManipulator op = MiotManager.getDeviceManipulator();
+        op.readProperty(propertyInfo, new DeviceManipulator.ReadPropertyCompletionHandler() {
+            @Override
+            public void onSucceed(PropertyInfo info) {
+                Property temperature = info.getProperty(PROPERTY_Temperature);
+                if(temperature.isValueValid()) {
+                    handler.onSucceed((Integer) info.getValue(PROPERTY_Temperature));
+                } else {
+                    handler.onFailed(ReturnCode.E_INVALID_DATA, "device response valid: " + temperature.getValue());
+                }
+
             }
 
             @Override
@@ -258,18 +348,21 @@ public class SmartSocketBaseService extends AbstractService {
     // Actions
     //-------------------------------------------------------
     /**
-     * 打开USB开关
+     * 电源开关
      */
-    public void setUsbPlugOn(final CompletionHandler handler) throws MiotException {
+    public void setPower(Power power, final CompletionHandler handler) throws MiotException {
         if (!mDevice.isConnectionEstablished()) {
             throw new MiotException("device not configurated connection");
         }
 
-        final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setUsbPlugOn);
+        final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setPower);
         if(actionInfo == null) {
             throw new MiotException("actionInfo is null");
         }
 
+        if (!actionInfo.setArgumentValue(PROPERTY_Power, power.toString())) {
+            throw new MiotException("invalid value");
+        }
         DeviceManipulator op = MiotManager.getDeviceManipulator();
         op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
             @Override
@@ -285,72 +378,21 @@ public class SmartSocketBaseService extends AbstractService {
     }
 
     /**
-     * 关闭USB开关
+     * 设置wifi指示灯
      */
-    public void setUsbPlugOff(final CompletionHandler handler) throws MiotException {
+    public void setWifiLed(WifiLed wifiLed, final CompletionHandler handler) throws MiotException {
         if (!mDevice.isConnectionEstablished()) {
             throw new MiotException("device not configurated connection");
         }
 
-        final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setUsbPlugOff);
+        final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setWifiLed);
         if(actionInfo == null) {
             throw new MiotException("actionInfo is null");
         }
 
-        DeviceManipulator op = MiotManager.getDeviceManipulator();
-        op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
-            @Override
-            public void onSucceed(ActionInfo info) {
-                 handler.onSucceed();
-            }
-
-            @Override
-            public void onFailed(final int errCode, final String description) {
-                handler.onFailed(errCode, description);
-            }
-        });
-    }
-
-    /**
-     * 关闭开关
-     */
-    public void setPlugOff(final CompletionHandler handler) throws MiotException {
-        if (!mDevice.isConnectionEstablished()) {
-            throw new MiotException("device not configurated connection");
+        if (!actionInfo.setArgumentValue(PROPERTY_WifiLed, wifiLed.toString())) {
+            throw new MiotException("invalid value");
         }
-
-        final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setPlugOff);
-        if(actionInfo == null) {
-            throw new MiotException("actionInfo is null");
-        }
-
-        DeviceManipulator op = MiotManager.getDeviceManipulator();
-        op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
-            @Override
-            public void onSucceed(ActionInfo info) {
-                 handler.onSucceed();
-            }
-
-            @Override
-            public void onFailed(final int errCode, final String description) {
-                handler.onFailed(errCode, description);
-            }
-        });
-    }
-
-    /**
-     * 打开开关
-     */
-    public void setPlugOn(final CompletionHandler handler) throws MiotException {
-        if (!mDevice.isConnectionEstablished()) {
-            throw new MiotException("device not configurated connection");
-        }
-
-        final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setPlugOn);
-        if(actionInfo == null) {
-            throw new MiotException("actionInfo is null");
-        }
-
         DeviceManipulator op = MiotManager.getDeviceManipulator();
         op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
             @Override

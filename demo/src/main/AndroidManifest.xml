@@ -50,7 +50,7 @@
             android:name="com.mi.activity.main.DeviceListActivity"
             android:label="@string/title_activity_devicemanager"/>
         <activity
-            android:name="com.mi.activity.device.SmartsocketActivity"
+            android:name="com.mi.activity.device.PlugActivity"
             android:label="@string/title_activity_smartsocket"/>
         <activity
             android:name="com.mi.activity.universal.UniversalDeviceActivity"

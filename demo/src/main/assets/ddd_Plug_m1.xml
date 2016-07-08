@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="urn:schemas-mi-com:device-1-0">
+    <specVersion>
+        <major>1</major>
+        <minor>0</minor>
+    </specVersion>
+    <device>
+        <type>urn:schemas-mi-com:device:Chuangmi:PlugM1:1</type>
+        <friendlyName>小米智能插座</friendlyName>
+        <firmwareVersion>1</firmwareVersion>
+        <modelNumber>2014</modelNumber>
+        <modelName>chuangmi.plug.m1</modelName>
+        <modelDescription>小米智能插座</modelDescription>
+        <modelURL>http://www.com.com</modelURL>
+        <manufacturer>Xiaomi</manufacturer>
+        <manufacturerURL>http://www.com.com</manufacturerURL>
+
+        <serviceList>
+            <service>
+                <type>urn:schemas-mi-com:service:Plug:BaseService:1</type>
+                <description>电力开关服务</description>
+
+                <propertyList>
+                    <property gettable="true" notifiable="true">
+                        <friendlyName>Power</friendlyName>
+                        <internalName>power</internalName>
+                        <description>开关状态（on|off）</description>
+                        <dataType>string</dataType>
+                        <allowedValueList>
+                            <allowedValue>on</allowedValue>
+                            <allowedValue>off</allowedValue>
+                        </allowedValueList>
+                    </property>
+
+                    <property gettable="true" notifiable="true">
+                        <friendlyName>WifiLed</friendlyName>
+                        <internalName>wifi_led</internalName>
+                        <description>wifi指示灯开关</description>
+                        <dataType>string</dataType>
+                        <allowedValueList>
+                            <allowedValue>on</allowedValue>
+                            <allowedValue>off</allowedValue>
+                        </allowedValueList>
+                    </property>
+
+                    <property gettable="true" notifiable="true">
+                        <friendlyName>Temperature</friendlyName>
+                        <internalName>temperature</internalName>
+                        <description>温度</description>
+                        <dataType>int</dataType>
+                        <allowedValueRange>
+                            <minimum>0</minimum>
+                            <maximum>100</maximum>
+                        </allowedValueRange>
+                    </property>
+                </propertyList>
+
+                <actionList>
+                    <action>
+                        <friendlyName>setPower</friendlyName>
+                        <internalName>set_power</internalName>
+                        <description>电源开关</description>
+                        <argumentList>
+                            <argument>
+                                <name>power</name>
+                                <direction>in</direction>
+                                <relatedProperty>Power</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </action>
+                    <action>
+                        <friendlyName>setWifiLed</friendlyName>
+                        <internalName>set_wifi_led</internalName>
+                        <description>设置wifi指示灯</description>
+                        <argumentList>
+                            <argument>
+                                <name>wifiLed</name>
+                                <direction>in</direction>
+                                <relatedProperty>WifiLed</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </action>
+                </actionList>
+            </service>
+        </serviceList>
+    </device>
+</root>

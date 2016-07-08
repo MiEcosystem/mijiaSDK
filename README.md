@@ -76,86 +76,6 @@ mijiaSDK中集成有Mipush，目前主要是用于订阅设备事件。App使用
         android:protectionLevel="signature" />
     <uses-permission android:name="com.mi.test.permission.MIPUSH_RECEIVE" />
 ```
-* mijiaSDK需要配置的android组件（这些组件已经在SDK中声明过了，在自己的APP中可以不再声明）
-```xml
-        <!--小米帐号SDK的组件-->
-        <activity
-            android:name="com.xiaomi.account.openauth.AuthorizeActivity"
-            android:configChanges="orientation"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="com.xiaomi.account.openauth.action.AUTH"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
-        <!--Mipush的组件-->    
-        <service
-            android:name="com.xiaomi.push.service.XMPushService"
-            android:enabled="true"
-            android:process=":miot"/>
-        <service
-            android:name="com.xiaomi.mipush.sdk.PushMessageHandler"
-            android:enabled="true"
-            android:exported="true"
-            android:process=":miot"/>
-        <service
-            android:name="com.xiaomi.mipush.sdk.MessageHandleService"
-            android:enabled="true"
-            android:process=":miot"/>
-        <receiver
-            android:name="com.xiaomi.push.service.receivers.NetworkStatusReceiver"
-            android:exported="true"
-            android:process=":miot">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name="com.xiaomi.push.service.receivers.PingReceiver"
-            android:exported="false"
-            android:process=":miot">
-            <intent-filter>
-                <action android:name="com.xiaomi.push.PING_TIMER"/>
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name="miot.service.common.miotpush.MiotpnReceiver"
-            android:exported="true"
-            android:process=":miot">
-            <intent-filter>
-                <action android:name="com.xiaomi.mipush.RECEIVE_MESSAGE"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.xiaomi.mipush.MESSAGE_ARRIVED" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.xiaomi.mipush.ERROR"/>
-            </intent-filter>
-        </receiver>
-        <!--mijiaSDK的组件-->    
-        <activity
-            android:name="miot.service.connection.wifi.DeviceConnectionUap"
-            android:configChanges="keyboardHidden|keyboard|orientation"
-            android:launchMode="singleTask"
-            android:process=":miot"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="stateHidden|stateAlwaysHidden|adjustPan"/>
-        <service
-            android:name="miot.service.MiotService"
-            android:enabled="true"
-            android:exported="true"
-            android:label="NegotiatorService"
-            android:permission="android.permission.INTERNET"
-            android:process=":miot">
-            <intent-filter>
-                <action android:name="miot.aidl.IBinderPool"/>
-            </intent-filter>
-        </service>
-```
 
 ### 2. 初始化SDK
 这里简单描述如何初始化mijiaSDK，可以参考demo中TestApplication.java
@@ -173,11 +93,11 @@ mijiaSDK中集成有Mipush，目前主要是用于订阅设备事件。App使用
 * 接着将App需要处理的设备配置到SDK中：
 ```Java
     try {
-        DeviceModel smartSocket = DeviceModelFactory.createDeviceModel(TestApplication.this,
-                TestConstants.CHUANGMI_PLUG_V1,
-                TestConstants.CHUANGMI_PLUG_V1_URL,
-                SmartSocketBase.class);
-        MiotManager.getInstance().addModel(smartSocket);
+        DeviceModel plug = DeviceModelFactory.createDeviceModel(TestApplication.this,
+                TestConstants.CHUANGMI_PLUG_M1,
+                TestConstants.CHUANGMI_PLUG_M1_URL,
+                ChuangmiPlugM1.class);
+        MiotManager.getInstance().addModel(plug);
     } catch (DeviceModelException e) {
         e.printStackTrace();
     }
@@ -235,6 +155,11 @@ SDK目前提供了如下功能：
 4. **解绑设备**：允许用户解除与设备的绑定关系
 5. **分享设备**：用户可以将设备分享给其他人（目前仅小米帐号）
 6. **控制设备**：包括获取设备状态、下发指令和订阅设备事件
+
+目前这些操作的log信息是默认打开的，可以通过一下接口关闭log信息
+```Java
+    miot.service.common.utils.Logger.enableLog(true);
+```
 
 #### 获取设备列表
 调用DeviceManager中的设备发现接口，可以参考demo中MiDeviceManager.java相关代码
@@ -483,43 +408,51 @@ private void connectDevice(AbstractDevice device) {
 其中ShareStatus中accept为接受邀请，reject为拒绝邀请。
 
 #### 控制设备
-这里以小米插座为例，简要说明一下，具体可以参见demo中SmartsocketActivity
+这里以小米插座为例，简要说明一下，具体可以参见demo中PlugActivity
 * 获取设备状态
 ```Java
 public void getProperties() {
     try {
-        mSmartSocketBaseService.getProperties(new SmartSocketBaseService.GetPropertiesCompletionHandler() {
+        mBaseService.getProperties(new PlugBaseService.GetPropertiesCompletionHandler() {
             @Override
-            public void onSucceed(final Boolean usbStatus, final Boolean powerStatus) {
-                Logger.d(TAG， String.format("getProperties usbStatus=%s powerStatus=%s", usbStatus, powerStatus));
-                ...
+            public void onSucceed(final PlugBaseService.Power power, final PlugBaseService.WifiLed wifiLed, final Integer temperature) {
+                show("getProperties", String.format("Power=%s WifiLed=%s Temperature=%s", power, wifiLed, temperature));
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        tvPower.setText(String.valueOf(power));
+                        tvWifiLed.setText(String.valueOf(wifiLed));
+                        tvTemperature.setText(String.valueOf(temperature));
+                    }
+                });
             }
 
             @Override
             public void onFailed(int errCode, String description) {
-                Logger.e(TAG， String.format("getProperties Failed, code: %d %s", errCode, description));
+                show("getProperties", String.format("Failed, code: %d %s", errCode, description));
             }
         });
-    } catch(MiotException e) {
+    } catch (MiotException e) {
         e.printStackTrace();
     }
 }
 ```
 * 下发命令
 ```Java
-public void setPlugOn() {
+public void setPower() {
     try {
-        mSmartSocketBaseService.setPlugOn(new CompletionHandler() {
+        PlugBaseService.Power power = PlugBaseService.Power.on;
+        mBaseService.setPower(power, new CompletionHandler() {
             @Override
             public void onSucceed() {
-                Logger.d(TAG, "setPlugOn OK");
-                ...
+                show("setPower", "OK");
             }
 
             @Override
             public void onFailed(int errCode, String description) {
-                Logger.e(TAG， String.format("setPlugOn Failed, code: %d %s", errCode, description));
+                show("setPower", String.format("Failed, code: %d %s", errCode, description));
             }
+
         });
     } catch (MiotException e) {
         e.printStackTrace();
@@ -531,33 +464,91 @@ public void setPlugOn() {
 ```Java
 public void subscribeNotification() {
     try {
-        mSmartSocketBaseService.subscribeNotifications(new CompletionHandler() {
+        mBaseService.subscribeNotifications(new CompletionHandler() {
             @Override
             public void onSucceed() {
-                Logger.d(TAG, "subscribe OK");
+                show("subscribe", "OK");
             }
 
             @Override
             public void onFailed(int errCode, String description) {
-                Logger.d(TAG, String.format("subscribe Failed, code: %d %s", errCode, description));
+                show("subscribe", String.format("Failed, code: %d %s", errCode, description));
             }
-        }, new SmartSocketBaseService.PropertyNotificationListener() {
+        }, new PlugBaseService.PropertyNotificationListener() {
             @Override
-            public void onUsbStatusChanged(final Boolean usbStatus) {
-                Logger.d("usbStatusChanged: ", String.valueOf(usbStatus));
-                ...
+            public void onPowerChanged(final PlugBaseService.Power power) {
+                show("onPowerChanged: ", String.valueOf(power));
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        tvPower.setText(String.valueOf(power));
+                    }
+                });
             }
 
             @Override
-            public void onPowerStatusChanged(final Boolean powerStatus) {
-                Logger.d("powerStatusChanged: ", String.valueOf(powerStatus));
-                ...
+            public void onWifiLedChanged(final PlugBaseService.WifiLed wifiLed) {
+                show("onWifiLedChanged: ", String.valueOf(wifiLed));
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        tvWifiLed.setText(String.valueOf(wifiLed));
+                    }
+                });
+            }
+
+            @Override
+            public void onTemperatureChanged(final Integer temperature) {
+                show("onWifiLedChanged: ", String.valueOf(temperature));
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        tvTemperature.setText(String.valueOf(temperature));
+                    }
+                });
             }
         });
     } catch (MiotException e) {
         e.printStackTrace();
     }
 }
+```
+* 局域网控制
+局域网控制是默认打开的，可以通过通过下面接口进行关闭
+```Java
+MiotManager.getDeviceManipulator().enableLanCtrl(false);
+```
+
+### 4. Mipush
+目前，智能家庭后台的push消息格式是这样：{type:****, body: *****}，其中type有以下几种：device、share、scene和adv，这几类消息SDK会尝试解析，不会传递给客户端，独立APP的push消息格式不要和这个重复。其他Push消息SDK会通过广播的方式将其发送出来，具体可以参考如下代码：
+
+```Java
+    public static final String PUSH_MESSAGE = "com.xiaomi.push.message";
+    public static final String PUSH_COMMAND = "com.xiaomi.push.command";
+
+    public void registerPush() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(PUSH_COMMAND);
+        filter.addAction(PUSH_MESSAGE);
+        registerReceiver(mReceiver, filter);
+    }
+
+    BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            switch (action) {
+                case PUSH_COMMAND:
+                    MiPushCommandMessage command = (MiPushCommandMessage) intent.getSerializableExtra("command");
+                    Logger.d(TAG, "command: " + command.toString());
+                    break;
+                case PUSH_MESSAGE:
+                    MiPushMessage message = (MiPushMessage) intent.getSerializableExtra("message");
+                    Logger.d(TAG, "message: " + message.toString());
+                    break;
+            }
+        }
+    };
 ```
 
 ## 备注

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -266,7 +267,11 @@ public class UniversalServiceActivity extends BaseActivity {
 
         int i = 0;
         for (Action action : mService.getActions()) {
-            menu[i] = action.getDescription();
+            String name = action.getDescription();
+            if (TextUtils.isEmpty(name)) {
+                name = action.getFriendlyName();
+            }
+            menu[i] = name;
             actions[i] = action.getFriendlyName();
             i++;
         }

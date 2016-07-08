@@ -3,7 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="horizontal"
-              tools:context="com.mi.activity.device.SmartsocketActivity">
+              tools:context="com.mi.activity.device.PlugActivity">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -43,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/GetProperties"
-            />
+        />
 
         <Button
             android:id="@+id/btn_subscribe"
@@ -58,28 +58,16 @@
             android:text="@string/Unsubscribe"/>
 
         <Button
-            android:id="@+id/btn_set_plug_on"
+            android:id="@+id/btn_set_power"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/SetPlugOn"/>
+            android:text="set_power"/>
 
         <Button
-            android:id="@+id/btn_set_plug_off"
+            android:id="@+id/btn_set_wifiled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/SetPlugOff"/>
-
-        <Button
-            android:id="@+id/btn_set_usb_on"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/SetUsbPlugOn"/>
-
-        <Button
-            android:id="@+id/btn_set_usb_off"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/SetUsbPlugOff"/>
+            android:text="set_wifiled"/>
 
         <TextView
             android:id="@+id/tv_power"
@@ -87,10 +75,14 @@
             android:layout_height="wrap_content"/>
 
         <TextView
-            android:id="@+id/tv_usb"
+            android:id="@+id/tv_wifiled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
+        <TextView
+            android:id="@+id/tv_temperature"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
 </LinearLayout>

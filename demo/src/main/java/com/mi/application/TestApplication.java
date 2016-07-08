@@ -3,19 +3,22 @@ package com.mi.application;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Process;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.mi.device.AuxAirConditionHH;
-import com.mi.device.SmartSocketBase;
+import com.mi.device.ChuangmiPlugM1;
 import com.mi.setting.AppConfig;
 import com.mi.utils.CrashHandler;
 import com.mi.utils.TestConstants;
+import com.xiaomi.mipush.sdk.MiPushCommandMessage;
+import com.xiaomi.mipush.sdk.MiPushMessage;
 
 import miot.api.MiotManager;
 import miot.service.common.utils.Logger;
@@ -42,11 +45,38 @@ public class TestApplication extends Application {
 
         if (isMainProcess()) {
             MiotManager.getInstance().initialize(this);
+            registerPush();
             new MiotOpenTask().execute();
         }
-
         Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(this));
     }
+
+    public static final String PUSH_MESSAGE = "com.xiaomi.push.message";
+    public static final String PUSH_COMMAND = "com.xiaomi.push.command";
+
+    public void registerPush() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(PUSH_COMMAND);
+        filter.addAction(PUSH_MESSAGE);
+        registerReceiver(mReceiver, filter);
+    }
+
+    BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            switch (action) {
+                case PUSH_COMMAND:
+                    MiPushCommandMessage command = (MiPushCommandMessage) intent.getSerializableExtra("command");
+                    Logger.d(TAG, "command: " + command.toString());
+                    break;
+                case PUSH_MESSAGE:
+                    MiPushMessage message = (MiPushMessage) intent.getSerializableExtra("message");
+                    Logger.d(TAG, "message: " + message.toString());
+                    break;
+            }
+        }
+    };
 
     public static Context getAppContext() {
         return sInstance;
@@ -84,20 +114,24 @@ public class TestApplication extends Application {
             MiotManager.getInstance().setAppConfig(appConfig);
 
             try {
-                DeviceModel smartSocket = DeviceModelFactory.createDeviceModel(
+                DeviceModel plug = DeviceModelFactory.createDeviceModel(
                         TestApplication.this,
-                        TestConstants.CHUANGMI_PLUG_V1,
-                        TestConstants.CHUANGMI_PLUG_V1_URL,
-                        SmartSocketBase.class);
-                MiotManager.getInstance().addModel(smartSocket);
+                        TestConstants.CHUANGMI_PLUG_M1,
+                        TestConstants.CHUANGMI_PLUG_M1_URL,
+                        ChuangmiPlugM1.class);
+                MiotManager.getInstance().addModel(plug);
 
-                DeviceModel aircon = DeviceModelFactory.createDeviceModel(
+                DeviceModel air = DeviceModelFactory.createDeviceModel(
                         TestApplication.this,
-                        TestConstants.AUX_AIRCONDITION_V1,
-                        TestConstants.AUX_AIRCONDITION_V1_URL,
-                        AuxAirConditionHH.class);
-                MiotManager.getInstance().addModel(aircon);
+                        TestConstants.ZHIMI_AIR,
+                        TestConstants.ZHIMI_AIR_URL);
+                MiotManager.getInstance().addModel(air);
 
+                DeviceModel airconPartner = DeviceModelFactory.createDeviceModel(
+                        TestApplication.this,
+                        TestConstants.LUMI_AC_PARTNER,
+                        TestConstants.LUMI_AC_PARTNER_URL);
+                MiotManager.getInstance().addModel(airconPartner);
             } catch (DeviceModelException e) {
                 e.printStackTrace();
             }

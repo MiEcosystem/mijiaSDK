@@ -9,28 +9,26 @@ import miot.api.device.AbstractDevice;
 import miot.typedef.device.Device;
 import miot.typedef.device.Service;
 
-public class AuxAirConditionHH extends AbstractDevice {
+public class ChuangmiPlugM1 extends AbstractDevice {
 
-    private static final String TAG = "AuxAirConditionHH";
+    private static final String TAG = "ChuangmiPlugM1";
 
-    private static final String DEVICE_TYPE = "AuxAirConditionHH";
+    private static final String DEVICE_TYPE = "ChuangmiPlugM1";
 
-    public static final String SERVICE_AirConditionBaseService = "urn:schemas-mi-com:service:AirCondition:BaseService:1";
-    public AirConditionBaseService mAirConditionBaseService = new AirConditionBaseService(this);
-    public static final String SERVICE_AirConditionAdditionalService = "urn:schemas-mi-com:service:AirCondition:AdditionalService:1";
-    public AirConditionAdditionalService mAirConditionAdditionalService = new AirConditionAdditionalService(this);
+    public static final String SERVICE_PlugBaseService = "urn:schemas-mi-com:service:Plug:BaseService:1";
+    public PlugBaseService mPlugBaseService = new PlugBaseService(this);
 
-    public synchronized static AuxAirConditionHH create(Device device) {
+    public synchronized static ChuangmiPlugM1 create(Device device) {
         Log.d(TAG, "create");
 
-        AuxAirConditionHH thiz = null;
+        ChuangmiPlugM1 thiz = null;
         do {
             String deviceType = device.getType().getClassType() + device.getType().getSubType();
             if (!deviceType.equals(DEVICE_TYPE)) {
                 break;
             }
 
-            thiz = new AuxAirConditionHH();
+            thiz = new ChuangmiPlugM1();
             if (!thiz.init(device)) {
                 thiz = null;
             }
@@ -47,16 +45,11 @@ public class AuxAirConditionHH extends AbstractDevice {
                 break;
             }
 
-            Service baseService = device.getService(SERVICE_AirConditionBaseService);
+            Service baseService = device.getService(SERVICE_PlugBaseService);
             if (baseService == null) {
                 break;
             }
-            mAirConditionBaseService.setService(baseService);
-            Service additionalService = device.getService(SERVICE_AirConditionAdditionalService);
-            if (additionalService == null) {
-                break;
-            }
-            mAirConditionAdditionalService.setService(additionalService);
+            mPlugBaseService.setService(baseService);
             this.setDevice(device);
 
             ret = true;
@@ -68,23 +61,23 @@ public class AuxAirConditionHH extends AbstractDevice {
     //-------------------------------------------------------
     // Parcelable
     //-------------------------------------------------------
-    public static final Creator<AuxAirConditionHH> CREATOR = new Creator<AuxAirConditionHH>() {
+    public static final Creator<ChuangmiPlugM1> CREATOR = new Creator<ChuangmiPlugM1>() {
 
         @Override
-        public AuxAirConditionHH createFromParcel(Parcel in) {
-            return new AuxAirConditionHH(in);
+        public ChuangmiPlugM1 createFromParcel(Parcel in) {
+            return new ChuangmiPlugM1(in);
         }
 
         @Override
-        public AuxAirConditionHH[] newArray(int size) {
-            return new AuxAirConditionHH[size];
+        public ChuangmiPlugM1[] newArray(int size) {
+            return new ChuangmiPlugM1[size];
         }
     };
 
-    private AuxAirConditionHH() {
+    private ChuangmiPlugM1() {
     }
 
-    private AuxAirConditionHH(Parcel in) {
+    private ChuangmiPlugM1(Parcel in) {
         readFromParcel(in);
     }
 

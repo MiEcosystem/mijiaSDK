@@ -13,13 +13,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.mi.adapter.ServiceAdapter;
-import com.mi.device.AirConditionBaseService;
-import com.mi.device.AuxAirConditionHH;
+import com.mi.device.ChuangmiPlugM1;
+import com.mi.device.PlugBaseService;
 import com.mi.test.R;
 import com.mi.utils.BaseActivity;
 import com.mi.utils.TestConstants;
 
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -416,17 +419,17 @@ public class UniversalDeviceActivity extends BaseActivity {
         timer.setStartTime(startTime);
 
         //TODO: action是和具体的设备关联的，这里仅供参考
-        if (mAbstractDevice instanceof AuxAirConditionHH) {
-            AirConditionBaseService service = ((AuxAirConditionHH) mAbstractDevice).mAirConditionBaseService;
+        if (mAbstractDevice instanceof ChuangmiPlugM1) {
+            PlugBaseService service = ((ChuangmiPlugM1) mAbstractDevice).mPlugBaseService;
 
-            Action actionOn = service.newAction(AirConditionBaseService.ACTION_setPower);
-            actionOn.setArgumentValue(AirConditionBaseService.PROPERTY_Power, AirConditionBaseService.Power.on.toString());
-            actionOn.setDescription("打开灯泡");
+            Action actionOn = service.newAction(PlugBaseService.ACTION_setPower);
+            actionOn.setArgumentValue(PlugBaseService.PROPERTY_Power, PlugBaseService.Power.on.toString());
+            actionOn.setDescription("打开开关");
             timer.setStartAction(actionOn);
 
-            Action actionOff = service.newAction(AirConditionBaseService.ACTION_setPower);
-            actionOff.setArgumentValue(AirConditionBaseService.PROPERTY_Power, AirConditionBaseService.Power.off.toString());
-            actionOff.setDescription("关闭灯泡");
+            Action actionOff = service.newAction(PlugBaseService.ACTION_setPower);
+            actionOff.setArgumentValue(PlugBaseService.PROPERTY_Power, PlugBaseService.Power.off.toString());
+            actionOff.setDescription("关闭开关");
             timer.setEndAction(actionOff);
         }
 
