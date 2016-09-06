@@ -90,7 +90,7 @@ mijiaSDK中集成有Mipush，目前主要是用于订阅设备事件。App使用
     appConfig.setAppKey(AppConfig.APP_KEY);
     MiotManager.getInstance().setAppConfig(appConfig);
 ```
-* 接着将App需要处理的设备配置到SDK中：
+* 接着将App需要处理的设备配置到SDK中(蓝牙设备跳过这一步)：
 ```Java
     try {
         DeviceModel plug = DeviceModelFactory.createDeviceModel(TestApplication.this,
