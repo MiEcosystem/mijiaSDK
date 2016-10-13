@@ -8,7 +8,7 @@
 - 了解产品功能描述、产品Model等相关概念 [小米智能硬件开放平台](https://open.home.mi.com/resource.html#/summarize)
 - 完成产品登记，并完成固件调试 [产品登记](https://open.home.mi.com/develop.html#/product)
 - 了解Android开发、上线等一系列流程 [安卓开发](http://developer.android.com/)
-- 完成小米开发者账号的注册和资质认证 [小米开放平台](dev.xiaomi.com)
+- 完成小米开发者账号的注册和资质认证 [小米开放平台](http://dev.xiaomi.com)
 
 ## 基础准备
 在您正式进行产品接入前，需要首先完成一下准备工作
