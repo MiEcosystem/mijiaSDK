@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Device Demo</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css"
+          href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+</head>
+
+<body>
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">ChuangmiPlugM1</div>
+        <div class="panel-body">
+
+            <div class="panel panel-default">
+                <div class="panel-heading">PlugBaseService</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Property List</div>
+                                <div class="panel-body">
+                                    <table class="table table-hover">
+                                        <tr>
+                                            <td>Power</td>
+                                            <td><span id="Power"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>WifiLed</td>
+                                            <td><span id="WifiLed"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Temperature</td>
+                                            <td><span id="Temperature">0</span></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Action List</div>
+                                <div class="panel-body">
+                                    <p>
+                                    <div class="form-inline">
+                                        <div class="form-group">
+                                            <label for="setPower">setPower</label>
+                                            <input type="text" class="form-control"
+                                                   style="width: 40%;"
+                                                   id="setPower_power" hint="power">
+                                            <button class="btn btn-default" onclick="setPower()">
+                                                exec
+                                            </button>
+                                        </div>
+                                    </div>
+                                    </p>
+                                    <p>
+                                    <div class="form-inline">
+                                        <div class="form-group">
+                                            <label for="setWifiLed">setWifiLed</label>
+                                            <input type="text" class="form-control"
+                                                   style="width: 40%;"
+                                                   id="setWifiLed_wifiLed" hint="wifiLed">
+                                            <button class="btn btn-default" onclick="setWifiLed()">
+                                                exec
+                                            </button>
+                                        </div>
+                                    </div>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button class="btn btn-default" onclick="subscribeBaseService()">
+                                Subscribe
+                            </button>
+                            <button class="btn btn-default" onclick="unSubscribeBaseService()">
+                                Unsubscribe
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="wsXmp.min.js"></script>
+<script src="ChuangmiPlugM1.min.js"></script>
+<!--<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>-->
+<script src="http://cdn.bootcss.com/socket.io/1.4.5/socket.io.js"></script>
+<script>
+    var device;
+
+    window.onload = function () {
+        console.log('onload');
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        var did = 0;
+        var virtual = false;
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split("=");
+            if (pair[0] == 'did') {
+                did = pair[1];
+            } else if (pair[0] == 'v') {
+                virtual = pair[1] == '1' ? true : false;
+            }
+        }
+        if (did != 0) {
+            ChuangmiPlugM1.create(did, function (error, d) {
+                if (error) {
+                    console.log('create device failed: ', error);
+                } else {
+                    console.log('create device success');
+                    device = d;
+                }
+            });
+        }
+    };
+
+    function setPower() {
+        var power = document.getElementById('setPower_power').value;
+        device.plugBaseService.setPower(power, function (err, res) {
+            if (err) {
+                console.error(err);
+            } else {
+                document.getElementById("Power").innerHTML = power;
+                if (res) {
+                    Object.keys(res).forEach(function (key) {
+                        document.getElementById(key).innerHTML = res[key];
+                    });
+                }
+            }
+        });
+    }
+
+    function setWifiLed() {
+        var wifiLed = document.getElementById('setWifiLed_wifiLed').value;
+        device.plugBaseService.setWifiLed(wifiLed, function (err, res) {
+            if (err) {
+                console.error(err);
+            } else {
+                document.getElementById("WifiLed").innerHTML = wifiLed;
+                if (res) {
+                    Object.keys(res).forEach(function (key) {
+                        document.getElementById(key).innerHTML = res[key];
+                    });
+                }
+            }
+        });
+    }
+
+    function subscribeBaseService() {
+        device.plugBaseService.subscribeNotifications(function (err, res) {
+            if (err) {
+                console.error(err);
+            } else {
+                console.log(res);
+            }
+        }, function (newProperties) {
+            console.log(newProperties);
+            for (var key in newProperties) {
+                document.getElementById(key).innerHTML = newProperties[key];
+            }
+        });
+    }
+
+    function unSubscribeBaseService() {
+        device.plugBaseService.unsubscribeNotifications(function (err, res) {
+            if (err) {
+                console.error(err);
+            } else {
+                console.log(res);
+            }
+        });
+    }
+
+
+</script>
+</body>
+
+</html>

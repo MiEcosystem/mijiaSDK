@@ -1,0 +1,11 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_width="fill_parent">
+    <miot.service.common.widget.DisableImageView
+        android:id="@+id/pull_footer"
+        android:layout_height="13.3dp"
+        android:layout_width="fill_parent"
+        android:gravity="top"
+        android:src="@drawable/transparent"/>
+</LinearLayout>
