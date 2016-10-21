@@ -1,5 +1,7 @@
-﻿# mijiaSDK文档
+﻿# mijiaSDKV2文档
 ---
+## 尽量不要再继续使用mijiaSDK-2-3-4.aar，这个以后不会再更新。建议使用mijiaSDK3进行替代，关于接口方面的调整参考[mijiaSDK3](mijiaSDK3/README.md)
+
 ## 目的
 本文档为接入mijiaSDK的第三方开发者提供开发独立App的指导。
 
