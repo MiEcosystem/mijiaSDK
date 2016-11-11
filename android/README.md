@@ -1,7 +1,5 @@
 ﻿# mijiaSDK文档
 ---
-## 尽量不要再继续使用mijiaSDK-2-3-4.aar，这个以后不会再更新。建议使用mijiaSDK3进行替代，关于接口方面的调整参考[mijiaSDK3](3.0/README.md)
-
 ## 目的
 本文档为接入mijiaSDK的第三方开发者提供开发独立App的指导。
 
@@ -92,7 +90,7 @@ mijiaSDK中集成有Mipush，目前主要是用于订阅设备事件。App使用
     appConfig.setAppKey(AppConfig.APP_KEY);
     MiotManager.getInstance().setAppConfig(appConfig);
 ```
-* 接着将App需要处理的设备配置到SDK中（**蓝牙设备跳过这一步**）：
+* 接着将App需要处理的设备配置到SDK中：
 ```Java
     try {
         DeviceModel plug = DeviceModelFactory.createDeviceModel(TestApplication.this,
@@ -236,7 +234,7 @@ SDK目前提供了如下功能：
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     MiDeviceManager.getInstance().startScan();
                 } else {
-                    Log.e(TAG, "on permission to scan device");
+                    Log.e(TAG, "no permission to scan device");
                 }
         }
     }
@@ -555,4 +553,4 @@ MiotManager.getDeviceManipulator().enableLanCtrl(false);
 
 ## 备注
 1. 在进行独立App开发时，您可以通过您在[小米智能硬件开放平台](https://open.home.mi.com/)注册的开发者帐号绑定设备并进行调试，相关文档请参阅小米智能硬件开放平台的相关文档
-2. 如果您在开发中遇到任何问题，可以联系xuxiaotian@xiaomi.com
+2. 如果您在开发中遇到任何问题，可以联系xuxiaotian@xiaomi.com和hejianhui@xiaomi.com
