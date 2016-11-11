@@ -32,11 +32,10 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
-import com.miot.api.CompletionHandler;
-import com.miot.api.MiotManager;
-import com.miot.common.abstractdevice.AbstractDevice;
-import com.miot.common.exception.MiotException;
+import miot.api.CompletionHandler;
+import miot.api.MiotManager;
+import miot.api.device.AbstractDevice;
+import miot.typedef.exception.MiotException;
 
 public class DeviceListActivity extends BaseActivity {
     private static final String TAG = DeviceListActivity.class.getSimpleName();
@@ -75,7 +74,8 @@ public class DeviceListActivity extends BaseActivity {
         mBtnGetRemoteDevices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mMiDeviceManager.queryWanDeviceList();
+                Log.d(TAG, "getRemoteDevice");
+                mMiDeviceManager.getWanDeviceList();
             }
         });
 
@@ -92,12 +92,14 @@ public class DeviceListActivity extends BaseActivity {
         mBtnStopScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 mMiDeviceManager.stopScan();
             }
         });
 
         mBroadcastManager = LocalBroadcastManager.getInstance(this);
         mMiDeviceManager = MiDeviceManager.getInstance();
+        mMiDeviceManager.getWanDeviceList();
     }
 
     private static final int REQUEST_LOCATION_PERMISSION = 10000;
@@ -137,8 +139,8 @@ public class DeviceListActivity extends BaseActivity {
         switch (device.getConnectionType()) {
             case MIOT_WAN:
                 gotoDevicePage(device);
-                break;
 
+                break;
             case MIOT_WIFI:
                 connectDevice(device);
                 break;
@@ -176,7 +178,6 @@ public class DeviceListActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         registerReceiver();
-        mMiDeviceManager.queryWanDeviceList();
     }
 
     @Override

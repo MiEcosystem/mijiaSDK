@@ -14,11 +14,10 @@ import com.mi.utils.TestConstants;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
-import com.miot.api.CompletionHandler;
-import com.miot.api.MiotManager;
-import com.miot.common.abstractdevice.AbstractDevice;
-import com.miot.common.exception.MiotException;
+import miot.api.CompletionHandler;
+import miot.api.MiotManager;
+import miot.api.device.AbstractDevice;
+import miot.typedef.exception.MiotException;
 
 public class PlugActivity extends BaseActivity {
     private static String TAG = PlugActivity.class.getSimpleName();

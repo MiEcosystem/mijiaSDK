@@ -1,6 +1,5 @@
 ﻿# mijiaSDK文档
 ---
-## 尽量不要再继续使用mijiaSDK-2-3-4.aar，这个以后不会再更新。建议使用mijiaSDK3进行替代，关于接口方面的调整参考[mijiaSDK3](3.0/README.md)
 
 ## 目的
 本文档为接入mijiaSDK的第三方开发者提供开发独立App的指导。
@@ -555,4 +554,4 @@ MiotManager.getDeviceManipulator().enableLanCtrl(false);
 
 ## 备注
 1. 在进行独立App开发时，您可以通过您在[小米智能硬件开放平台](https://open.home.mi.com/)注册的开发者帐号绑定设备并进行调试，相关文档请参阅小米智能硬件开放平台的相关文档
-2. 如果您在开发中遇到任何问题，可以联系xuxiaotian@xiaomi.com
+2. 如果您在开发中遇到任何问题，可以联系xuxiaotian@xiaomi.com，hejianhui@xiaomi.com

@@ -9,7 +9,7 @@ import com.mi.test.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.miot.common.device.Service;
+import miot.typedef.device.Service;
 
 public class ServiceAdapter extends LBaseAdapter<Service> {
 

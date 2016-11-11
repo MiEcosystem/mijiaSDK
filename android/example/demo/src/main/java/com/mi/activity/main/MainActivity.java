@@ -13,25 +13,17 @@ import com.mi.test.R;
 import com.mi.utils.BaseActivity;
 import com.mi.utils.TestConstants;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
-import com.miot.api.CommonHandler;
-import com.miot.api.CompletionHandler;
-import com.miot.api.MiotManager;
-
-import com.miot.common.device.Device;
-import com.miot.common.exception.MiotException;
-import com.miot.common.share.ShareStatus;
-import com.miot.common.share.SharedRequest;
-import com.miot.common.voice.VoiceCommand;
-import com.miot.common.voice.VoiceResult;
-import com.miot.common.voice.VoiceSession;
+import miot.api.CommonHandler;
+import miot.api.CompletionHandler;
+import miot.api.MiotManager;
+import miot.typedef.device.Device;
+import miot.typedef.exception.MiotException;
+import miot.typedef.share.ShareStatus;
+import miot.typedef.share.SharedRequest;
 
 public class MainActivity extends BaseActivity {
     private static String TAG = MainActivity.class.getSimpleName();
@@ -44,8 +36,6 @@ public class MainActivity extends BaseActivity {
     Button mBtnRequest;
     @InjectView(R.id.btn_accept)
     Button mBtnAccept;
-    @InjectView(R.id.btn_security_conn)
-    Button mBtnSConn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,16 +74,7 @@ public class MainActivity extends BaseActivity {
         mBtnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                acceptSharedRequest();
-                Intent intent = new Intent(MainActivity.this, WebActivity.class);
-                startActivity(intent);
-            }
-        });
-        mBtnSConn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ConnActivity.class);
-                startActivity(intent);
+                acceptSharedRequest();
             }
         });
     }

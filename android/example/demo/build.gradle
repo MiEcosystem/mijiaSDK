@@ -5,12 +5,11 @@ android {
     buildToolsVersion '23.0.3'
 
     defaultConfig {
-        applicationId "com.xiaomi.xhome"
+        applicationId "com.mi.test"
         minSdkVersion 18
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
-        multiDexEnabled true
     }
 
     buildTypes {
@@ -19,7 +18,7 @@ android {
         }
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
 
@@ -34,11 +33,6 @@ android {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/io.netty.versions.properties'
-    }
-
-    dexOptions {
-        javaMaxHeapSize "4g"
     }
 }
 
@@ -54,17 +48,9 @@ dependencies {
     compile 'joda-time:joda-time:2.3'
     compile 'com.google.code.gson:gson:2.4'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
-    compile 'com.android.support:multidex:1.0.1'
-    compile 'com.inuker.bluetooth:library:1.1.1'
 
-//    compile rootProject.ext.dependencies['commons-io']
-//    compile rootProject.ext.dependencies['netty-socketio']
-//    compile project(':miotWeb')
-//    compile project(':miotService')
+    compile(name: 'mijiaSDK-release', ext: "aar")
 
-    compile(name: 'mijiaBluetooth', ext: "aar")
-    compile(name: 'mijiaClient-3-0-1', ext: "aar")
-    compile(name: 'mijiaService-3-0-1', ext: "aar")
     compile files('libs/oauth-xiaomiopenauth.jar')
 
 }

@@ -9,7 +9,7 @@ import com.mi.test.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.miot.common.property.Property;
+import miot.typedef.property.Property;
 
 public class PropertyAdapter extends LBaseAdapter<Property> {
     public PropertyAdapter(Context context) {

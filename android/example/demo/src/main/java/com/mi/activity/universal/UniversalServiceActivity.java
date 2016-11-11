@@ -28,19 +28,19 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.miot.api.DeviceManipulator;
-import com.miot.api.MiotManager;
-import com.miot.common.device.Action;
-import com.miot.common.device.Service;
-import com.miot.common.device.invocation.ActionInfo;
-import com.miot.common.device.invocation.ActionInfoFactory;
-import com.miot.common.device.invocation.PropertyInfo;
-import com.miot.common.device.invocation.PropertyInfoFactory;
-import com.miot.common.exception.MiotException;
-import com.miot.common.property.AllowedValue;
-import com.miot.common.property.AllowedValueList;
-import com.miot.common.property.Property;
-import com.miot.common.property.PropertyDefinition;
+import miot.api.DeviceManipulator;
+import miot.api.MiotManager;
+import miot.typedef.device.Action;
+import miot.typedef.device.Service;
+import miot.typedef.device.invocation.ActionInfo;
+import miot.typedef.device.invocation.ActionInfoFactory;
+import miot.typedef.device.invocation.PropertyInfo;
+import miot.typedef.device.invocation.PropertyInfoFactory;
+import miot.typedef.exception.MiotException;
+import miot.typedef.property.AllowedValue;
+import miot.typedef.property.AllowedValueList;
+import miot.typedef.property.Property;
+import miot.typedef.property.PropertyDefinition;
 
 public class UniversalServiceActivity extends BaseActivity {
     private static String TAG = UniversalServiceActivity.class.getSimpleName();

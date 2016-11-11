@@ -5,9 +5,9 @@ package com.mi.device;
 import android.os.Parcel;
 import android.util.Log;
 
-import com.miot.common.abstractdevice.AbstractDevice;
-import com.miot.common.device.Device;
-import com.miot.common.device.Service;
+import miot.api.device.AbstractDevice;
+import miot.typedef.device.Device;
+import miot.typedef.device.Service;
 
 public class ChuangmiPlugM1 extends AbstractDevice {
 

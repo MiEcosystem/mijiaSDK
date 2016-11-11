@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
-import com.miot.common.utils.SdCardUtils;
-
 import org.joda.time.DateTime;
 
 import java.io.File;
@@ -14,6 +12,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+
+import miot.service.common.utils.SdCardUtils;
 
 public class CrashHandler implements Thread.UncaughtExceptionHandler {
     private static final String TAG = CrashHandler.class.getSimpleName();

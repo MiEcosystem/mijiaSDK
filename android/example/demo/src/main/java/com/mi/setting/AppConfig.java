@@ -6,5 +6,5 @@ public class AppConfig {
 
     public static final String OAUTH_APP_KEY = "5861746152552";
 
-    public static final String OAUTH_REDIRECT_URI = "http://www.xiaomi.com";
+    public static final String OAUTH_REDIRECT_URI = "http://www.xiaomi.com/xhome";
 }

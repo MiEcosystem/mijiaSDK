@@ -11,8 +11,6 @@ import android.widget.TextView;
 import com.mi.setting.AppConfig;
 import com.mi.test.R;
 import com.mi.utils.BaseActivity;
-import com.miot.common.ReturnCode;
-import com.miot.common.people.People;
 import com.xiaomi.account.openauth.XMAuthericationException;
 import com.xiaomi.account.openauth.XiaomiOAuthFuture;
 import com.xiaomi.account.openauth.XiaomiOAuthResults;
@@ -22,11 +20,13 @@ import java.io.IOException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.miot.api.MiotManager;
+import miot.api.MiotManager;
 
 import com.mi.account.XiaomiAccountGetPeopleInfoTask;
 
-import com.miot.common.exception.MiotException;
+import miot.typedef.ReturnCode;
+import miot.typedef.exception.MiotException;
+import miot.typedef.people.People;
 
 public class AccountActivity extends BaseActivity {
     private static final String TAG = AccountActivity.class.getSimpleName();

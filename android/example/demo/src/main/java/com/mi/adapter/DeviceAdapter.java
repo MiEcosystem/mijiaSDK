@@ -7,10 +7,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mi.test.R;
-import com.miot.common.abstractdevice.AbstractDevice;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import miot.api.device.AbstractDevice;
 
 /**
  * Created by stephen on 16-1-18.

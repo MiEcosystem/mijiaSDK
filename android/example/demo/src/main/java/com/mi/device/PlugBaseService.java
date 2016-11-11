@@ -7,19 +7,19 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.miot.api.CompletionHandler;
-import com.miot.api.DeviceManipulator;
-import com.miot.api.MiotManager;
-import com.miot.common.abstractdevice.AbstractDevice;
-import com.miot.common.abstractdevice.AbstractService;
-import com.miot.common.ReturnCode;
-import com.miot.common.device.invocation.ActionInfo;
-import com.miot.common.device.invocation.ActionInfoFactory;
-import com.miot.common.device.invocation.PropertyInfo;
-import com.miot.common.device.invocation.PropertyInfoFactory;
-import com.miot.common.property.Property;
-import com.miot.common.property.PropertyDefinition;
-import com.miot.common.exception.MiotException;
+import miot.api.CompletionHandler;
+import miot.api.DeviceManipulator;
+import miot.api.MiotManager;
+import miot.api.device.AbstractDevice;
+import miot.api.device.AbstractService;
+import miot.typedef.ReturnCode;
+import miot.typedef.device.invocation.ActionInfo;
+import miot.typedef.device.invocation.ActionInfoFactory;
+import miot.typedef.device.invocation.PropertyInfo;
+import miot.typedef.device.invocation.PropertyInfoFactory;
+import miot.typedef.property.Property;
+import miot.typedef.property.PropertyDefinition;
+import miot.typedef.exception.MiotException;
 
 public class PlugBaseService extends AbstractService {
     private static final String TAG = "PlugBaseService";
@@ -46,10 +46,9 @@ public class PlugBaseService extends AbstractService {
     //-------------------------------------------------------
     // Property value defined
     //-------------------------------------------------------
-
     /**
-     * 开关状态（on|off）
-     */
+    * 开关状态（on|off）
+    */
     public enum Power {
         undefined,
         on,
@@ -57,8 +56,8 @@ public class PlugBaseService extends AbstractService {
     }
 
     /**
-     * wifi指示灯开关
-     */
+    * wifi指示灯开关
+    */
     public enum WifiLed {
         undefined,
         on,
@@ -75,12 +74,10 @@ public class PlugBaseService extends AbstractService {
          * 开关状态（on|off） 发生改变
          */
         void onPowerChanged(Power power);
-
         /**
          * wifi指示灯开关 发生改变
          */
         void onWifiLedChanged(WifiLed wifiLed);
-
         /**
          * 温度 发生改变
          */
@@ -125,22 +122,16 @@ public class PlugBaseService extends AbstractService {
                     public void onPropertyChanged(PropertyInfo info, String propertyName) {
                         switch (propertyName) {
                             case PROPERTY_Power:
-                                if (info.getProperty(PROPERTY_Power).isValueValid()) {
-                                    Power power = Power.valueOf((String) info.getValue(PROPERTY_Power));
-                                    listener.onPowerChanged(power);
-                                }
+                                Power power = Power.valueOf((String) info.getValue(PROPERTY_Power));
+                                listener.onPowerChanged(power);
                                 break;
                             case PROPERTY_WifiLed:
-                                if (info.getProperty(PROPERTY_WifiLed).isValueValid()) {
-                                    WifiLed wifiLed = WifiLed.valueOf((String) info.getValue(PROPERTY_WifiLed));
-                                    listener.onWifiLedChanged(wifiLed);
-                                }
+                                WifiLed wifiLed = WifiLed.valueOf((String) info.getValue(PROPERTY_WifiLed));
+                                listener.onWifiLedChanged(wifiLed);
                                 break;
                             case PROPERTY_Temperature:
-                                if (info.getProperty(PROPERTY_Temperature).isValueValid()) {
-                                    Integer temperature = (Integer) info.getValue(PROPERTY_Temperature);
-                                    listener.onTemperatureChanged(temperature);
-                                }
+                                Integer temperature = (Integer) info.getValue(PROPERTY_Temperature);
+                                listener.onTemperatureChanged(temperature);
                                 break;
 
                             default:
@@ -183,7 +174,6 @@ public class PlugBaseService extends AbstractService {
     //-------------------------------------------------------
     // Properties Getter
     //-------------------------------------------------------
-
     /**
      * 回调接口： 读取所有可读属性
      */
@@ -213,19 +203,19 @@ public class PlugBaseService extends AbstractService {
             public void onSucceed(PropertyInfo info) {
                 Property powerProp = info.getProperty(PROPERTY_Power);
                 Power power = null;
-                if (powerProp.isValueValid()) {
+                if(powerProp.isValueValid()) {
                     power = Power.valueOf((String) powerProp.getValue());
                 }
 
                 Property wifiLedProp = info.getProperty(PROPERTY_WifiLed);
                 WifiLed wifiLed = null;
-                if (wifiLedProp.isValueValid()) {
+                if(wifiLedProp.isValueValid()) {
                     wifiLed = WifiLed.valueOf((String) wifiLedProp.getValue());
                 }
 
                 Property temperatureProp = info.getProperty(PROPERTY_Temperature);
                 Integer temperature = null;
-                if (temperatureProp.isValueValid()) {
+                if(temperatureProp.isValueValid()) {
                     temperature = (Integer) temperatureProp.getValue();
                 }
 
@@ -242,7 +232,6 @@ public class PlugBaseService extends AbstractService {
     //-------------------------------------------------------
     // Property Getters
     //-------------------------------------------------------
-
     /**
      * 回调接口： 读取Power
      */
@@ -266,11 +255,12 @@ public class PlugBaseService extends AbstractService {
             @Override
             public void onSucceed(PropertyInfo info) {
                 Property power = info.getProperty(PROPERTY_Power);
-                if (power.isValueValid()) {
+                if(power.isValueValid()) {
                     handler.onSucceed(Power.valueOf((String) info.getValue(PROPERTY_Power)));
                 } else {
                     handler.onFailed(ReturnCode.E_INVALID_DATA, "device response valid: " + power.getValue());
                 }
+
             }
 
             @Override
@@ -279,7 +269,6 @@ public class PlugBaseService extends AbstractService {
             }
         });
     }
-
     /**
      * 回调接口： 读取WifiLed
      */
@@ -303,11 +292,12 @@ public class PlugBaseService extends AbstractService {
             @Override
             public void onSucceed(PropertyInfo info) {
                 Property wifiLed = info.getProperty(PROPERTY_WifiLed);
-                if (wifiLed.isValueValid()) {
+                if(wifiLed.isValueValid()) {
                     handler.onSucceed(WifiLed.valueOf((String) info.getValue(PROPERTY_WifiLed)));
                 } else {
                     handler.onFailed(ReturnCode.E_INVALID_DATA, "device response valid: " + wifiLed.getValue());
                 }
+
             }
 
             @Override
@@ -316,7 +306,6 @@ public class PlugBaseService extends AbstractService {
             }
         });
     }
-
     /**
      * 回调接口： 读取Temperature
      */
@@ -340,11 +329,12 @@ public class PlugBaseService extends AbstractService {
             @Override
             public void onSucceed(PropertyInfo info) {
                 Property temperature = info.getProperty(PROPERTY_Temperature);
-                if (temperature.isValueValid()) {
+                if(temperature.isValueValid()) {
                     handler.onSucceed((Integer) info.getValue(PROPERTY_Temperature));
                 } else {
                     handler.onFailed(ReturnCode.E_INVALID_DATA, "device response valid: " + temperature.getValue());
                 }
+
             }
 
             @Override
@@ -357,7 +347,6 @@ public class PlugBaseService extends AbstractService {
     //-------------------------------------------------------
     // Actions
     //-------------------------------------------------------
-
     /**
      * 电源开关
      */
@@ -367,7 +356,7 @@ public class PlugBaseService extends AbstractService {
         }
 
         final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setPower);
-        if (actionInfo == null) {
+        if(actionInfo == null) {
             throw new MiotException("actionInfo is null");
         }
 
@@ -378,7 +367,7 @@ public class PlugBaseService extends AbstractService {
         op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
             @Override
             public void onSucceed(ActionInfo info) {
-                handler.onSucceed();
+                 handler.onSucceed();
             }
 
             @Override
@@ -397,7 +386,7 @@ public class PlugBaseService extends AbstractService {
         }
 
         final ActionInfo actionInfo = ActionInfoFactory.create(getService(), ACTION_setWifiLed);
-        if (actionInfo == null) {
+        if(actionInfo == null) {
             throw new MiotException("actionInfo is null");
         }
 
@@ -408,7 +397,7 @@ public class PlugBaseService extends AbstractService {
         op.invoke(actionInfo, new DeviceManipulator.InvokeCompletionHandler() {
             @Override
             public void onSucceed(ActionInfo info) {
-                handler.onSucceed();
+                 handler.onSucceed();
             }
 
             @Override

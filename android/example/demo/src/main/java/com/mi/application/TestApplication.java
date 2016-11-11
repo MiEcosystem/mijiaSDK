@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Process;
-import android.support.multidex.MultiDex;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,28 +17,22 @@ import com.mi.device.ChuangmiPlugM1;
 import com.mi.setting.AppConfig;
 import com.mi.utils.CrashHandler;
 import com.mi.utils.TestConstants;
-import com.miot.common.ReturnCode;
-import com.miot.common.config.AppConfiguration;
-import com.miot.common.model.DeviceModel;
-import com.miot.common.model.DeviceModelException;
-import com.miot.common.model.DeviceModelFactory;
-import com.miot.common.utils.Logger;
 import com.xiaomi.mipush.sdk.MiPushCommandMessage;
 import com.xiaomi.mipush.sdk.MiPushMessage;
 
-import com.miot.api.MiotManager;
+import miot.api.MiotManager;
+import miot.service.common.utils.Logger;
+import miot.typedef.ReturnCode;
+import miot.typedef.config.AppConfiguration;
+import miot.typedef.model.DeviceModel;
+import miot.typedef.model.DeviceModelException;
+import miot.typedef.model.DeviceModelFactory;
 
 public class TestApplication extends Application {
     private static final String TAG = TestApplication.class.getSimpleName();
     private LocalBroadcastManager mBindBroadcastManager;
 
     private static TestApplication sInstance;
-
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(base);
-    }
 
     @Override
     public void onCreate() {
@@ -51,7 +44,6 @@ public class TestApplication extends Application {
         mBindBroadcastManager = LocalBroadcastManager.getInstance(this);
 
         if (isMainProcess()) {
-
             MiotManager.getInstance().initialize(this);
             registerPush();
             new MiotOpenTask().execute();
@@ -129,12 +121,17 @@ public class TestApplication extends Application {
                         ChuangmiPlugM1.class);
                 MiotManager.getInstance().addModel(plug);
 
-                DeviceModel toothBrush = DeviceModelFactory.createDeviceModel(
+                DeviceModel air = DeviceModelFactory.createDeviceModel(
                         TestApplication.this,
-                        "soocare.toothbrush.x3",
-                        "soocare.toothbrush.x3.xml");
-                MiotManager.getInstance().addModel(toothBrush);
+                        TestConstants.ZHIMI_AIR,
+                        TestConstants.ZHIMI_AIR_URL);
+                MiotManager.getInstance().addModel(air);
 
+                DeviceModel airconPartner = DeviceModelFactory.createDeviceModel(
+                        TestApplication.this,
+                        TestConstants.LUMI_AC_PARTNER,
+                        TestConstants.LUMI_AC_PARTNER_URL);
+                MiotManager.getInstance().addModel(airconPartner);
             } catch (DeviceModelException e) {
                 e.printStackTrace();
             }

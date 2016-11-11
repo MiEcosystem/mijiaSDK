@@ -20,25 +20,27 @@ import com.mi.utils.BaseActivity;
 import com.mi.utils.TestConstants;
 
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
-import com.miot.api.CommonHandler;
-import com.miot.api.CompletionHandler;
-import com.miot.api.DeviceManager;
-import com.miot.api.MiotManager;
-import com.miot.common.abstractdevice.AbstractDevice;
-import com.miot.common.device.Action;
-import com.miot.common.device.Device.Ownership;
-import com.miot.common.device.Service;
-import com.miot.common.device.firmware.MiotFirmware;
-import com.miot.common.exception.MiotException;
-import com.miot.common.property.Property;
-import com.miot.common.share.SharedUser;
-import com.miot.common.timer.CrontabTime;
-import com.miot.common.timer.DayOfWeek;
-import com.miot.common.timer.Timer;
+import miot.api.CommonHandler;
+import miot.api.CompletionHandler;
+import miot.api.DeviceManager;
+import miot.api.MiotManager;
+import miot.api.device.AbstractDevice;
+import miot.typedef.device.Action;
+import miot.typedef.device.Device.Ownership;
+import miot.typedef.device.Service;
+import miot.typedef.device.firmware.MiotFirmware;
+import miot.typedef.exception.MiotException;
+import miot.typedef.property.Property;
+import miot.typedef.share.SharedUser;
+import miot.typedef.timer.CrontabTime;
+import miot.typedef.timer.DayOfWeek;
+import miot.typedef.timer.Timer;
 
 public class UniversalDeviceActivity extends BaseActivity {
     private static String TAG = UniversalDeviceActivity.class.getSimpleName();
@@ -101,7 +103,7 @@ public class UniversalDeviceActivity extends BaseActivity {
 
                         switch (which) {
                             case 0:
-                                renameDevice();
+                                takeOwnership();
                                 break;
 
                             case 1:
@@ -166,7 +168,6 @@ public class UniversalDeviceActivity extends BaseActivity {
                 mAbstractDevice.getDevice().getOwnerInfo().getUserId());
         tvLog.setText(log);
         tvLog.setMovementMethod(new ScrollingMovementMethod());
-        Log.d(TAG, "longitude: " + mAbstractDevice.getDevice().getLongitude() + " " + mAbstractDevice.getDevice().getLatitude());
     }
 
     private void initServiceList() {
@@ -209,25 +210,6 @@ public class UniversalDeviceActivity extends BaseActivity {
                 tvLog.setText(newLog);
             }
         });
-    }
-
-    private void renameDevice() {
-        String name = "测试插座";
-        try {
-            MiotManager.getDeviceManager().renameDevice(mAbstractDevice, name, new CompletionHandler() {
-                @Override
-                public void onSucceed() {
-                    Log.d(TAG, "renameDevice onSucceed");
-                }
-
-                @Override
-                public void onFailed(int errCode, String description) {
-                    Log.d(TAG, "renameDevice onFailed: " + errCode + description);
-                }
-            });
-        } catch (MiotException e) {
-            e.printStackTrace();
-        }
     }
 
     private void takeOwnership() {
@@ -290,7 +272,7 @@ public class UniversalDeviceActivity extends BaseActivity {
         }
 
         try {
-            MiotManager.getDeviceManager().queryFirmwareInfo(mAbstractDevice, new DeviceManager.QueryFirmwareHandler() {
+            mAbstractDevice.queryFirmwareInfo(new DeviceManager.QueryFirmwareHandler() {
                 @Override
                 public void onSucceed(MiotFirmware firmware) {
                     showLog("queryFirmwareUpgradeInfo: OK");
@@ -309,7 +291,7 @@ public class UniversalDeviceActivity extends BaseActivity {
 
     private void upgradeFirmware() {
         try {
-            MiotManager.getDeviceManager().startUpgradeFirmware(mAbstractDevice, new CompletionHandler() {
+            mAbstractDevice.startUpgradeFirmware(new CompletionHandler() {
                 @Override
                 public void onSucceed() {
                     showLog("upgradeFirmware: OK");
@@ -327,7 +309,7 @@ public class UniversalDeviceActivity extends BaseActivity {
 
     private void queryFirmwareUpgradingInfo() {
         try {
-            MiotManager.getDeviceManager().queryFirmwareUpgradeInfo(mAbstractDevice, new DeviceManager.QueryFirmwareHandler() {
+            mAbstractDevice.queryFirmwareUpgradeInfo(new DeviceManager.QueryFirmwareHandler() {
                 @Override
                 public void onSucceed(MiotFirmware firmware) {
                     showLog("queryFirmwareUpgradeInfo: OK");
@@ -397,31 +379,26 @@ public class UniversalDeviceActivity extends BaseActivity {
         sb.append(startTime.getDayOfWeeks());
         sb.append(" startAction: ");
         Action startAction = timer.getStartAction();
-        if (startAction != null) {
-            for (Property p : startAction.getInArguments()) {
-                sb.append(p.getDefinition().getFriendlyName());
-                sb.append(" ");
-                sb.append(p.getValue().toString());
-                sb.append("  ");
-            }
+        for (Property p : startAction.getInArguments()) {
+            sb.append(p.getDefinition().getFriendlyName());
+            sb.append(" ");
+            sb.append(p.getValue().toString());
+            sb.append("  ");
         }
-
         Action endAction = timer.getEndAction();
-        if (endAction != null) {
-            for (Property p : endAction.getInArguments()) {
-                sb.append(p.getDefinition().getFriendlyName());
-                sb.append(" ");
-                sb.append(p.getValue().toString());
-                sb.append("  ");
-            }
+        for (Property p : endAction.getInArguments()) {
+            sb.append(p.getDefinition().getFriendlyName());
+            sb.append(" ");
+            sb.append(p.getValue().toString());
+            sb.append("  ");
         }
         Log.d(TAG, sb.toString());
     }
 
-    //TODO: 以下代码仅供参考，这里使用创米插座作一个例子，具体使用使用自己设备代替
+    //TODO: 以下代码仅供参考，这里用空调作一个例子，具体使用使用自己设备代替
     private void addTimer() {
         Timer timer = new Timer();
-        timer.setName("星期一到星期三，晚上８点半开始打开开关，５个小时后再关闭灯泡");
+        timer.setName("星期一到星期三，晚上８点半开始打开灯泡，５个小时后再关闭灯泡");
         timer.setDeviceId(mAbstractDevice.getDeviceId());
         timer.setPushEnabled(false);
         //定时的开关

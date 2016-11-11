@@ -4,17 +4,17 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.miot.common.config.AppConfiguration;
-import com.miot.common.people.People;
-import com.miot.common.people.PeopleFactory;
-import com.miot.common.utils.Logger;
 import com.xiaomi.account.openauth.AuthorizeApi;
 import com.xiaomi.account.openauth.XMAuthericationException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.miot.api.MiotManager;
+import miot.api.MiotManager;
+import miot.service.common.utils.Logger;
+import miot.typedef.config.AppConfiguration;
+import miot.typedef.people.People;
+import miot.typedef.people.PeopleFactory;
 
 /**
  * This class used to obtain user xiaomi account detail information.

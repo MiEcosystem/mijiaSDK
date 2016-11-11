@@ -13,16 +13,16 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import com.miot.api.CompletionHandler;
-import com.miot.api.DeviceManager;
-import com.miot.api.MiotManager;
-import com.miot.common.abstractdevice.AbstractDevice;
-import com.miot.common.device.ConnectionType;
-import com.miot.common.device.Device;
-import com.miot.common.device.DiscoveryType;
-import com.miot.common.exception.MiotException;
-import com.miot.common.utils.Logger;
-import com.miot.common.utils.NetworkUtils;
+import miot.api.CompletionHandler;
+import miot.api.DeviceManager;
+import miot.api.MiotManager;
+import miot.api.device.AbstractDevice;
+import miot.service.common.utils.Logger;
+import miot.service.common.utils.NetworkUtils;
+import miot.typedef.device.ConnectionType;
+import miot.typedef.device.Device;
+import miot.typedef.device.DiscoveryType;
+import miot.typedef.exception.MiotException;
 
 public class MiDeviceManager {
     private static final String TAG = MiDeviceManager.class.getSimpleName();
@@ -79,7 +79,7 @@ public class MiDeviceManager {
         mWifiDevices.clear();
     }
 
-    public void queryWanDeviceList() {
+    public void getWanDeviceList() {
         if (!NetworkUtils.isNetworkAvailable(mContext)) {
             return;
         }
@@ -138,24 +138,23 @@ public class MiDeviceManager {
     };
 
     private void foundDevices(List<AbstractDevice> devices) {
-        Log.d(TAG, "foundDevices");
-        for (AbstractDevice device : devices) {
-            ConnectionType connectionType = device.getDevice().getConnectionType();
-            Log.d(TAG, "found device: " + devices.size() + " " + device.getName() + " " + device.getDeviceId() + " " + connectionType);
+        for (AbstractDevice abstractDevice : devices) {
+            ConnectionType connectionType = abstractDevice.getDevice().getConnectionType();
+            Log.d(TAG, "found abstractDevice: " + abstractDevice.getName() + " " + abstractDevice.getDeviceId() + " " + connectionType);
 
             switch (connectionType) {
                 case MIOT_WAN:
 
-                    if (device.getOwnership() == Device.Ownership.NOONES) {
-                        bindDevice(device);
+                    if (abstractDevice.getOwnership() == Device.Ownership.NOONES) {
+                        bindDevice(abstractDevice);
                     }
 
-                    mWanDevices.put(device.getDeviceId(), device);
+                    mWanDevices.put(abstractDevice.getDeviceId(), abstractDevice);
                     break;
 
                 case MIOT_WIFI:
-                    if (!mWifiDevices.containsKey(device.getDeviceId())) {
-                        mWifiDevices.put(device.getAddress(), device);
+                    if (!mWifiDevices.containsKey(abstractDevice.getDeviceId())) {
+                        mWifiDevices.put(abstractDevice.getAddress(), abstractDevice);
                     }
                     break;
             }
