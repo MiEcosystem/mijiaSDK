@@ -82,11 +82,12 @@ public class AccountActivity extends BaseActivity {
             showToast(R.string.already_login);
             return ReturnCode.OK;
         }
-
+	
+	int[] scope = new int[]{1, 3, 6000};
         XiaomiOAuthFuture<XiaomiOAuthResults> future = new XiaomiOAuthorize()
                 .setAppId(AppConfig.OAUTH_APP_ID)
                 .setRedirectUrl(AppConfig.OAUTH_REDIRECT_URI)
-                .setScope(null)
+                .setScope(scope)
                 .startGetAccessToken(this);
         waitFutureResult(future);
 
