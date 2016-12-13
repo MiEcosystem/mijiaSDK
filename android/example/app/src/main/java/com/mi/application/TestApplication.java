@@ -129,6 +129,12 @@ public class TestApplication extends Application {
                         ChuangmiPlugM1.class);
                 MiotManager.getInstance().addModel(plug);
 
+                DeviceModel plug1 = DeviceModelFactory.createDeviceModel(TestApplication.this,
+                        "chuangmi.plug.v1",
+                        "chuangmi.plug.v1.xml");
+                MiotManager.getInstance().addModel(plug1);
+
+
                 DeviceModel toothBrush = DeviceModelFactory.createDeviceModel(
                         TestApplication.this,
                         "soocare.toothbrush.x3",
