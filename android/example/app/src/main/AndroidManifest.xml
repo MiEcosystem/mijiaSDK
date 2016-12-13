@@ -60,6 +60,8 @@
             android:name="com.mi.activity.universal.UniversalServiceActivity"
             android:label="@string/title_activity_universaldevice"/>
         <activity android:name="com.mi.activity.main.ConnActivity"/>
+
+        <activity android:name="com.xiaomi.account.openauth.AuthorizeActivity" />
     </application>
 
 </manifest>
