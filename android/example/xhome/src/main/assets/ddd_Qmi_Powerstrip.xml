@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="urn:schemas-mi-com:device-1-0">
+    <specVersion>
+        <major>1</major>
+        <minor>0</minor>
+    </specVersion>
+    <device>
+        <type>urn:schemas-mi-com:device:Qmi:PowerStrip:1</type>
+        <friendlyName>青米智能插排</friendlyName>
+        <firmwareVersion>1</firmwareVersion>
+        <modelNumber>2015</modelNumber>
+        <modelName>qmi.powerstrip.v1</modelName>
+        <modelDescription>青米智能插排</modelDescription>
+        <modelURL>http://www.mi.com</modelURL>
+        <manufacturer>Xiaomi</manufacturer>
+        <manufacturerURL>http://www.mi.com</manufacturerURL>
+
+        <serviceList>
+            <service>
+                <type>urn:schemas-mi-com:service:PowerStrip:BaseService:1</type>
+                <description>电力开关服务</description>
+
+                <propertyList>
+                    <property gettable="true" notifiable="true">
+                        <friendlyName>Power</friendlyName>
+                        <internalName>power</internalName>
+                        <description>开关状态（on|off）</description>
+                        <dataType>string</dataType>
+                        <allowedValueList>
+                            <allowedValue>on</allowedValue>
+                            <allowedValue>off</allowedValue>
+                        </allowedValueList>
+                    </property>
+
+                    <property gettable="true" notifiable="true">
+                        <friendlyName>Mode</friendlyName>
+                        <internalName>mode</internalName>
+                        <description>模式（green|normal）</description>
+                        <dataType>string</dataType>
+                        <allowedValueList>
+                            <allowedValue>green</allowedValue>
+                            <allowedValue>normal</allowedValue>
+                        </allowedValueList>
+                    </property>
+                </propertyList>
+
+                <actionList>
+                    <action>
+                        <friendlyName>setPower</friendlyName>
+                        <internalName>set_power</internalName>
+                        <description>开关</description>
+                        <argumentList>
+                            <argument>
+                                <name>power</name>
+                                <direction>in</direction>
+                                <relatedProperty>Power</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </action>
+                    <action>
+                        <friendlyName>setMode</friendlyName>
+                        <internalName>set_power_mode</internalName>
+                        <description>设置模式</description>
+                        <argumentList>
+                            <argument>
+                                <name>mode</name>
+                                <direction>in</direction>
+                                <relatedProperty>Mode</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </action>
+                </actionList>
+            </service>
+        </serviceList>
+    </device>
+</root>

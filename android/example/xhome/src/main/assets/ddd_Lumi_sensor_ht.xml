@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="urn:schemas-mi-com:device-1-0">
+    <specVersion>
+        <major>1</major>
+        <minor>0</minor>
+    </specVersion>
+    <device>
+        <type>urn:schemas-mi-com:device:Lumi:Sensor:1</type>
+        <friendlyName>温湿度传感器</friendlyName>
+        <firmwareVersion>1</firmwareVersion>
+        <modelNumber>2016</modelNumber>
+        <modelName>LumiSensorHD.2016</modelName>
+        <modelDescription>温湿度传感器</modelDescription>
+        <modelURL>http://www.mi.com</modelURL>
+        <manufacturer>Xiaomi</manufacturer>
+        <manufacturerURL>http://www.mi.com</manufacturerURL>
+        <serviceList>
+            <service>
+                <type>urn:schemas-mi-com:service:Sensor:TempHumidityService:1</type>
+                <description>绿米温湿度传感器服务</description>
+                <propertyList>
+                    <property gettable="true" notifiable="true">
+                        <friendlyName>Temp</friendlyName>
+                        <internalName>temperature</internalName>
+                        <description>温度，单位0.01摄氏度</description>
+                        <dataType>ui4</dataType>
+                        <allowedValueRange>
+                            <minimum>-4000</minimum>
+                            <maximum>12500</maximum>
+                        </allowedValueRange>
+                    </property>
+                    <property gettable="true" notifiable="true">
+                        <friendlyName>Humidity</friendlyName>
+                        <internalName>humidity</internalName>
+                        <description>湿度，单位0.0001</description>
+                        <dataType>ui4</dataType>
+                        <allowedValueRange>
+                            <minimum>0</minimum>
+                            <maximum>10000</maximum>
+                        </allowedValueRange>
+                    </property>
+                </propertyList>
+                <actionList/>
+                <configList>
+                    <getProperty>get_prop_sensor_ht</getProperty>
+                </configList>
+            </service>
+        </serviceList>
+    </device>
+</root>
+

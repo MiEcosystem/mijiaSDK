@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="urn:schemas-mi-com:device-1-0">
+    <specVersion>
+        <major>1</major>
+        <minor>0</minor>
+    </specVersion>
+    <device>
+        <type>urn:schemas-mi-com:device:Chuangmi:Plug:1</type>
+        <friendlyName>创米智能插座基础版</friendlyName>
+        <firmwareVersion>1</firmwareVersion>
+        <modelNumber>2015</modelNumber>
+        <modelName>Plug.2014</modelName>
+        <modelDescription>创米插座</modelDescription>
+        <modelURL>http://www.xiaomi.com</modelURL>
+        <manufacturer>Xiaomi</manufacturer>
+        <manufacturerURL>http://www.xiaomi.com</manufacturerURL>
+
+        <serviceList>
+            <service>
+                <type>urn:schemas-mi-com:service:Plug:BaseService:1</type>
+                <description>插座服务</description>
+                <propertyList>
+                    <property gettable="true" notifiable="true">
+                        <friendlyName>Power</friendlyName>
+                        <internalName>power</internalName>
+                        <description>开关状态（on|off)</description>
+                        <dataType>string</dataType>
+                        <allowedValueList>
+                            <allowedValue>on</allowedValue>
+                            <allowedValue>off</allowedValue>
+                        </allowedValueList>
+                    </property>
+                </propertyList>
+
+                <actionList>
+                    <action>
+                        <friendlyName>setPower</friendlyName>
+                        <internalName>set_power</internalName>
+                        <description>开关</description>
+                        <argumentList>
+                            <argument>
+                                <name>power</name>
+                                <direction>in</direction>
+                                <relatedProperty>Power</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </action>
+                </actionList>
+            </service>
+        </serviceList>
+    </device>
+</root>
