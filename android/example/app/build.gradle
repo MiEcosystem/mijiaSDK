@@ -5,7 +5,8 @@ android {
     buildToolsVersion '23.0.3'
 
     defaultConfig {
-        applicationId "com.xiaomi.xhome"
+//        applicationId "com.xiaomi.xhome"
+        applicationId "com.mijiasdk.demo"
         minSdkVersion 18
         targetSdkVersion 23
         versionCode 1
