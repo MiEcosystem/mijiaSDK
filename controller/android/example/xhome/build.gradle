@@ -43,21 +43,8 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+
     testCompile 'junit:junit:4.12'
-//    compile(name: 'mijiaSDK-release', ext: "aar")
-
-//    compile project(':miotWeb')
-//    compile project(':miotService')
-
-    compile files('libs/oauth-xiaomiopenauth.jar')
-	compile(name: 'maml-release', ext: "aar")
-    compile(name: 'mijiaBluetooth', ext: "aar")
-    compile(name: 'mijiaClient-3-0-1', ext: "aar")
-    compile(name: 'mijiaService-3-0-1', ext: "aar")
-    compile 'com.inuker.bluetooth:library:1.3.0'
-//    compile rootProject.ext.dependencies['support-v4']
-//    compile rootProject.ext.dependencies['appcompat-v7']
-
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.android.support:multidex:1.0.1'
 
@@ -65,4 +52,10 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.5.0'
     compile 'com.google.code.gson:gson:2.4'
 
+    compile files('libs/oauth-xiaomiopenauth.jar')
+    compile(name: 'maml-release', ext: "aar")
+    compile(name: 'mijiaClient-3-0-1', ext: "aar")
+    compile(name: 'mijiaService-3-0-1', ext: "aar")
+    compile(name: 'mijiaBluetooth', ext: "aar")
+    compile 'com.inuker.bluetooth:library:1.3.0'
 }
