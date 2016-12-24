@@ -37,11 +37,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.AccountManagerActivity" />
+        <activity android:name=".ui.AccountManagerActivity" android:parentActivityName=".ui.SettingsActivity" />
         <activity android:name=".ui.DeviceManagerActivity" />
-        <activity android:name=".ui.SpacesActivity" />
-        <activity android:name=".ui.SettingsActivity" />
-
+        <activity android:name=".ui.SpacesActivity" android:parentActivityName=".ui.SettingsActivity"/>
+        <activity android:name=".ui.SettingsActivity" android:parentActivityName=".ui.XHomeMain" />
         <activity android:name="com.xiaomi.account.openauth.AuthorizeActivity" />
     </application>
 

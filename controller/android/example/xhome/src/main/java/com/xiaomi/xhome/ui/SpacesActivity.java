@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -27,7 +29,7 @@ import com.xiaomi.xhome.maml.util.FilenameExtFilter;
 import java.io.File;
 import java.util.ArrayList;
 
-public class SpacesActivity extends Activity {
+public class SpacesActivity extends ActionBarActivity {
     private static String TAG = SpacesActivity.class.getSimpleName();
     private ListView mList;
 
@@ -39,6 +41,12 @@ public class SpacesActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spacelist);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Show the Up button in the action bar.
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
 //        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         mList = (ListView) findViewById(R.id.list);
