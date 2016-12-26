@@ -148,7 +148,7 @@ public class DeviceListActivity extends BaseActivity {
     private void gotoDevicePage(AbstractDevice device) {
         Intent intent = new Intent(this, UniversalDeviceActivity.class);
         if (device instanceof ChuangmiPlugM1) {
-            intent = new Intent(this, PlugActivity.class);
+//            intent = new Intent(this, PlugActivity.class);
         }
         intent.putExtra(TestConstants.EXTRA_DEVICE, device);
         startActivity(intent);
@@ -211,6 +211,7 @@ public class DeviceListActivity extends BaseActivity {
                     mDeviceAdapter.setItems(wanDevices);
                     List<AbstractDevice> wifiDevices = mMiDeviceManager.getWifiDevices();
                     mDeviceAdapter.addItems(wifiDevices);
+                    mDeviceAdapter.notifyDataSetChanged();
                     break;
                 case TestConstants.ACTION_DISCOVERY_DEVICE_FAILED:
                     showToast("discovery device failed");

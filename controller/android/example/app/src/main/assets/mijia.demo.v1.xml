@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="urn:schemas-mi-com:device-1-0">
+    <specVersion>
+        <major>1</major>
+        <minor>0</minor>
+    </specVersion>
+    <device>
+
+        <type>urn:schemas-mi-com:device:soocare:toothbrushx3:3</type>
+        <friendlyName>米家开发板</friendlyName>
+        <firmwareVersion>1</firmwareVersion>
+        <modelNumber>2014</modelNumber>
+        <modelName>mijia.demo.v1</modelName>
+        <modelDescription>米家开发板</modelDescription>
+        <modelURL>http://www.com.com</modelURL>
+        <manufacturer>Xiaomi</manufacturer>
+        <manufacturerURL>http://www.com.com</manufacturerURL>
+
+        <serviceList>
+            <service>
+                <type>urn:schemas-mi-com:service:demo:BaseService:1</type>
+                <description></description>
+
+                <propertyList>
+
+                </propertyList>
+
+                <actionList>
+
+                </actionList>
+            </service>
+        </serviceList>
+    </device>
+</root>

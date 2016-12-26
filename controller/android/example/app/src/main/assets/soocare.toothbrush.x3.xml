@@ -5,7 +5,7 @@
         <minor>0</minor>
     </specVersion>
     <device>
-        <type>urn:schemas-mi-com:device:soocare:toothbrushx3:3</type>
+        <type>urn:schemas-mi-com:device:Soocare:Toothbrushx3:3</type>
         <friendlyName>素士声波电动牙刷</friendlyName>
         <firmwareVersion>1</firmwareVersion>
         <modelNumber>2014</modelNumber>
@@ -16,18 +16,7 @@
         <manufacturerURL>http://www.com.com</manufacturerURL>
 
         <serviceList>
-            <service>
-                <type>urn:schemas-mi-com:service:Brush:BaseService:1</type>
-                <description></description>
 
-                <propertyList>
-
-                </propertyList>
-
-                <actionList>
-
-                </actionList>
-            </service>
         </serviceList>
     </device>
 </root>

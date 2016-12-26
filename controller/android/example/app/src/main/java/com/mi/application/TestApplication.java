@@ -15,19 +15,27 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.mi.device.ChuangmiPlugM1;
+import com.mi.device.SoocareToothbrushx3;
 import com.mi.setting.AppConfig;
 import com.mi.utils.CrashHandler;
 import com.mi.utils.TestConstants;
+import com.miot.api.MiotManager;
+import com.miot.api.bluetooth.BindStyle;
+import com.miot.api.bluetooth.BluetoothDeviceConfig;
+import com.miot.api.bluetooth.XmBluetoothManager;
 import com.miot.common.ReturnCode;
 import com.miot.common.config.AppConfiguration;
+import com.miot.common.device.DiscoveryType;
 import com.miot.common.model.DeviceModel;
 import com.miot.common.model.DeviceModelException;
 import com.miot.common.model.DeviceModelFactory;
 import com.miot.common.utils.Logger;
+import com.xiaomi.mipush.sdk.MiPushClient;
 import com.xiaomi.mipush.sdk.MiPushCommandMessage;
 import com.xiaomi.mipush.sdk.MiPushMessage;
 
-import com.miot.api.MiotManager;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestApplication extends Application {
     private static final String TAG = TestApplication.class.getSimpleName();
@@ -51,7 +59,6 @@ public class TestApplication extends Application {
         mBindBroadcastManager = LocalBroadcastManager.getInstance(this);
 
         if (isMainProcess()) {
-
             MiotManager.getInstance().initialize(this);
             registerPush();
             new MiotOpenTask().execute();
@@ -77,6 +84,11 @@ public class TestApplication extends Application {
                 case PUSH_COMMAND:
                     MiPushCommandMessage command = (MiPushCommandMessage) intent.getSerializableExtra("command");
                     Logger.d(TAG, "command: " + command.toString());
+                    switch (command.getCommand()) {
+                        case MiPushClient.COMMAND_REGISTER:
+                            //TODO
+                            break;
+                    }
                     break;
                 case PUSH_MESSAGE:
                     MiPushMessage message = (MiPushMessage) intent.getSerializableExtra("message");
@@ -117,30 +129,30 @@ public class TestApplication extends Application {
         @Override
         protected Integer doInBackground(Void... params) {
             AppConfiguration appConfig = new AppConfiguration();
-            appConfig.setAppId(AppConfig.OAUTH_APP_ID);
-            appConfig.setAppKey(AppConfig.OAUTH_APP_KEY);
+            appConfig.setAppId(AppConfig.OAUTH_APP_ID)
+                    .setAppKey(AppConfig.OAUTH_APP_KEY);
             MiotManager.getInstance().setAppConfig(appConfig);
 
             try {
-                DeviceModel plug = DeviceModelFactory.createDeviceModel(
+                DeviceModel plugV1 = DeviceModelFactory.createDeviceModel(
+                        TestApplication.this,
+                        TestConstants.CHUANGMI_PLUG_V1,
+                        TestConstants.CHUANGMI_PLUG_V1_URL);
+                MiotManager.getInstance().addModel(plugV1);
+
+                DeviceModel plugM1 = DeviceModelFactory.createDeviceModel(
                         TestApplication.this,
                         TestConstants.CHUANGMI_PLUG_M1,
                         TestConstants.CHUANGMI_PLUG_M1_URL,
                         ChuangmiPlugM1.class);
-                MiotManager.getInstance().addModel(plug);
-
-                DeviceModel plug1 = DeviceModelFactory.createDeviceModel(TestApplication.this,
-                        "chuangmi.plug.v1",
-                        "chuangmi.plug.v1.xml");
-                MiotManager.getInstance().addModel(plug1);
-
+                MiotManager.getInstance().addModel(plugM1);
 
                 DeviceModel toothBrush = DeviceModelFactory.createDeviceModel(
                         TestApplication.this,
-                        "soocare.toothbrush.x3",
-                        "soocare.toothbrush.x3.xml");
+                        TestConstants.SOOCARE_TOOTHBRUSH_X3,
+                        TestConstants.SOOCARE_TOOTHBRUSH_X3_URL,
+                        SoocareToothbrushx3.class);
                 MiotManager.getInstance().addModel(toothBrush);
-
             } catch (DeviceModelException e) {
                 e.printStackTrace();
             }
@@ -159,6 +171,12 @@ public class TestApplication extends Application {
                     intent = new Intent(TestConstants.ACTION_BIND_SERVICE_SUCCEED);
                 }
                 mBindBroadcastManager.sendBroadcast(intent);
+
+                BluetoothDeviceConfig config = new BluetoothDeviceConfig();
+                config.bindStyle = BindStyle.WEAK;
+                config.model = "mijia.demo.v1";
+                config.productId = 222;
+                XmBluetoothManager.getInstance().setDeviceConfig(config);
             }
             while (false);
         }

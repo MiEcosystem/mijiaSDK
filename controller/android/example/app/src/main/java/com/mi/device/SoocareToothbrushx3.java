@@ -9,26 +9,23 @@ import com.miot.common.abstractdevice.AbstractDevice;
 import com.miot.common.device.Device;
 import com.miot.common.device.Service;
 
-public class ChuangmiPlugM1 extends AbstractDevice {
+public class SoocareToothbrushx3 extends AbstractDevice {
 
-    private static final String TAG = "ChuangmiPlugM1";
+    private static final String TAG = "SoocareToothbrushx3";
 
-    private static final String DEVICE_TYPE = "ChuangmiPlugM1";
+    private static final String DEVICE_TYPE = "SoocareToothbrushx3";
 
-    public static final String SERVICE_PlugBaseService = "urn:schemas-mi-com:service:PlugBaseService:0000";
-    public PlugBaseService mPlugBaseService = new PlugBaseService(this);
-
-    public synchronized static ChuangmiPlugM1 create(Device device) {
+    public synchronized static SoocareToothbrushx3 create(Device device) {
         Log.d(TAG, "create");
 
-        ChuangmiPlugM1 thiz = null;
+        SoocareToothbrushx3 thiz = null;
         do {
-            String deviceType = device.getType().getClassType() + device.getType().getSubType();
+            String deviceType = device.getType().getName();
             if (!deviceType.equals(DEVICE_TYPE)) {
                 break;
             }
 
-            thiz = new ChuangmiPlugM1();
+            thiz = new SoocareToothbrushx3();
             if (!thiz.init(device)) {
                 thiz = null;
             }
@@ -45,11 +42,6 @@ public class ChuangmiPlugM1 extends AbstractDevice {
                 break;
             }
 
-            Service plugBaseService = device.getService(SERVICE_PlugBaseService);
-            if (plugBaseService == null) {
-                break;
-            }
-            mPlugBaseService.setService(plugBaseService);
             this.setDevice(device);
 
             ret = true;
@@ -61,23 +53,23 @@ public class ChuangmiPlugM1 extends AbstractDevice {
     //-------------------------------------------------------
     // Parcelable
     //-------------------------------------------------------
-    public static final Creator<ChuangmiPlugM1> CREATOR = new Creator<ChuangmiPlugM1>() {
+    public static final Creator<SoocareToothbrushx3> CREATOR = new Creator<SoocareToothbrushx3>() {
 
         @Override
-        public ChuangmiPlugM1 createFromParcel(Parcel in) {
-            return new ChuangmiPlugM1(in);
+        public SoocareToothbrushx3 createFromParcel(Parcel in) {
+            return new SoocareToothbrushx3(in);
         }
 
         @Override
-        public ChuangmiPlugM1[] newArray(int size) {
-            return new ChuangmiPlugM1[size];
+        public SoocareToothbrushx3[] newArray(int size) {
+            return new SoocareToothbrushx3[size];
         }
     };
 
-    private ChuangmiPlugM1() {
+    private SoocareToothbrushx3() {
     }
 
-    private ChuangmiPlugM1(Parcel in) {
+    private SoocareToothbrushx3(Parcel in) {
         readFromParcel(in);
     }
 

@@ -61,6 +61,7 @@
             android:label="@string/title_activity_universaldevice"/>
         <activity android:name="com.mi.activity.main.ConnActivity"/>
 
+        <!-- 非小米手机上,拉起web授权页;不配置崩溃 -->
         <activity android:name="com.xiaomi.account.openauth.AuthorizeActivity" />
     </application>
 

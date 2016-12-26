@@ -135,6 +135,9 @@
     <string name="mi_account_logout">MiAccountLogout</string>
     <string name="mi_sconn">弱关系设备</string>
     <string name="mi_ssconn">强关系设备</string>
+    <string name="mi_ssconn_kaifaban">连接开发板</string>
+    <string name="mi_firmware_update">固件更新</string>
+    <string name="mi_beacon_key">获取beacon key</string>
     <string name="account_not_login">用户尚未登录</string>
     <string name="mi_device">小米智能设备</string>
     <string name="wan_device">广域网设备</string>

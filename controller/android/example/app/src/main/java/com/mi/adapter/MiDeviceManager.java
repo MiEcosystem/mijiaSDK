@@ -102,6 +102,7 @@ public class MiDeviceManager {
         }
         List<DiscoveryType> types = new ArrayList<>();
         types.add(DiscoveryType.MIOT_WIFI);
+//        types.add(DiscoveryType.MIOT_BLE);
         try {
             MiotManager.getDeviceManager().startScan(types, mDeviceHandler);
         } catch (MiotException e) {
@@ -138,7 +139,7 @@ public class MiDeviceManager {
     };
 
     private void foundDevices(List<AbstractDevice> devices) {
-        Log.d(TAG, "foundDevices");
+        Log.d(TAG, "foundDevices   size"+devices.size());
         for (AbstractDevice device : devices) {
             ConnectionType connectionType = device.getDevice().getConnectionType();
             Log.d(TAG, "found device: " + devices.size() + " " + device.getName() + " " + device.getDeviceId() + " " + connectionType);

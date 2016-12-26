@@ -28,6 +28,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+
 import com.miot.api.DeviceManipulator;
 import com.miot.api.MiotManager;
 import com.miot.common.device.Action;
@@ -307,7 +308,7 @@ public class UniversalServiceActivity extends BaseActivity {
             argView.setOrientation(LinearLayout.HORIZONTAL);
 
             TextView tvPropertyName = new TextView(this);
-            tvPropertyName.setText(String.format("%s (%s): ", def.getName(), def.getDataType().getStringType()));
+            tvPropertyName.setText(String.format("%s (%s): ", def.getName(), def.getDataType().toString()));
             tvPropertyName.setTextSize(16);
             argView.addView(tvPropertyName);
             AllowedValue allowedValue = def.getAllowedValue();
@@ -339,43 +340,9 @@ public class UniversalServiceActivity extends BaseActivity {
                             PropertyDefinition def = property.getDefinition();
                             Object value = null;
                             if (!(def.getAllowedValue() instanceof AllowedValueList)) {
-                                EditText v = (EditText) (view.findViewById(argId++));
-                                String text = v.getText().toString();
-                                try {
-                                    switch (def.getDataType()) {
-                                        case INTEGER:
-                                            value = Integer.valueOf(text);
-                                            break;
-
-                                        case LONG:
-                                            value = Long.valueOf(text);
-                                            break;
-
-                                        case FLOAT:
-                                            value = Float.valueOf(text);
-                                            break;
-
-                                        case DOUBLE:
-                                            value = Double.valueOf(text);
-                                            break;
-
-                                        case STRING:
-                                            value = text;
-                                            break;
-
-                                        case BOOLEAN:
-                                            value = Boolean.valueOf(text);
-                                            break;
-
-                                        case BYTES:
-                                            value = text.getBytes();
-                                            break;
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    showPropertyValueInvalid(def, text);
-                                    return;
-                                }
+                                EditText editText = (EditText) (view.findViewById(argId++));
+                                String text = editText.getText().toString();
+                                value = def.getDataType().toObjectValue(text);
                             } else {
                                 Spinner spinner = (Spinner) (view.findViewById(argId++));
                                 value = spinner.getSelectedItem();
@@ -396,7 +363,7 @@ public class UniversalServiceActivity extends BaseActivity {
     private void showPropertyValueInvalid(PropertyDefinition def, Object value) {
         String msg = String.format("名称：%s, 类型：%s, 值：%s",
                 def.getFriendlyName(),
-                def.getDataType().getStringType(),
+                def.getDataType().toString(),
                 value.toString());
 
         AlertDialog alert = new AlertDialog.Builder(this)

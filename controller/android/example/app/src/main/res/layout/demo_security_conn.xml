@@ -18,4 +18,22 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="@string/mi_ssconn"/>
+    <Button
+        android:id="@+id/btn_sconn_kaifaban"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/mi_ssconn_kaifaban"/>
+    <Button
+        android:id="@+id/btn_firmware_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/mi_firmware_update"/>
+    <Button
+        android:id="@+id/btn_beaconkey"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/mi_beacon_key"/>
 </LinearLayout>

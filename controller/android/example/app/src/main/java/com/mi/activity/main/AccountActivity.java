@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+
 import com.miot.api.MiotManager;
 
 import com.mi.account.XiaomiAccountGetPeopleInfoTask;
@@ -82,8 +83,8 @@ public class AccountActivity extends BaseActivity {
             showToast(R.string.already_login);
             return ReturnCode.OK;
         }
-	
-	int[] scope = new int[]{1, 3, 6000};
+
+        int[] scope = new int[]{1, 3, 6000};
         XiaomiOAuthFuture<XiaomiOAuthResults> future = new XiaomiOAuthorize()
                 .setAppId(AppConfig.OAUTH_APP_ID)
                 .setRedirectUrl(AppConfig.OAUTH_REDIRECT_URI)
