@@ -1,10 +1,11 @@
 package com.xiaomi.xhome.ui;
 
 import android.accounts.OperationCanceledException;
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,7 +25,7 @@ import com.xiaomi.xhome.util.XiaomiAccountHelper;
 
 import java.io.IOException;
 
-public class AccountManagerActivity extends Activity {
+public class AccountManagerActivity extends ActionBarActivity {
     private static final String TAG = AccountManagerActivity.class.getSimpleName();
 
     private TextView tvAccountInfo;
@@ -36,6 +37,11 @@ public class AccountManagerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
 
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Show the Up button in the action bar.
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         tvAccountInfo = (TextView) findViewById(R.id.tv_account_info);
         btnLogin = (Button) findViewById(R.id.btn_login);
@@ -59,6 +65,19 @@ public class AccountManagerActivity extends Activity {
         updateUserInfo();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        setButtonVisibility();
+    }
+
+    private void setButtonVisibility() {
+        boolean loggedIn = MiotManager.getPeopleManager().isLogin();
+        btnLogin.setVisibility(loggedIn ? View.GONE : View.VISIBLE);
+        btnLogout.setVisibility(loggedIn ? View.VISIBLE : View.GONE);
+    }
+
     private void updateUserInfo() {
         String userId = getString(R.string.account_not_login);
 //
@@ -71,6 +90,7 @@ public class AccountManagerActivity extends Activity {
         String name = XHomeApplication.getInstance().getConfig().getString(XConfig.CONFIG_USER_NAME, null);
 
         tvAccountInfo.setText(name != null ? name + "  " + userId : userId);
+        setButtonVisibility();
     }
 
     private boolean accountLogin() {
