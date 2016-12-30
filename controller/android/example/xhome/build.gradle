@@ -57,9 +57,9 @@ dependencies {
 
     compile files('libs/oauth-xiaomiopenauth.jar')
 
-    compile(name: 'mijiaClient-3-2-0', ext: 'aar')
-    compile(name: 'mijiaService-3-2-0', ext: 'aar')
-    compile(name: 'mijiaBluetooth-3-2-0', ext: 'aar')
+    compile(name: 'mijiaClient-3-2-1', ext: 'aar')
+    compile(name: 'mijiaService-3-2-1', ext: 'aar')
+    compile(name: 'mijiaBluetooth-3-2-1', ext: 'aar')
 
     compile(name: 'maml-release', ext: "aar")
 }

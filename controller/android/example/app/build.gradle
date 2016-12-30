@@ -58,8 +58,8 @@ dependencies {
     compile rootProject.ext.dependencies['multidex']
     compile rootProject.ext.dependencies['inuker-bluetooth']
 
-    compile(name: 'mijiaClient-3-2-0', ext: 'aar')
-    compile(name: 'mijiaService-3-2-0', ext: 'aar')
-    compile(name: 'mijiaBluetooth-3-2-0', ext: 'aar')
+    compile(name: 'mijiaClient-3-2-1', ext: 'aar')
+    compile(name: 'mijiaService-3-2-1', ext: 'aar')
+    compile(name: 'mijiaBluetooth-3-2-1', ext: 'aar')
     compile files('libs/oauth-xiaomiopenauth.jar')
 }
