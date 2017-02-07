@@ -14,13 +14,13 @@
 在您正式进行产品接入前，需要首先完成一下准备工作
 
 ### 1. 帐号接入
-mijiaSDK目前支持小米帐号登陆，开发者需要到[小米帐号开放平台](http://dev.xiaomi.com/docs/passport/ready/)注册自己的App信息，**并在小米帐号系统Oauth权限管理中，申请并审核通过“智能家庭服务”权限，请确保申请通过此权限，否则不能正常使用**。如果在接入过程中遇到问题，可加QQ群385428920咨询。然后下载[小米帐号最新版SDK](https://github.com/xiaomipassport/oauth-Android-sdk)，并集成到自己应用中。
+mijiaSDK目前支持小米帐号登陆，开发者需要到[小米帐号开放平台](http://dev.xiaomi.com/)注册自己的App信息，**并在小米帐号系统Oauth权限管理中，申请并审核通过“智能家庭服务”权限，请确保申请通过此权限，否则不能正常使用**。如果在接入过程中遇到问题，可加QQ群385428920咨询。然后下载[小米帐号最新版SDK](https://github.com/xiaomipassport/oauth-Android-sdk)，并集成到自己应用中。
 
 ### 2. 消息推送
 mijiaSDK中集成有Mipush，目前主要是用于订阅设备事件。App使用前，开发者需要到[小米消息推送服务](http://dev.xiaomi.com/doc/?page_id=1670)注册自己的App信息。
 还需将信息注册到智能家居后台。注册方式：请将注册信息发送到haojianxiu@xiaomi.com
 注册信息示例：
-
+```
 IOS App 信息：
 Bundle ID：xxx
 AppID： xxx
@@ -32,6 +32,7 @@ packageName：xxx
 AppID： xxx
 AppKey： xxx
 AppSecret： xxx
+```
 
 ### 3. 注册AppId，AppKey以及设备信息
 将应用注册到小米帐号时，会生成相关的AppId和Appkey，需要将这部分信息注册到智能家居后台，否则会返回错误"app_id is null"。
