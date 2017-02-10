@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="urn:schemas-mi-com:device-1-0">
+    <specVersion>
+        <major>1</major>
+        <minor>0</minor>
+    </specVersion>
+    <device>
+        <type>urn:schemas-mi-com:device:Lumi:PLug:1</type>
+        <friendlyName>Zigbee插座</friendlyName>
+        <firmwareVersion>1</firmwareVersion>
+        <modelNumber>2016</modelNumber>
+        <modelName>LumiSensorHD.2016</modelName>
+        <modelDescription>Zigbee插座</modelDescription>
+        <modelURL>http://www.mi.com</modelURL>
+        <manufacturer>Xiaomi</manufacturer>
+        <manufacturerURL>http://www.mi.com</manufacturerURL>
+        <serviceList>
+            <service>
+                <type>urn:schemas-mi-com:service:Lumi:PlugService:1</type>
+                <description>Zigbee插座服务</description>
+                <propertyList>
+                    <property gettable="true" notifiable="true">
+                        <friendlyName>PlugState0</friendlyName>
+                        <internalName>neutral_0</internalName>
+                        <description>第一路开关状态</description>
+                        <dataType>string</dataType>
+                        <allowedValueList>
+                            <allowedValue>on</allowedValue>
+                            <allowedValue>off</allowedValue>
+                        </allowedValueList>
+
+                    </property>
+
+                    <property gettable="false" notifiable="false">
+                        <friendlyName>NeutralIndex</friendlyName>
+                        <internalName>neutral_index</internalName>
+                        <description>开关</description>
+                        <dataType>string</dataType>
+                        <allowedValueList>
+                            <allowedValue>neutral_0</allowedValue>
+                        </allowedValueList>
+                    </property>
+
+                </propertyList>
+
+                <actionList>
+                    <action>
+                        <friendlyName>setPlugState</friendlyName>
+                        <internalName>toggle_plug</internalName>
+                        <description>设置插座开关状态</description>
+                        <argumentList>
+                            <argument>
+                                <name>neutralIndex</name>
+                                <direction>in</direction>
+                                <relatedProperty>NeutralIndex</relatedProperty>
+                            </argument>
+                            <argument>
+                                <name>state</name>
+                                <direction>in</direction>
+                                <relatedProperty>PlugState0</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </action>
+                </actionList>
+                <configList>
+                    <getProperty>get_prop_plug</getProperty>
+                </configList>
+            </service>
+        </serviceList>
+    </device>
+</root>

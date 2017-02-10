@@ -1,44 +1,80 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:paddingBottom="@dimen/activity_vertical_margin"
-              android:paddingLeft="@dimen/activity_horizontal_margin"
-              android:paddingRight="@dimen/activity_horizontal_margin"
-              android:paddingTop="@dimen/activity_vertical_margin">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <Button
-        android:id="@+id/btn_account"
+    <include
+        layout="@layout/toolbar_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/account_manager"/>
+        android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/btn_device"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/device_manager"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
 
-    <Button
-        android:id="@+id/btn_request"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="sharedRequest"/>
+        <TextView
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_toolbar_accountmanager" />
 
-    <Button
-        android:id="@+id/btn_accept"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="accept"/>
-    <Button
-        android:id="@+id/btn_security_conn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="security_conn"/>
+        <Button
+            android:id="@+id/btn_account"
+            style="@style/Device"
+            android:layout_width="match_parent"
+            android:text="@string/account_manager" />
 
+        <TextView
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_toolbar_devicemanager" />
+
+        <TextView
+            style="@style/Label.Desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/desc_devicemanager" />
+
+        <Button
+            android:id="@+id/btn_device"
+            style="@style/Device"
+            android:layout_width="match_parent"
+            android:text="@string/device_manager" />
+
+        <TextView
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_toolbar_sharerequest" />
+
+        <Button
+            android:id="@+id/btn_request"
+            style="@style/Device"
+            android:layout_width="match_parent"
+            android:text="sharedRequest" />
+
+        <Button
+            android:id="@+id/btn_accept"
+            style="@style/Device"
+            android:layout_width="match_parent"
+            android:text="accept" />
+
+        <TextView
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_toolbar_devicemanipulate" />
+
+        <Button
+            android:id="@+id/btn_security_conn"
+            style="@style/Device"
+            android:layout_width="match_parent"
+            android:text="security_conn" />
+
+    </LinearLayout>
 </LinearLayout>

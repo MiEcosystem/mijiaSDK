@@ -1,45 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:paddingBottom="@dimen/activity_vertical_margin"
-              android:paddingLeft="@dimen/activity_horizontal_margin"
-              android:paddingRight="@dimen/activity_horizontal_margin"
-              android:paddingTop="@dimen/activity_vertical_margin">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray"
+    android:orientation="vertical">
+
+    <include
+        layout="@layout/toolbar_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 
     <ListView
         android:id="@+id/lv_devices"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
-    </ListView>
+        android:layout_weight="1"
+        android:divider="@null" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:paddingBottom="10dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="5dp">
 
         <Button
             android:id="@+id/btn_get_remote_devices"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/get_wan_devices"/>
+            style="@style/Device.Green"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="@string/get_wan_devices" />
 
         <Button
             android:id="@+id/btn_start_scan"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/start_scan"/>
+            style="@style/Device"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="@string/start_scan" />
 
         <Button
             android:id="@+id/btn_stop_scan"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/stop_scan"/>
+            style="@style/Device"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="@string/stop_scan" />
     </LinearLayout>
 
 </LinearLayout>

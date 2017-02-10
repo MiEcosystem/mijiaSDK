@@ -3,7 +3,6 @@ package com.mi.adapter;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mi.test.R;
@@ -48,8 +47,6 @@ public class DeviceAdapter extends LBaseAdapter<AbstractDevice> {
     }
 
     static class ViewHolder {
-        @InjectView(R.id.iv_device)
-        ImageView ivDevice;
         @InjectView(R.id.tv_device)
         TextView tvDevice;
         @InjectView(R.id.tv_device_status)

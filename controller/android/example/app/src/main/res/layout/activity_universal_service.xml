@@ -1,73 +1,89 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:longClickable="false"
-              android:orientation="vertical"
-              tools:context="com.mi.activity.universal.UniversalServiceActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:longClickable="false"
+    android:orientation="vertical">
+
+    <include
+        layout="@layout/toolbar_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ListView
+        android:id="@+id/lv_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:divider="@null" />
 
     <TextView
         android:id="@+id/tv_log"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.67"
-        android:background="@android:color/darker_gray"
-        android:scrollbars="vertical"
-        android:text="TextView"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/f6"
+        android:minHeight="100dp"
+        android:paddingLeft="20dp"
+        android:paddingTop="20dp"
+        android:scrollbars="vertical" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/tv_properties_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#ffcdfffb">
+        android:layout_height="48dp"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="20dp"
+        android:text="@string/PropertyList"
+        android:textColor="@color/green"
+        android:textSize="@dimen/font_size_20sp" />
 
-        <TextView
-            android:id="@+id/tv_properties_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="2dp"
-            android:text="@string/PropertyList"
-            android:textSize="14sp"/>
-
-        <Button
-            android:id="@+id/btn_subscribe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/Subscribe"
-            android:textSize="13sp"/>
-
-        <Button
-            android:id="@+id/btn_unsubscribe"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.80"
-            android:text="@string/Unsubscribe"
-            android:textSize="13sp"/>
-
-        <Button
-            android:id="@+id/btn_get_properties"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/GetProperties"
-            android:textSize="13sp"/>
-    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.6dp"
+        android:alpha="0.2"
+        android:background="#A7A7C2" />
 
     <ListView
         android:id="@+id/lv_properties"
         android:layout_width="match_parent"
-        android:layout_height="300dp"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@null"
+        android:minHeight="200dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_subscribe"
+            style="@style/Device.Small"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/Subscribe" />
+
+        <Button
+            android:id="@+id/btn_unsubscribe"
+            style="@style/Device.Small"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/Unsubscribe" />
+
+        <Button
+            android:id="@+id/btn_get_properties"
+            style="@style/Device.Small"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/GetProperties"
+            android:textSize="13sp" />
 
         <Button
             android:id="@+id/btn_manipulate"
+            style="@style/Device.Green.Small"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/device_manipulate"/>
+            android:text="@string/device_manipulate" />
     </LinearLayout>
 
 </LinearLayout>

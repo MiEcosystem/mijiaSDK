@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:background="@color/white"
+    android:layout_height="50dp"
+    android:background="@color/f6"
     android:paddingLeft="20dp"
     android:paddingRight="20dp">
 
     <TextView
-        android:id="@+id/tv_device"
+        android:id="@+id/desc_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="6dp"
-        android:text="@string/mi_device"
-        android:textColor="@color/black_80_transparent"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:text="设备ID"
+        android:textColor="@color/black_50_transparent"
         android:textSize="@dimen/font_size_20sp" />
 
     <TextView
-        android:id="@+id/tv_device_status"
+        android:id="@+id/desc_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="6dp"
-        android:text="广域网设备"
-        android:textColor="#999"
-        android:textSize="@dimen/font_size_18sp" />
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:text="sdfsfsfs"
+        android:textColor="@color/black_50_transparent"
+        android:textSize="@dimen/font_size_20sp" />
 
     <View
         android:layout_width="match_parent"
@@ -32,4 +32,5 @@
         android:layout_alignParentBottom="true"
         android:alpha="0.2"
         android:background="#A7A7C2" />
+
 </RelativeLayout>

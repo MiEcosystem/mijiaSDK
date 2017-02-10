@@ -4,32 +4,30 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.mi.adapter.DeviceDescAdapter;
 import com.mi.adapter.ServiceAdapter;
 import com.mi.device.ChuangmiPlugM1;
 import com.mi.device.PlugBaseService;
 import com.mi.test.R;
-import com.mi.utils.BaseActivity;
 import com.mi.utils.TestConstants;
-
-import java.util.List;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-
+import com.mi.utils.ToolbarActivity;
 import com.miot.api.CommonHandler;
 import com.miot.api.CompletionHandler;
 import com.miot.api.DeviceManager;
 import com.miot.api.MiotManager;
 import com.miot.common.abstractdevice.AbstractDevice;
 import com.miot.common.device.Action;
+import com.miot.common.device.Device;
 import com.miot.common.device.Device.Ownership;
 import com.miot.common.device.Service;
 import com.miot.common.device.firmware.MiotFirmware;
@@ -40,8 +38,16 @@ import com.miot.common.timer.CrontabTime;
 import com.miot.common.timer.DayOfWeek;
 import com.miot.common.timer.Timer;
 
-public class UniversalDeviceActivity extends BaseActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
+public class UniversalDeviceActivity extends ToolbarActivity {
     private static String TAG = UniversalDeviceActivity.class.getSimpleName();
+    @InjectView(R.id.lv_desc)
+    ListView lvDesc;
     @InjectView(R.id.tv_log)
     TextView tvLog;
     @InjectView(R.id.tv_service_title)
@@ -50,6 +56,11 @@ public class UniversalDeviceActivity extends BaseActivity {
     ListView lvServices;
     @InjectView(R.id.btn_device_manager)
     Button btnDeviceManager;
+
+    @InjectView(R.id.toolbar)
+    Toolbar mToolbar;
+    @InjectView(R.id.toolbar_title)
+    TextView mToolbarTitle;
 
     private AbstractDevice mAbstractDevice;
 
@@ -75,6 +86,11 @@ public class UniversalDeviceActivity extends BaseActivity {
                 manageDevice();
             }
         });
+    }
+
+    @Override
+    protected Pair<Integer, Boolean> getCustomTitle() {
+        return new Pair<>(R.string.title_toolbar_devicemanipulate, true);
     }
 
     public void manageDevice() {
@@ -159,12 +175,22 @@ public class UniversalDeviceActivity extends BaseActivity {
     }
 
     private void initLog() {
-        String log = String.format("设备ID: %s\r\n状态: %s\r\n设备类型: %s\r\n设备主人: %s\r\n",
-                mAbstractDevice.getDeviceId(),
-                mAbstractDevice.getDevice().isOnline() ? "在线" : "离线",
-                mAbstractDevice.getDevice().getConnectionType().toString(),
-                mAbstractDevice.getDevice().getOwnerInfo().getUserId());
-        tvLog.setText(log);
+        DeviceDescAdapter adapter = new DeviceDescAdapter(this);
+        List<Pair<String, String>> list = new ArrayList<>();
+        Device.OwnerInfo ownerInfo = mAbstractDevice.getDevice().getOwnerInfo();
+        list.add(new Pair<>("设备ID", mAbstractDevice.getDeviceId()));
+        list.add(new Pair<>("状态", mAbstractDevice.getDevice().isOnline() ? "在线":"离线"));
+        list.add(new Pair<>("设备类型", mAbstractDevice.getDevice().getConnectionType().toString()));
+        list.add(new Pair<>("设备主人", ownerInfo.getUserName() + "_" + ownerInfo.getUserId()));
+        adapter.addItems(list);
+        lvDesc.setAdapter(adapter);
+
+//        String log = String.format("设备ID: %s\r\n状态: %s\r\n设备类型: %s\r\n设备主人: %s\r\n",
+//                mAbstractDevice.getDeviceId(),
+//                mAbstractDevice.getDevice().isOnline() ? "在线" : "离线",
+//                mAbstractDevice.getDevice().getConnectionType().toString(),
+//                mAbstractDevice.getDevice().getOwnerInfo().getUserId());
+//        tvLog.setText(log);
         tvLog.setMovementMethod(new ScrollingMovementMethod());
         Log.d(TAG, "longitude: " + mAbstractDevice.getDevice().getLongitude() + " " + mAbstractDevice.getDevice().getLatitude());
     }

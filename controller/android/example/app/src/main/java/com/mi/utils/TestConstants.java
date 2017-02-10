@@ -10,6 +10,12 @@ public class TestConstants {
     public static final String SOOCARE_TOOTHBRUSH_X3 = "soocare.toothbrush.x3";
     public static final String SOOCARE_TOOTHBRUSH_X3_URL = "soocare.toothbrush.x3.xml";
 
+    public static final String ZHIMI_AIR_MONITOR_V1 = "zhimi.airmonitor.v1";
+    public static final String ZHIMI_AIR_MONITOR_V1_URL = "zhimi.airmonitor.v1.xml";
+
+    public static final String ZHIMI_AIR_PURIFIER_V6 = "zhimi.airpurifier.v6";
+    public static final String ZHIMI_AIR_PURIFIER_V6_URL = "zhimi.airpurifier.v6.xml";
+
     public static final String ACTION_BIND_SERVICE_SUCCEED = "con.mi.test.action.BIND_SERVICE_SUCCEED";
     public static final String ACTION_BIND_SERVICE_FAILED = "con.mi.test.action.BIND_SERVICE_FAILED";
 

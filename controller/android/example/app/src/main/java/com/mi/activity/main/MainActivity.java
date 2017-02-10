@@ -6,34 +6,27 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 
 import com.mi.test.R;
-import com.mi.utils.BaseActivity;
 import com.mi.utils.TestConstants;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.mi.utils.ToolbarActivity;
+import com.miot.api.CommonHandler;
+import com.miot.api.CompletionHandler;
+import com.miot.api.MiotManager;
+import com.miot.common.device.Device;
+import com.miot.common.exception.MiotException;
+import com.miot.common.share.ShareStatus;
+import com.miot.common.share.SharedRequest;
 
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import com.miot.api.CommonHandler;
-import com.miot.api.CompletionHandler;
-import com.miot.api.MiotManager;
-
-import com.miot.common.device.Device;
-import com.miot.common.exception.MiotException;
-import com.miot.common.share.ShareStatus;
-import com.miot.common.share.SharedRequest;
-import com.miot.common.voice.VoiceCommand;
-import com.miot.common.voice.VoiceResult;
-import com.miot.common.voice.VoiceSession;
-
-public class MainActivity extends BaseActivity {
+public class MainActivity extends ToolbarActivity {
     private static String TAG = MainActivity.class.getSimpleName();
 
     @InjectView(R.id.btn_account)
@@ -167,6 +160,11 @@ public class MainActivity extends BaseActivity {
             }
         }
     };
+
+    @Override
+    protected Pair<Integer, Boolean> getCustomTitle() {
+        return new Pair<>(R.string.title_toolbar_main, false);
+    }
 
     @Override
     protected void onResume() {

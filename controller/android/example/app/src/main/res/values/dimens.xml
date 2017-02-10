@@ -1,8 +1,8 @@
 <resources>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="activity_horizontal_margin">25dp</dimen>
+    <dimen name="activity_vertical_margin">6dp</dimen>
     
 
     <!-- Default screen margins, per the Android Design guidelines. -->
@@ -19,6 +19,8 @@
     <dimen name="font_size_6">10sp</dimen>
     
     <dimen name="font_size_36sp">36sp</dimen>
+    <dimen name="font_size_20sp">20sp</dimen>
+    <dimen name="font_size_18sp">18sp</dimen>
     <dimen name="font_size_15sp">15sp</dimen>
     <dimen name="font_size_13sp">13sp</dimen>
     <dimen name="font_size_12sp">12sp</dimen>
@@ -130,4 +132,10 @@
     <dimen name="tv_info_height">176dp</dimen>
 
 	<dimen name="setting_item_height">67dp</dimen>
+    <dimen name="btn_small_height">54dp</dimen>
+    <dimen name="btn_normal_height">60dp</dimen>
+    <dimen name="btn_large_height">66dp</dimen>
+
+    <dimen name="spinner_tv_width">100dp</dimen>
+    <dimen name="line_height">0.6dp</dimen>
 </resources>

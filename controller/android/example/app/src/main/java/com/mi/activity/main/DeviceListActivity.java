@@ -14,31 +14,30 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.mi.activity.device.PlugActivity;
 import com.mi.activity.universal.UniversalDeviceActivity;
 import com.mi.adapter.DeviceAdapter;
 import com.mi.adapter.MiDeviceManager;
 import com.mi.device.ChuangmiPlugM1;
 import com.mi.test.R;
-import com.mi.utils.BaseActivity;
 import com.mi.utils.TestConstants;
+import com.mi.utils.ToolbarActivity;
+import com.miot.api.CompletionHandler;
+import com.miot.api.MiotManager;
+import com.miot.common.abstractdevice.AbstractDevice;
+import com.miot.common.exception.MiotException;
 
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import com.miot.api.CompletionHandler;
-import com.miot.api.MiotManager;
-import com.miot.common.abstractdevice.AbstractDevice;
-import com.miot.common.exception.MiotException;
-
-public class DeviceListActivity extends BaseActivity {
+public class DeviceListActivity extends ToolbarActivity {
     private static final String TAG = DeviceListActivity.class.getSimpleName();
 
     @InjectView(R.id.lv_devices)
@@ -49,6 +48,7 @@ public class DeviceListActivity extends BaseActivity {
     Button mBtnStartScan;
     @InjectView(R.id.btn_stop_scan)
     Button mBtnStopScan;
+
 
     private DeviceAdapter mDeviceAdapter;
     private MiDeviceManager mMiDeviceManager;
@@ -98,6 +98,11 @@ public class DeviceListActivity extends BaseActivity {
 
         mBroadcastManager = LocalBroadcastManager.getInstance(this);
         mMiDeviceManager = MiDeviceManager.getInstance();
+    }
+
+    @Override
+    protected Pair<Integer, Boolean> getCustomTitle() {
+        return new Pair<>(R.string.title_toolbar_devicemanager, true);
     }
 
     private static final int REQUEST_LOCATION_PERMISSION = 10000;

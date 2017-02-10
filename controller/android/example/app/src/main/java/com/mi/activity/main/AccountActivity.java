@@ -1,17 +1,23 @@
 package com.mi.activity.main;
 
 import android.accounts.OperationCanceledException;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.mi.account.XiaomiAccountGetPeopleInfoTask;
 import com.mi.setting.AppConfig;
 import com.mi.test.R;
-import com.mi.utils.BaseActivity;
+import com.mi.utils.ToolbarActivity;
+import com.miot.api.MiotManager;
 import com.miot.common.ReturnCode;
+import com.miot.common.exception.MiotException;
 import com.miot.common.people.People;
 import com.xiaomi.account.openauth.XMAuthericationException;
 import com.xiaomi.account.openauth.XiaomiOAuthFuture;
@@ -23,13 +29,7 @@ import java.io.IOException;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import com.miot.api.MiotManager;
-
-import com.mi.account.XiaomiAccountGetPeopleInfoTask;
-
-import com.miot.common.exception.MiotException;
-
-public class AccountActivity extends BaseActivity {
+public class AccountActivity extends ToolbarActivity {
     private static final String TAG = AccountActivity.class.getSimpleName();
 
     @InjectView(R.id.tv_account_info)
@@ -62,8 +62,27 @@ public class AccountActivity extends BaseActivity {
         });
     }
 
+    @Override
+    protected Pair<Integer, Boolean> getCustomTitle() {
+        return new Pair<>(R.string.title_toolbar_accountmanager, true);
+    }
+
+    private void login(String userInfo){
+        if (TextUtils.isEmpty(userInfo)) {
+            logout();
+        } else {
+            tvAccountInfo.setText(userInfo);
+            tvAccountInfo.setTextColor(getResources().getColor(R.color.green));
+        }
+    }
+
+    private void logout(){
+        tvAccountInfo.setText(R.string.account_not_login);
+        tvAccountInfo.setTextColor(Color.RED);
+    }
+
     private void initUserInfo() {
-        String userInfo = getString(R.string.account_not_login);
+        String userInfo = "";
 
         do {
             People people = MiotManager.getPeople();
@@ -71,10 +90,10 @@ public class AccountActivity extends BaseActivity {
                 break;
             }
 
-            userInfo = people.getUserName() + " " + people.getUserId();
+            userInfo = getString(R.string.account_logined, people.getUserName(), people.getUserId());
         } while (false);
 
-        tvAccountInfo.setText(userInfo);
+        login(userInfo);
     }
 
     private int accountLogin() {
@@ -98,6 +117,7 @@ public class AccountActivity extends BaseActivity {
     private void accountLogout() {
         try {
             MiotManager.getPeopleManager().deletePeople();
+            logout();
         } catch (MiotException e) {
             e.printStackTrace();
         }
@@ -178,4 +198,5 @@ public class AccountActivity extends BaseActivity {
                     }
                 }).execute();
     }
+
 }

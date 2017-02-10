@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,16 +20,11 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.mi.adapter.DeviceDescAdapter;
 import com.mi.adapter.PropertyAdapter;
 import com.mi.test.R;
-import com.mi.utils.BaseActivity;
 import com.mi.utils.TestConstants;
-
-import java.util.List;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-
+import com.mi.utils.ToolbarActivity;
 import com.miot.api.DeviceManipulator;
 import com.miot.api.MiotManager;
 import com.miot.common.device.Action;
@@ -43,9 +39,17 @@ import com.miot.common.property.AllowedValueList;
 import com.miot.common.property.Property;
 import com.miot.common.property.PropertyDefinition;
 
-public class UniversalServiceActivity extends BaseActivity {
-    private static String TAG = UniversalServiceActivity.class.getSimpleName();
+import java.util.ArrayList;
+import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
+
+public class UniversalServiceActivity extends ToolbarActivity {
+    private static String TAG = UniversalServiceActivity.class.getSimpleName();
+    @InjectView(R.id.lv_desc)
+    ListView lvDesc;
     @InjectView(R.id.tv_log)
     TextView tvLog;
     @InjectView(R.id.tv_properties_title)
@@ -69,6 +73,7 @@ public class UniversalServiceActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_universal_service);
         ButterKnife.inject(this);
+
         mService = getIntent().getParcelableExtra(TestConstants.EXTRA_SERVICE);
         if (mService == null) {
             Log.e(TAG, "service is null");
@@ -106,7 +111,7 @@ public class UniversalServiceActivity extends BaseActivity {
             }
         });
 
-        String title = String.format("设备操作 (%d个方法)", mService.getActions().size());
+        String title = String.format("调用方法(%d)", mService.getActions().size());
         btnManipulate.setText(title);
         btnManipulate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,12 +121,25 @@ public class UniversalServiceActivity extends BaseActivity {
         });
     }
 
+    @Override
+    protected Pair<Integer, Boolean> getCustomTitle() {
+        return new Pair<>(R.string.title_toolbar_service, true);
+    }
+
     private void initLog() {
-        String log = String.format("服务名称: %s\r\n属性个数: %s\r\n方法个数: %s\r\n",
-                mService.getType().getName(),
-                mService.getProperties().size(),
-                mService.getActions().size());
-        tvLog.setText(log);
+        DeviceDescAdapter adapter = new DeviceDescAdapter(this);
+        List<Pair<String, String>> list = new ArrayList<>();
+        list.add(new Pair<>("服务名称", mService.getType().getName()));
+        list.add(new Pair<>("属性数", mService.getProperties().size() + ""));
+        list.add(new Pair<>("方法数", mService.getActions().size() + ""));
+        adapter.setItems(list);
+        lvDesc.setAdapter(adapter);
+
+//        String log = String.format("服务名称: %s\r\n属性个数: %s\r\n方法个数: %s\r\n",
+//                mService.getType().getName(),
+//                mService.getProperties().size(),
+//                mService.getActions().size());
+//        tvLog.setText(log);
         tvLog.setMovementMethod(new ScrollingMovementMethod());
     }
 
@@ -223,7 +241,7 @@ public class UniversalServiceActivity extends BaseActivity {
     }
 
     private void initPropertyList() {
-        String title = String.format("%d 个属性", mService.getProperties().size());
+        String title = String.format("属性列表(%d)", mService.getProperties().size());
         tvPropertiesTitle.setText(title);
         mPropertyAdapter = new PropertyAdapter(this);
         mPropertyAdapter.addItems(mService.getProperties());
@@ -277,8 +295,10 @@ public class UniversalServiceActivity extends BaseActivity {
             i++;
         }
 
+        String title = String.format("调用方法(%d)", size);
+
         AlertDialog alert = new AlertDialog.Builder(this)
-                .setTitle("操作设备（调用方法）")
+                .setTitle(title)
                 .setItems(menu, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -437,10 +457,27 @@ public class UniversalServiceActivity extends BaseActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            TextView tv = new TextView(context);
-            tv.setText(list.get(position).toString());
-            tv.setTextSize(15);
-            return tv;
+            ViewHolder viewHolder = null;
+            if (convertView == null) {
+                convertView = LayoutInflater.from(context).inflate(R.layout.item_allowdvalue, parent, false);
+                viewHolder = new ViewHolder(convertView);
+                convertView.setTag(viewHolder);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+
+            viewHolder.tv.setText(getItem(position).toString());
+            return convertView;
         }
+
+        static class ViewHolder {
+            @InjectView(R.id.text)
+            TextView tv;
+
+            ViewHolder(View view) {
+                ButterKnife.inject(this, view);
+            }
+        }
+
     }
 }

@@ -3,13 +3,13 @@ package com.mi.utils;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 
-public class BaseActivity extends FragmentActivity {
+public class BaseActivity extends AppCompatActivity {
     private static final String TAG = BaseActivity.class.getSimpleName();
 
     public Handler mHandler;
