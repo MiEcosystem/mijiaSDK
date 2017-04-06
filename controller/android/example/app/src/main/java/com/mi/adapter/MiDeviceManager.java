@@ -7,12 +7,6 @@ import android.util.Log;
 
 import com.mi.application.TestApplication;
 import com.mi.utils.TestConstants;
-
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-
 import com.miot.api.CompletionHandler;
 import com.miot.api.DeviceManager;
 import com.miot.api.MiotManager;
@@ -23,6 +17,11 @@ import com.miot.common.device.DiscoveryType;
 import com.miot.common.exception.MiotException;
 import com.miot.common.utils.Logger;
 import com.miot.common.utils.NetworkUtils;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 public class MiDeviceManager {
     private static final String TAG = MiDeviceManager.class.getSimpleName();
@@ -140,6 +139,7 @@ public class MiDeviceManager {
 
     private void foundDevices(List<AbstractDevice> devices) {
         Log.d(TAG, "foundDevices   size"+devices.size());
+        clearDevices();
         for (AbstractDevice device : devices) {
             ConnectionType connectionType = device.getDevice().getConnectionType();
             Log.d(TAG, "found device: " + devices.size() + " " + device.getName() + " " + device.getDeviceId() + " " + connectionType);
