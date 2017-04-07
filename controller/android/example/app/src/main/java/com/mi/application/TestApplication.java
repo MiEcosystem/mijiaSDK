@@ -25,7 +25,6 @@ import com.miot.api.bluetooth.BluetoothDeviceConfig;
 import com.miot.api.bluetooth.XmBluetoothManager;
 import com.miot.common.ReturnCode;
 import com.miot.common.config.AppConfiguration;
-import com.miot.common.device.DiscoveryType;
 import com.miot.common.model.DeviceModel;
 import com.miot.common.model.DeviceModelException;
 import com.miot.common.model.DeviceModelFactory;
@@ -33,9 +32,6 @@ import com.miot.common.utils.Logger;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.xiaomi.mipush.sdk.MiPushCommandMessage;
 import com.xiaomi.mipush.sdk.MiPushMessage;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TestApplication extends Application {
     private static final String TAG = TestApplication.class.getSimpleName();
@@ -147,12 +143,45 @@ public class TestApplication extends Application {
                         ChuangmiPlugM1.class);
                 MiotManager.getInstance().addModel(plugM1);
 
+                DeviceModel lumiPlug = DeviceModelFactory.createDeviceModel(
+                        TestApplication.this,
+                        "lumi.plug.v1",
+                        "lumi.plug.v1.xml");
+                MiotManager.getInstance().addModel(lumiPlug);
+
                 DeviceModel toothBrush = DeviceModelFactory.createDeviceModel(
                         TestApplication.this,
                         TestConstants.SOOCARE_TOOTHBRUSH_X3,
                         TestConstants.SOOCARE_TOOTHBRUSH_X3_URL,
                         SoocareToothbrushx3.class);
                 MiotManager.getInstance().addModel(toothBrush);
+
+                DeviceModel airMonitor = DeviceModelFactory.createDeviceModel(
+                        TestApplication.this,
+                        TestConstants.ZHIMI_AIR_MONITOR_V1,
+                        TestConstants.ZHIMI_AIR_MONITOR_V1_URL);
+                MiotManager.getInstance().addModel(airMonitor);
+
+                DeviceModel airPurifier = DeviceModelFactory.createDeviceModel(
+                        TestApplication.this,
+                        TestConstants.ZHIMI_AIR_PURIFIER_V6,
+                        TestConstants.ZHIMI_AIR_PURIFIER_V6_URL);
+                MiotManager.getInstance().addModel(airPurifier);
+
+
+                DeviceModel yeelink = DeviceModelFactory.createDeviceModel(
+                        TestApplication.this,
+                        "yeelink.light.color1",
+                        "yeelink.light.color1.xml"
+                );
+                MiotManager.getInstance().addModel(yeelink);
+
+                DeviceModel yeelink1 = DeviceModelFactory.createDeviceModel(
+                        TestApplication.this,
+                        "yeelink.light.mono1",
+                        "yeelink.light.mono1.xml"
+                );
+                MiotManager.getInstance().addModel(yeelink1);
             } catch (DeviceModelException e) {
                 e.printStackTrace();
             }
