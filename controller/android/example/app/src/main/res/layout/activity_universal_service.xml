@@ -60,7 +60,7 @@
             android:id="@+id/btn_subscribe"
             style="@style/Device.Small"
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_weight="0.8"
             android:text="@string/Subscribe" />
 
         <Button
@@ -82,7 +82,7 @@
             android:id="@+id/btn_manipulate"
             style="@style/Device.Green.Small"
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_weight="1.2"
             android:text="@string/device_manipulate" />
     </LinearLayout>
 

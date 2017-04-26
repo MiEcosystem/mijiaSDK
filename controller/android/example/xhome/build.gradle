@@ -39,7 +39,13 @@ repositories {
     flatDir {
         dirs 'libs'
     }
+
+    maven {
+        url 'http://mijia.sdk.westm.cn'
+    }
 }
+
+version = '3.2.9'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -49,17 +55,14 @@ dependencies {
     compile rootProject.ext.dependencies['appcompat-v7']
     compile rootProject.ext.dependencies['butterknife']
     compile rootProject.ext.dependencies['joda-time']
-    compile rootProject.ext.dependencies['gson']
-    compile rootProject.ext.dependencies['okhttp']
-    compile rootProject.ext.dependencies['commons-io']
     compile rootProject.ext.dependencies['multidex']
-    compile rootProject.ext.dependencies['inuker-bluetooth']
+
 
     compile files('libs/oauth-xiaomiopenauth.jar')
 
-    compile(name: 'mijiaClient-3-2-1', ext: 'aar')
-    compile(name: 'mijiaService-3-2-1', ext: 'aar')
-    compile(name: 'mijiaBluetooth-3-2-1', ext: 'aar')
+    compile "com.xiaomi.miot:mijia-controller-client:$version"
+    compile "com.xiaomi.miot:mijia-controller-service:$version"
+    compile "com.xiaomi.miot:mijia-controller-bluetooth:$version"
 
     compile(name: 'maml-release', ext: "aar")
 }

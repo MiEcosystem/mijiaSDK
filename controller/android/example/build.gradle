@@ -16,6 +16,10 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+
+//        maven {
+//            url 'http://mijia.sdk.westm.cn'
+//        }
     }
 }
 
