@@ -39,8 +39,9 @@ dependencies {
 ## 版本更新说明
 
 ### 3.2.8
-没登录调用MiotCloudAPI直接返回错误的Response
-增加接口MiotManager.getDeviceConnector().setHttpUserAgent(mijia-sdk-demo);修改MiotCloudAPI的user agent
+
+- 没登录调用MiotCloudAPI直接返回错误的Response
+- 增加接口MiotManager.getDeviceConnector().setHttpUserAgent(mijia-sdk-demo);修改MiotCloudAPI的user agent
 
 ### 3.2.9
-添加us服务器
+- 添加us服务器
