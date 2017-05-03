@@ -41,7 +41,9 @@ dependencies {
 ### 3.2.8
 
 - 没登录调用MiotCloudAPI直接返回错误的Response
-- 增加接口MiotManager.getDeviceConnector().setHttpUserAgent(mijia-sdk-demo);修改MiotCloudAPI的user agent
+- 增加接口MiotManager.getDeviceConnector().setHttpUserAgent("mijia-sdk-demo");修改MiotCloudAPI的user agent
 
 ### 3.2.9
 - 添加us服务器
+- MiotManager.getDeviceConnector().enableHttpLog();添加okhttplog拦截器,拦截详细日志,适用于调试.
+- MiotManager.getVoiceAssistant().startSession(<source>,<did>,<handler>)接口修改
