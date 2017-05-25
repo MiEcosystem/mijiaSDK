@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.mi.activity.device.PlugActivity;
 import com.mi.activity.universal.UniversalDeviceActivity;
 import com.mi.adapter.DeviceAdapter;
 import com.mi.adapter.MiDeviceManager;
@@ -153,7 +154,7 @@ public class DeviceListActivity extends ToolbarActivity {
     private void gotoDevicePage(AbstractDevice device) {
         Intent intent = new Intent(this, UniversalDeviceActivity.class);
         if (device instanceof ChuangmiPlugM1) {
-//            intent = new Intent(this, PlugActivity.class);
+            intent = new Intent(this, PlugActivity.class);
         }
         intent.putExtra(TestConstants.EXTRA_DEVICE, device);
         startActivity(intent);
