@@ -26,12 +26,10 @@ repositories {
     }
 }
 
-version = '3.2.9'
-
 dependencies {
-    compile "com.xiaomi.miot:mijia-controller-client:$version"
-    compile "com.xiaomi.miot:mijia-controller-service:$version"
-    compile "com.xiaomi.miot:mijia-controller-bluetooth:$version"
+    compile "com.xiaomi.miot:mijia-controller-client:3.2.+"
+    compile "com.xiaomi.miot:mijia-controller-service:3.2.+"
+    compile "com.xiaomi.miot:mijia-controller-bluetooth:3.2.+"
     compile files('libs/oauth-xiaomiopenauth.jar')
 }
 ```

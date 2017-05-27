@@ -1,0 +1,269 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="urn:schemas-mi-com:device-1-0">
+    <specVersion>
+        <major>1</major>
+        <minor>0</minor>
+    </specVersion>
+    <device>
+        <type>urn:schemas-mi-com:device:AirPurifier:Base:1</type>
+        <friendlyName>小米空气净化器</friendlyName>
+        <modelNumber>1</modelNumber>
+        <modelName>AirPurifier.2014</modelName>
+        <modelDescription>小米空气净化器</modelDescription>
+        <modelURL>http://www.mi.com</modelURL>
+        <manufacturer>Xiaomi</manufacturer>
+        <manufacturerURL>http://www.mi.com</manufacturerURL>
+
+        <serviceList>
+            <service>
+                <type>urn:schemas-mi-com:service:AirPurifier:BaseService:1</type>
+                <friendlyName>空气净化服务</friendlyName>
+                <internalName/>
+                <description/>
+
+                <actionList>
+                    <action>
+                        <friendlyName>resetFilter</friendlyName>
+                        <internalName>reset_filter1</internalName>
+                        <description>重置滤芯</description>
+                        <argumentList/>
+                    </action>
+
+                    <action>
+                        <friendlyName>setAirAutoDetect</friendlyName>
+                        <internalName>set_act_det</internalName>
+                        <description>设置关机自主检测空气质量开关</description>
+                        <argumentList>
+                            <argument>
+                                <name>airAutoDetect</name>
+                                <direction>in</direction>
+                                <relatedProperty>AirAutoDetect</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </action>
+
+                    <action>
+                        <friendlyName>setBuzzer</friendlyName>
+                        <internalName>set_buzzer</internalName>
+                        <description>设置蜂鸣器开关</description>
+                        <argumentList>
+                            <argument>
+                                <name>buzzer</name>
+                                <direction>in</direction>
+                                <relatedProperty>BuzzerStatus</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </action>
+
+                    <action>
+                        <friendlyName>setFilterMaxLife</friendlyName>
+                        <internalName>set_f1_hour</internalName>
+                        <description>设置滤网的最大寿命</description>
+                        <argumentList>
+                            <argument>
+                                <name>filterMaxLife</name>
+                                <direction>in</direction>
+                                <relatedProperty>FilterMaxLife</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </action>
+
+                    <action>
+                        <friendlyName>setLedStatus</friendlyName>
+                        <internalName>set_led</internalName>
+                        <description>设置灯</description>
+                        <argumentList>
+                            <argument>
+                                <name>ledStatus</name>
+                                <direction>in</direction>
+                                <relatedProperty>LedStatus</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </action>
+
+                    <action>
+                        <friendlyName>setLedBrightness</friendlyName>
+                        <internalName>set_led_b</internalName>
+                        <description>设置LED灯亮度</description>
+                        <argumentList>
+                            <argument>
+                                <name>brightness</name>
+                                <direction>in</direction>
+                                <relatedProperty>LedBrightness</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </action>
+
+                    <action>
+                        <friendlyName>setMode</friendlyName>
+                        <internalName>set_mode</internalName>
+                        <description>设置模式</description>
+                        <argumentList>
+                            <argument>
+                                <name>mode</name>
+                                <direction>in</direction>
+                                <relatedProperty>Mode</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </action>
+                </actionList>
+
+                <eventList>
+                    <event>
+                        <friendlyName>onFault</friendlyName>
+                        <internalName>fault</internalName>
+                        <description>发生故障</description>
+                        <argumentList>
+                            <argument>
+                                <name>fault</name>
+                                <relatedProperty>FaultDetail</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </event>
+
+                    <event>
+                        <friendlyName>onFilerEndOfLife</friendlyName>
+                        <internalName>filter1_eof</internalName>
+                        <description>滤网寿命到了，即属性FilterLife变为0或负数</description>
+                        <argumentList/>
+                    </event>
+
+                    <event>
+                        <friendlyName>onFilterDoorOpened</friendlyName>
+                        <internalName>filter_door_opened</internalName>
+                        <description>滤网盖（侧盖）被打开了</description>
+                        <argumentList/>
+                    </event>
+
+                    <event>
+                        <friendlyName>onUpCoverRemoved</friendlyName>
+                        <internalName>up_cover_removed</internalName>
+                        <description>上盖被打开了</description>
+                        <argumentList/>
+                    </event>
+                </eventList>
+
+                <propertyList>
+                    <property gettable="true" notifiable="true" settable="false">
+                        <friendlyName>AirAutoDetect</friendlyName>
+                        <internalName>act_det</internalName>
+                        <description>自动检测空气质量: on|off</description>
+                        <dataType>string</dataType>
+                        <allowedValueList>
+                            <allowedValue>on</allowedValue>
+                            <allowedValue>off</allowedValue>
+                        </allowedValueList>
+                    </property>
+
+                    <property gettable="true" notifiable="true" settable="false">
+                        <friendlyName>AirQualityIndex</friendlyName>
+                        <internalName>aqi</internalName>
+                        <description>空气质量指数: [0, 600]</description>
+                        <dataType>ui4</dataType>
+                        <allowedValueRange>
+                            <minimum>0</minimum>
+                            <maximum>600</maximum>
+                        </allowedValueRange>
+                    </property>
+
+                    <property gettable="true" notifiable="true" settable="false">
+                        <friendlyName>Brightness</friendlyName>
+                        <internalName>bright</internalName>
+                        <description>室内亮度: [0, 200]</description>
+                        <dataType>ui4</dataType>
+                        <allowedValueRange>
+                            <minimum>0</minimum>
+                            <maximum>200</maximum>
+                        </allowedValueRange>
+                    </property>
+
+                    <property gettable="true" notifiable="true" settable="false">
+                        <friendlyName>BuzzerStatus</friendlyName>
+                        <internalName>buzzer</internalName>
+                        <description>蜂鸣器状态: on|off</description>
+                        <dataType>string</dataType>
+                        <allowedValueList>
+                            <allowedValue>on</allowedValue>
+                            <allowedValue>off</allowedValue>
+                        </allowedValueList>
+                    </property>
+
+                    <property gettable="true" notifiable="true" settable="false">
+                        <friendlyName>FilterMaxLife</friendlyName>
+                        <internalName>f1_hour</internalName>
+                        <description>滤网1的最大寿命，单位是小时: [2000, 6000]</description>
+                        <dataType>ui4</dataType>
+                        <allowedValueRange>
+                            <minimum>2000</minimum>
+                            <maximum>6000</maximum>
+                        </allowedValueRange>
+                    </property>
+
+                    <property gettable="true" notifiable="true" settable="false">
+                        <friendlyName>FilterLife</friendlyName>
+                        <internalName>filter1_life</internalName>
+                        <description>滤网所剩生命百分比: [0,100]</description>
+                        <dataType>ui4</dataType>
+                        <allowedValueRange>
+                            <minimum>0</minimum>
+                            <maximum>100</maximum>
+                        </allowedValueRange>
+                    </property>
+
+                    <property gettable="true" notifiable="true" settable="false">
+                        <friendlyName>LedStatus</friendlyName>
+                        <internalName>led</internalName>
+                        <description>LED灯状态: on|off</description>
+                        <dataType>string</dataType>
+                        <allowedValueList>
+                            <allowedValue>on</allowedValue>
+                            <allowedValue>off</allowedValue>
+                        </allowedValueList>
+                    </property>
+
+                    <property gettable="true" notifiable="true" settable="false">
+                        <friendlyName>LedBrightness</friendlyName>
+                        <internalName>led_b</internalName>
+                        <description>LED灯亮度: [5,10]</description>
+                        <dataType>ui4</dataType>
+                        <allowedValueRange>
+                            <minimum>5</minimum>
+                            <maximum>10</maximum>
+                        </allowedValueRange>
+                    </property>
+
+                    <property gettable="true" notifiable="true" settable="true">
+                        <friendlyName>Mode</friendlyName>
+                        <internalName>mode</internalName>
+                        <description>模式</description>
+                        <dataType>string</dataType>
+                        <allowedValueList>
+                            <allowedValue>idle</allowedValue>
+                            <allowedValue>auto</allowedValue>
+                            <allowedValue>silent</allowedValue>
+                            <allowedValue>strong</allowedValue>
+                            <allowedValue>high</allowedValue>
+                            <allowedValue>medium</allowedValue>
+                            <allowedValue>low</allowedValue>
+                        </allowedValueList>
+                    </property>
+
+                    <property gettable="false" notifiable="false" settable="false">
+                        <friendlyName>FaultDetail</friendlyName>
+                        <internalName>fault</internalName>
+                        <description>故障</description>
+                        <dataType>string</dataType>
+                        <allowedValueList>
+                            <allowedValue>m1 run</allowedValue>
+                            <allowedValue>m2 run</allowedValue>
+                            <allowedValue>m1 stuck</allowedValue>
+                            <allowedValue>m2 stuck</allowedValue>
+                            <allowedValue>no sensor</allowedValue>
+                        </allowedValueList>
+                    </property>
+                </propertyList>
+
+            </service>
+        </serviceList>
+    </device>
+</root>

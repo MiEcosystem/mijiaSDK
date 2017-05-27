@@ -14,8 +14,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.mi.device.ChuangmiPlugM1;
-import com.mi.device.SoocareToothbrushx3;
 import com.mi.setting.AppConfig;
 import com.mi.utils.CrashHandler;
 import com.mi.utils.TestConstants;
@@ -139,8 +137,9 @@ public class TestApplication extends Application {
                 DeviceModel plugM1 = DeviceModelFactory.createDeviceModel(
                         TestApplication.this,
                         TestConstants.CHUANGMI_PLUG_M1,
-                        TestConstants.CHUANGMI_PLUG_M1_URL,
-                        ChuangmiPlugM1.class);
+                        TestConstants.CHUANGMI_PLUG_M1_URL
+                        //, ChuangmiPlugM1.class
+                        );
                 MiotManager.getInstance().addModel(plugM1);
 
                 DeviceModel lumiPlug = DeviceModelFactory.createDeviceModel(
@@ -149,13 +148,6 @@ public class TestApplication extends Application {
                         "lumi.plug.v1.xml");
                 MiotManager.getInstance().addModel(lumiPlug);
 
-                DeviceModel toothBrush = DeviceModelFactory.createDeviceModel(
-                        TestApplication.this,
-                        TestConstants.SOOCARE_TOOTHBRUSH_X3,
-                        TestConstants.SOOCARE_TOOTHBRUSH_X3_URL,
-                        SoocareToothbrushx3.class);
-                MiotManager.getInstance().addModel(toothBrush);
-
                 DeviceModel airMonitor = DeviceModelFactory.createDeviceModel(
                         TestApplication.this,
                         TestConstants.ZHIMI_AIR_MONITOR_V1,
@@ -163,6 +155,30 @@ public class TestApplication extends Application {
                 MiotManager.getInstance().addModel(airMonitor);
 
                 DeviceModel airPurifier = DeviceModelFactory.createDeviceModel(
+                        TestApplication.this,
+                        "zhimi.airpurifier.v1",
+                        "zhimi.airpurifier.v1.xml");
+                MiotManager.getInstance().addModel(airPurifier);
+
+                airPurifier = DeviceModelFactory.createDeviceModel(
+                        TestApplication.this,
+                        "zhimi.airpurifier.v2",
+                        "zhimi.airpurifier.v2.xml");
+                MiotManager.getInstance().addModel(airPurifier);
+
+                airPurifier = DeviceModelFactory.createDeviceModel(
+                        TestApplication.this,
+                        "zhimi.airpurifier.v3",
+                        "zhimi.airpurifier.v3.xml");
+                MiotManager.getInstance().addModel(airPurifier);
+
+                airPurifier = DeviceModelFactory.createDeviceModel(
+                        TestApplication.this,
+                        "zhimi.airpurifier.v5",
+                        "zhimi.airpurifier.v5.xml");
+                MiotManager.getInstance().addModel(airPurifier);
+
+                airPurifier = DeviceModelFactory.createDeviceModel(
                         TestApplication.this,
                         TestConstants.ZHIMI_AIR_PURIFIER_V6,
                         TestConstants.ZHIMI_AIR_PURIFIER_V6_URL);

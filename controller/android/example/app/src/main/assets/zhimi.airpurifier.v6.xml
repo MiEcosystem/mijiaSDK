@@ -21,6 +21,16 @@
 
                 <propertyList>
                     <property gettable="true" notifiable="true">
+                        <friendlyName>Power</friendlyName>
+                        <internalName>power</internalName>
+                        <description>开关状态（on|off）</description>
+                        <dataType>string</dataType>
+                        <allowedValueList>
+                            <allowedValue>on</allowedValue>
+                            <allowedValue>off</allowedValue>
+                        </allowedValueList>
+                    </property>
+                    <property gettable="true" notifiable="true">
                         <friendlyName>AQI</friendlyName>
                         <internalName>aqi</internalName>
                         <description>空气质量指数</description>
@@ -66,14 +76,14 @@
                         <description>工作档位</description>
                         <dataType>string</dataType>
                         <allowedValueList>
-                            <allowedValue>idle</allowedValue>
                             <allowedValue>auto</allowedValue>
                             <allowedValue>silent</allowedValue>
+                            <allowedValue>favorite</allowedValue>
+                            <!--<allowedValue>idle</allowedValue>
                             <allowedValue>strong</allowedValue>
                             <allowedValue>high</allowedValue>
                             <allowedValue>medium</allowedValue>
-                            <allowedValue>low</allowedValue>
-                            <allowedValue>favorite</allowedValue>
+                            <allowedValue>low</allowedValue>-->
                         </allowedValueList>
                     </property>
                     <property gettable="true" notifiable="true">
@@ -229,6 +239,18 @@
                 
                 <actionList>
                     <action>
+                        <friendlyName>setPower</friendlyName>
+                        <internalName>set_power</internalName>
+                        <description>电源开关</description>
+                        <argumentList>
+                            <argument>
+                                <name>power</name>
+                                <direction>in</direction>
+                                <relatedProperty>Power</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </action>
+                    <action>
                         <friendlyName>setMode</friendlyName>
                         <internalName>set_mode</internalName>
                         <description>设置模式</description>
@@ -255,7 +277,7 @@
                     <action>
                         <friendlyName>setVolumeValue</friendlyName>
                         <internalName>set_volume</internalName>
-                        <description></description>
+                        <description>设置音量</description>
                         <argumentList>
                             <argument>
                                 <name>VolumeValue</name>
