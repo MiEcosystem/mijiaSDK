@@ -35,7 +35,7 @@ AppSecret： xxx
 ```
 
 ### 3. 注册AppId，AppKey以及设备信息
-将应用注册到小米帐号时，会生成相关的AppId和Appkey，需要将这部分信息注册到智能家居后台，否则会返回错误"app_id is null"。
+将应用注册到小米帐号时，会生成相关的AppId和Appkey，需要将AppId和公司名称注册到智能家居后台，否则会返回错误"app_id is null"。
 请联系相关开发同学。
 
 ## 产品接入
