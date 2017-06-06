@@ -18,7 +18,7 @@ mijiaSDK目前支持小米帐号登陆，开发者需要到[小米帐号开放�
 
 ### 2. 消息推送
 mijiaSDK中集成有Mipush，目前主要是用于订阅设备事件。App使用前，开发者需要到[小米消息推送服务](http://dev.xiaomi.com/doc/?page_id=1670)注册自己的App信息。
-还需将信息注册到智能家居后台。注册方式：请将注册信息发送到haojianxiu@xiaomi.com
+还需将信息注册到智能家居后台。
 注册信息示例：
 ```
 IOS App 信息：
