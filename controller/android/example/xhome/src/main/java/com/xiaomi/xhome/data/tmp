@@ -1,9 +1,0 @@
-	<Model name="lumi.plug.v1" w="1" h="1" pack="model_themes" manifest="lumi.plug.v1/manifest.xml"/>
-	<Model name="lumi.sensor_ht.v1" w="1" h="1" pack="model_themes" manifest="lumi.sensor_ht.v1/manifest.xml"/>
-	<Model name="xhome.time" w="2" h="1" pack="model_themes" manifest="xhome.time/manifest.xml"/>
-	<Model name="yeelink.light.color1" w="2" h="1" pack="model_themes" manifest="yeelink.light.color1/manifest.xml"/>
-	<Model name="yeelink.light.lamp1" w="2" h="1" pack="model_themes" manifest="yeelink.light.lamp1/manifest.xml"/>
-	<Model name="yeelink.light.mono1" w="2" h="1" pack="model_themes" manifest="yeelink.light.mono1/manifest.xml"/>
-	<Model name="zhimi.airpurifier.m1" w="2" h="1" pack="model_themes" manifest="zhimi.airpurifier.m1/manifest.xml"/>
-	<Model name="zhimi.airpurifier.v1" w="2" h="1" pack="model_themes" manifest="zhimi.airpurifier.v1/manifest.xml"/>
-	<Model name="zhimi.airpurifier.v3" w="2" h="1" pack="model_themes" manifest="zhimi.airpurifier.v3/manifest.xml"/>
