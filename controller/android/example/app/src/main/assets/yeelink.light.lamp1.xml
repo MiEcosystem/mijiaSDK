@@ -1,0 +1,308 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="urn:schemas-mi-com:device-1-0">
+    <specVersion>
+        <major>1</major>
+        <minor>0</minor>
+    </specVersion>
+    <device>
+        <type>urn:schemas-mi-com:device:MiDeviceLamp::1</type>
+        <friendlyName>YeelightWifi写字灯</friendlyName>
+        <firmwareVersion>1</firmwareVersion>
+        <modelNumber>1</modelNumber>
+        <modelName>yeelink.light.lamp1</modelName>
+        <modelDescription>Yeelight写字灯</modelDescription>
+        <modelURL>http://www.mi.com</modelURL>
+        <manufacturer>Xiaomi</manufacturer>
+        <manufacturerURL>http://www.mi.com</manufacturerURL>
+
+        <serviceList>
+            <service>
+                <type>urn:schemas-mi-com:service:MiDeviceLamp:Service:1</type>
+                <friendlyName>控制服务</friendlyName>
+                <internalName/>
+                <description/>
+
+                <actionList>
+                    <action>
+                        <friendlyName>toggle</friendlyName>
+                        <internalName>toggle</internalName>
+                        <description>开关灯切换</description>
+                    </action>
+
+                    <action>
+                        <friendlyName>restore</friendlyName>
+                        <internalName>miIO.restore</internalName>
+                        <description>重置</description>
+                    </action>
+
+                    <action>
+                        <friendlyName>sendCmd</friendlyName>
+                        <internalName>set_ps</internalName>
+                        <description>发送控制命令</description>
+                        <argumentList>
+                            <argument>
+                                <name>cmd_key</name>
+                                <direction>in</direction>
+                                <relatedProperty>CmdKey</relatedProperty>
+                            </argument>
+                            <argument>
+                                <name>cmd_value</name>
+                                <direction>in</direction>
+                                <relatedProperty>CmdValue</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </action>
+
+                    <action>
+                        <friendlyName>sendCmd</friendlyName>
+                        <internalName>set_ps</internalName>
+                        <description>发送控制命令</description>
+                        <argumentList>
+                            <argument>
+                                <name>cmd_key</name>
+                                <direction>in</direction>
+                                <relatedProperty>CmdKey</relatedProperty>
+                            </argument>
+                            <argument>
+                                <name>cmd_value</name>
+                                <direction>in</direction>
+                                <relatedProperty>CmdValue</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </action>
+
+                    <action>
+                        <friendlyName>getData</friendlyName>
+                        <internalName>get_ps</internalName>
+                        <description>读取设备数据</description>
+                        <argumentList>
+                            <argument>
+                                <name>cmd_resp</name>
+                                <direction>out</direction>
+                                <relatedProperty>CmdResp</relatedProperty>
+                            </argument>
+                            <argument>
+                                <name>cmd_key</name>
+                                <direction>in</direction>
+                                <relatedProperty>CmdKey</relatedProperty>
+                            </argument>
+                            <argument>
+                                <name>cmd_value</name>
+                                <direction>in</direction>
+                                <relatedProperty>CmdValue</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </action>
+
+                    <action>
+                        <friendlyName>setPower</friendlyName>
+                        <internalName>set_power</internalName>
+                        <description>开关灯</description>
+                        <argumentList>
+                            <argument>
+                                <name>power</name>
+                                <direction>in</direction>
+                                <relatedProperty>Power</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </action>
+
+                    <action>
+                        <friendlyName>setBright</friendlyName>
+                        <internalName>set_bright</internalName>
+                        <description>设置亮度</description>
+                        <argumentList>
+                            <argument>
+                                <name>bright</name>
+                                <direction>in</direction>
+                                <relatedProperty>Bright</relatedProperty>
+                            </argument>
+                            <argument>
+                                <name>effect</name>
+                                <direction>in</direction>
+                                <relatedProperty>Effect</relatedProperty>
+                            </argument>
+                            <argument>
+                                <name>duration</name>
+                                <direction>in</direction>
+                                <relatedProperty>Duration</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </action>
+                    <action>
+                        <friendlyName>setCt</friendlyName>
+                        <internalName>set_ct_abx</internalName>
+                        <description>设置色温</description>
+                        <argumentList>
+                            <argument>
+                                <name>ct</name>
+                                <direction>in</direction>
+                                <relatedProperty>Ct</relatedProperty>
+                            </argument>
+                            <argument>
+                                <name>effect</name>
+                                <direction>in</direction>
+                                <relatedProperty>Effect</relatedProperty>
+                            </argument>
+                            <argument>
+                                <name>duration</name>
+                                <direction>in</direction>
+                                <relatedProperty>Duration</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </action>
+                    <action>
+                        <friendlyName>set_scene_single</friendlyName>
+                        <internalName>set_scene</internalName>
+                        <description>设置灯光</description>
+                        <argumentList>
+                            <argument>
+                                <name>param_model</name>
+                                <direction>in</direction>
+                                <relatedProperty>param_model</relatedProperty>
+                            </argument>
+                            <argument>
+                                <name>color_ct</name>
+                                <direction>in</direction>
+                                <relatedProperty>param_count</relatedProperty>
+                            </argument>
+                            <argument>
+                                <name>bright</name>
+                                <direction>in</direction>
+                                <relatedProperty>param_finish</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </action>
+                </actionList>
+
+                <eventList>
+                    <event>
+                        <friendlyName>onPowerSwitched</friendlyName>
+                        <internalName>OnPowerSwitched</internalName>
+                        <description>开关灯状态变化</description>
+                        <argumentList>
+                            <argument>
+                                <name>power</name>
+                                <relatedProperty>Power</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </event>
+                    <event>
+                        <friendlyName>onBrightChanged</friendlyName>
+                        <internalName>OnBrightChanged</internalName>
+                        <description>亮度变化</description>
+                        <argumentList>
+                            <argument>
+                                <name>bright</name>
+                                <relatedProperty>Bright</relatedProperty>
+                            </argument>
+                        </argumentList>
+                    </event>
+                </eventList>
+
+                <propertyList>
+                    <property gettable="true" notifiable="true" settable="true">
+                        <friendlyName>Power</friendlyName>
+                        <internalName>power</internalName>
+                        <description>开关状态</description>
+                        <dataType>string</dataType>
+                        <allowedValueList>
+                            <allowedValue>on</allowedValue>
+                            <allowedValue>off</allowedValue>
+                        </allowedValueList>
+                    </property>
+
+                    <property gettable="false" notifiable="false" settable="true">
+                        <friendlyName>Effect</friendlyName>
+                        <internalName>effect</internalName>
+                        <description>变化效果</description>
+                        <dataType>string</dataType>
+                        <allowedValueList>
+                            <allowedValue>smooth</allowedValue>
+                            <allowedValue>sudden</allowedValue>
+                        </allowedValueList>
+                    </property>
+
+                    <property gettable="false" notifiable="false" settable="true">
+                        <friendlyName>Duration</friendlyName>
+                        <internalName>duration</internalName>
+                        <description>变化时长</description>
+                        <dataType>ui4</dataType>
+                        <allowedValueRange>
+                            <minimum>0</minimum>
+                            <maximum>1000</maximum>
+                        </allowedValueRange>
+                    </property>
+
+                    <property gettable="true" notifiable="true" settable="true">
+                        <friendlyName>Bright</friendlyName>
+                        <internalName>bright</internalName>
+                        <description>灯亮度</description>
+                        <dataType>ui4</dataType>
+                        <allowedValueRange>
+                            <minimum>0</minimum>
+                            <maximum>100</maximum>
+                        </allowedValueRange>
+                    </property>
+
+                    <property settable="true">
+                        <friendlyName>Ct</friendlyName>
+                        <internalName>Ct</internalName>
+                        <description>色温</description>
+                        <dataType>ui4</dataType>
+                        <allowedValueRange>
+                            <minimum>2700</minimum>
+                            <maximum>6500</maximum>
+                        </allowedValueRange>
+                    </property>
+
+                    <property gettable="false" notifiable="false" settable="false">
+                        <friendlyName>CmdKey</friendlyName>
+                        <internalName>cmd_key</internalName>
+                        <description>命令</description>
+                        <dataType>string</dataType>
+                        <allowedValueList>
+                            <allowedValue>cfg_pomodoro</allowedValue>
+                        </allowedValueList>
+                    </property>
+
+                    <property gettable="false" notifiable="false" settable="false">
+                        <friendlyName>CmdValue</friendlyName>
+                        <internalName>cmd_value</internalName>
+                        <description>命令参数</description>
+                        <dataType>string</dataType>
+                    </property>
+
+                    <property gettable="false" notifiable="false" settable="false">
+                        <friendlyName>CmdResp</friendlyName>
+                        <internalName>cmd_resp</internalName>
+                        <description>命令响应</description>
+                        <dataType>string</dataType>
+                    </property>
+
+                    <property settable="true">
+                        <friendlyName>param_model</friendlyName>
+                        <internalName>param_model</internalName>
+                        <description>流光参数</description>
+                        <dataType>string</dataType>
+                    </property>
+
+                    <property settable="true">
+                        <friendlyName>param_count</friendlyName>
+                        <internalName>param_count</internalName>
+                        <description>流光参数</description>
+                        <dataType>ui4</dataType>
+                    </property>
+
+                    <property settable="true">
+                        <friendlyName>param_finish</friendlyName>
+                        <internalName>param_finish</internalName>
+                        <description>流光参数</description>
+                        <dataType>ui4</dataType>
+                    </property>
+                </propertyList>
+
+            </service>
+        </serviceList>
+    </device>
+</root>

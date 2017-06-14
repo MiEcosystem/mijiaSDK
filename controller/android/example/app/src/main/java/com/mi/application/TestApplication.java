@@ -198,6 +198,13 @@ public class TestApplication extends Application {
                         "yeelink.light.mono1.xml"
                 );
                 MiotManager.getInstance().addModel(yeelink1);
+
+                DeviceModel lamp1 = DeviceModelFactory.createDeviceModel(
+                        TestApplication.this,
+                        "yeelink.light.lamp1",
+                        "yeelink.light.lamp1.xml"
+                );
+                MiotManager.getInstance().addModel(lamp1);
             } catch (DeviceModelException e) {
                 e.printStackTrace();
             }
