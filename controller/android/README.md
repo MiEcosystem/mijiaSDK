@@ -48,3 +48,7 @@ dependencies {
 
 ### 3.2.10
 - 兼容老版本接口MiotManager.getVoiceAssistant().startSession([handler])
+
+### 3.2.11
+- 更新小米推送3.4.0版本
+- MiotManager.getDeviceManipulator().addPropertyChangedListener同一个设备的同一个service可以订阅多次
