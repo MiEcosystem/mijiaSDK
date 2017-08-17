@@ -247,7 +247,7 @@
 
                     <property settable="true">
                         <friendlyName>Ct</friendlyName>
-                        <internalName>Ct</internalName>
+                        <internalName>ct</internalName>
                         <description>色温</description>
                         <dataType>ui4</dataType>
                         <allowedValueRange>

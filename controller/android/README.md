@@ -52,3 +52,7 @@ dependencies {
 ### 3.2.11
 - 更新小米推送3.4.0版本
 - MiotManager.getDeviceManipulator().addPropertyChangedListener同一个设备的同一个service可以订阅多次
+
+### 3.2.12
+- DataType不能转行类型错误不再打印污染日志
+- SharedRequest添加sender,senderName属性
