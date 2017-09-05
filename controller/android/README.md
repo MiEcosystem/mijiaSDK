@@ -27,9 +27,9 @@ repositories {
 }
 
 dependencies {
-    compile "com.xiaomi.miot:mijia-controller-client:3.2.+"
-    compile "com.xiaomi.miot:mijia-controller-service:3.2.+"
-    compile "com.xiaomi.miot:mijia-controller-bluetooth:3.2.+"
+    compile "com.xiaomi.miot:mijia-controller-client:3.2.14"
+    compile "com.xiaomi.miot:mijia-controller-service:3.2.14"
+    compile "com.xiaomi.miot:mijia-controller-bluetooth:3.2.14"
     compile files('libs/oauth-xiaomiopenauth.jar')
 }
 ```
@@ -56,3 +56,10 @@ dependencies {
 ### 3.2.12
 - DataType不能转行类型错误不再打印污染日志
 - SharedRequest添加sender,senderName属性
+
+### 3.2.12-tv
+- MiotManager.getDeviceManipulator().addPropertyChangedListener同一个设备的同一个service可以订阅多次
+
+### 3.2.14
+- 之后正式版本去掉这个功能，只保留在3.2.12-tv ~~MiotManager.getDeviceManipulator().addPropertyChangedListener同一个设备的同一个service可以订阅多次~~
+- 修复bug,杀死app进程，之后在个别手机重新订阅属性，不能收到属性变化回调
