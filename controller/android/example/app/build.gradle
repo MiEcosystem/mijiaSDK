@@ -55,8 +55,8 @@ dependencies {
     compile rootProject.ext.dependencies['joda-time']
     compile rootProject.ext.dependencies['multidex']
 
-    compile 'com.xiaomi.miot:mijia-controller-client:3.2.12'
-    compile 'com.xiaomi.miot:mijia-controller-service:3.2.12'
-    compile 'com.xiaomi.miot:mijia-controller-bluetooth:3.2.12'
+    compile 'com.xiaomi.miot:mijia-controller-client:3.2.15'
+    compile 'com.xiaomi.miot:mijia-controller-service:3.2.15'
+    compile 'com.xiaomi.miot:mijia-controller-bluetooth:3.2.15'
     compile files('libs/oauth-xiaomiopenauth.jar')
 }

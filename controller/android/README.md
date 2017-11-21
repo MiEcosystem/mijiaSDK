@@ -63,3 +63,7 @@ dependencies {
 ### 3.2.14
 - 之后正式版本去掉这个功能，只保留在3.2.12-tv ~~MiotManager.getDeviceManipulator().addPropertyChangedListener同一个设备的同一个service可以订阅多次~~
 - 修复bug,杀死app进程，之后在个别手机重新订阅属性，不能收到属性变化回调
+
+### 3.2.15
+- bugfix:更新了快连string
+- bugfix：修改蓝牙接口访问从http改为https
