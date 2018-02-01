@@ -1,9 +1,8 @@
-﻿## mijiaSDK文档
+## mijiaSDK文档
 > sdk的详细api使用介绍见项目项目根目录
 
 ## mijiaSDK添加
 
-~~3.2.7以前的添加方式如下~~
 ```
 //需要将aar拷贝到libs下
 repositories {
@@ -13,24 +12,9 @@ repositories {
 
 }
 dependencies {
-    compile(name: 'mijiaClient-3-2-7', ext: 'aar')
-    compile(name: 'mijiaService-3-2-7', ext: 'aar')
-    compile(name: 'mijiaBluetooth-3-2-7', ext: 'aar')
-}
-```
-**3.2.7及其以后的添加方式如下**
-```
-repositories {
-    maven {
-        url 'http://mijia.sdk.westm.cn'
-    }
-}
-
-dependencies {
-    compile "com.xiaomi.miot:mijia-controller-client:3.2.14"
-    compile "com.xiaomi.miot:mijia-controller-service:3.2.14"
-    compile "com.xiaomi.miot:mijia-controller-bluetooth:3.2.14"
-    compile files('libs/oauth-xiaomiopenauth.jar')
+    compile(name: 'mijiaClient-3-2-16', ext: 'aar')
+    compile(name: 'mijiaService-3-2-16', ext: 'aar')
+    compile(name: 'mijiaBluetooth-3-2-16', ext: 'aar')
 }
 ```
 
@@ -67,3 +51,6 @@ dependencies {
 ### 3.2.15
 - bugfix:更新了快连string
 - bugfix：修改蓝牙接口访问从http改为https
+
+### 3.2.16
+- bugfix: 修复异常crash
