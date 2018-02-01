@@ -12,9 +12,9 @@ repositories {
 
 }
 dependencies {
-    compile(name: 'mijiaClient-3-2-16', ext: 'aar')
-    compile(name: 'mijiaService-3-2-16', ext: 'aar')
-    compile(name: 'mijiaBluetooth-3-2-16', ext: 'aar')
+    compile(name: 'mijiaClient-3-2-17', ext: 'aar')
+    compile(name: 'mijiaService-3-2-17', ext: 'aar')
+    compile(name: 'mijiaBluetooth-3-2-17', ext: 'aar')
 }
 ```
 
@@ -54,3 +54,6 @@ dependencies {
 
 ### 3.2.16
 - bugfix: 修复异常crash
+
+### 3.2.17
+- 更新MiPush SDK
