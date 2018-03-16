@@ -12,9 +12,9 @@ repositories {
 
 }
 dependencies {
-    compile(name: 'mijiaClient-3-2-19', ext: 'aar')
-    compile(name: 'mijiaService-3-2-19', ext: 'aar')
-    compile(name: 'mijiaBluetooth-3-2-19', ext: 'aar')
+    compile(name: 'mijiaClient-3-2-20', ext: 'aar')
+    compile(name: 'mijiaService-3-2-20', ext: 'aar')
+    compile(name: 'mijiaBluetooth-3-2-20', ext: 'aar')
 }
 ```
 
@@ -65,3 +65,8 @@ dependencies {
 - 回滚MiPush SDK到3.6.0版本
 - 添加欧洲服务器支持
 - 添加扫描绑定方式支持
+
+### 3.2.20
+- 更新MiPush SDK到3.6.1版本
+- 修复Android O上无法收到push消息的问题
+- 修复Push唤醒过于频繁的问题
