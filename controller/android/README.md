@@ -15,6 +15,10 @@ dependencies {
     compile(name: 'mijiaClient-3-2-20', ext: 'aar')
     compile(name: 'mijiaService-3-2-20', ext: 'aar')
     compile(name: 'mijiaBluetooth-3-2-20', ext: 'aar')
+    compile 'com.google.code.gson:gson:2.4'
+    compile 'commons-io:commons-io:2.4'
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
+    compile 'javax.jmdns:jmdns:3.4.1'
 }
 ```
 
