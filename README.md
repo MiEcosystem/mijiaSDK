@@ -1,4 +1,4 @@
-﻿# mijiaSDK文档
+# mijiaSDK文档
 ---
 ## 目的
 本文档为接入mijiaSDK的第三方开发者提供开发独立App的指导。
@@ -121,6 +121,7 @@ AppSecret： xxx
 方法createDeviceModel中的参数依次为：context；model：云端注册的设备model；url：xml格式的profile文档，需要放到项目assets目录下；clazz（Class<?>）：之前生成的设备代码的class
 * 最后bindService：
 ```Java
+	// 注意：只能在非UI线程调用open，open会阻塞线程
     MiotManager.getInstance().open();
 ```
 如果返回值为0，则为绑定成功。退出应用时需要unBind：
