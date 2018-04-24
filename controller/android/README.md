@@ -12,9 +12,9 @@ repositories {
 
 }
 dependencies {
-    compile(name: 'mijiaClient-3-2-20', ext: 'aar')
-    compile(name: 'mijiaService-3-2-20', ext: 'aar')
-    compile(name: 'mijiaBluetooth-3-2-20', ext: 'aar')
+    compile(name: 'mijiaClient-3-2-21', ext: 'aar')
+    compile(name: 'mijiaService-3-2-21', ext: 'aar')
+    compile(name: 'mijiaBluetooth-3-2-21', ext: 'aar')
     compile 'com.google.code.gson:gson:2.4'
     compile 'commons-io:commons-io:2.4'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
@@ -74,3 +74,6 @@ dependencies {
 - 更新MiPush SDK到3.6.1版本
 - 修复Android O上无法收到push消息的问题
 - 修复Push唤醒过于频繁的问题
+
+### 3.2.21
+- 更新MiPush SDK到3.6.2版本，优化功耗，适配google play审核规范
