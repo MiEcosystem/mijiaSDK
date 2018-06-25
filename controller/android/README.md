@@ -12,9 +12,9 @@ repositories {
 
 }
 dependencies {
-    compile(name: 'mijiaClient-3-2-21', ext: 'aar')
-    compile(name: 'mijiaService-3-2-21', ext: 'aar')
-    compile(name: 'mijiaBluetooth-3-2-21', ext: 'aar')
+    compile(name: 'mijiaClient-3-2-22', ext: 'aar')
+    compile(name: 'mijiaService-3-2-22', ext: 'aar')
+    compile(name: 'mijiaBluetooth-3-2-22', ext: 'aar')
     compile 'com.google.code.gson:gson:2.4'
     compile 'commons-io:commons-io:2.4'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
@@ -77,3 +77,7 @@ dependencies {
 
 ### 3.2.21
 - 更新MiPush SDK到3.6.2版本，优化功耗，适配google play审核规范
+
+### 3.2.22
+- 添加清除本地蓝牙绑定信息接口
+- 添加俄罗斯服务器支持
