@@ -12,9 +12,9 @@ repositories {
 
 }
 dependencies {
-    compile(name: 'mijiaClient-3-3-1', ext: 'aar')
-    compile(name: 'mijiaService-3-3-1', ext: 'aar')
-    compile(name: 'mijiaBluetooth-3-3-1', ext: 'aar')
+    compile(name: 'mijiaClient-3-3-2', ext: 'aar')
+    compile(name: 'mijiaService-3-3-2', ext: 'aar')
+    compile(name: 'mijiaBluetooth-3-3-2', ext: 'aar')
     compile 'com.google.code.gson:gson:2.4'
     compile 'commons-io:commons-io:2.4'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
@@ -88,5 +88,10 @@ dependencies {
 ### 3.3.1
 - 封装获取用户基本信息接口
 - 设备属性订阅最长时间为60分钟，超时需要APP再重新调用订阅
+
+### 3.3.2
+- 集成mipush 3.6.9版本
+
+
 
 
