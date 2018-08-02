@@ -1,9 +1,9 @@
 package com.mi.account;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.miot.api.MiotManager;
 import com.miot.common.config.AppConfiguration;
 import com.miot.common.people.People;
 import com.miot.common.people.PeopleFactory;
@@ -14,14 +14,12 @@ import com.xiaomi.account.openauth.XMAuthericationException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.miot.api.MiotManager;
-
 /**
  * This class used to obtain user xiaomi account detail information.
  */
 public class XiaomiAccountGetPeopleInfoTask extends AsyncTask<Void, Void, People> {
 
-    private static final String TAG = XiaomiAccountGetPeopleInfoTask.class.getSimpleName();
+    private static final String TAG = "XiaomiAccountGetPeopleInfoTask";
 
     private String mAccessToken;
     private long mExpiresIn;

@@ -174,7 +174,49 @@ public class UniversalServiceActivity extends ToolbarActivity {
                     new DeviceManipulator.PropertyChangedListener() {
                         @Override
                         public void onPropertyChanged(PropertyInfo info, String propertyName) {
-                            showLog(String.format("属性发生变化： %s", info.getValue(propertyName).toString()));
+                            String msg = String.format("属性发生变化： %s=%s", propertyName, info.getValue(propertyName).toString());
+                            showLog(msg);
+                            Log.i(TAG, msg);
+                        }
+                    }
+            );
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void resubscribeNotification() {
+        PropertyInfo propertyInfo = PropertyInfoFactory.create(mService);
+        for (Property property : mService.getProperties()) {
+            if (property.getDefinition().isNotifiable()) {
+                propertyInfo.addProperty(property);
+            }
+        }
+
+        if (propertyInfo.getProperties().size() == 0) {
+            showLog("没有属性可以订阅");
+            return;
+        }
+
+        showLog(String.format("再次订阅属性: %d", propertyInfo.getProperties().size()));
+        DeviceManipulator manipulator = MiotManager.getDeviceManipulator();
+        try {
+            manipulator.addPropertyChangedListener(propertyInfo,
+                    new DeviceManipulator.CompletionHandler() {
+                        @Override
+                        public void onSucceed() {
+                            showLog("订阅属性成功！222");
+                        }
+
+                        @Override
+                        public void onFailed(int errCode, String description) {
+                            showLog(String.format("订阅属性失败222： Code: %d %s！", errCode, description));
+                        }
+                    },
+                    new DeviceManipulator.PropertyChangedListener() {
+                        @Override
+                        public void onPropertyChanged(PropertyInfo info, String propertyName) {
+                            showLog(String.format("[%s=%s]", propertyName, info.getValue(propertyName).toString()));
                         }
                     }
             );

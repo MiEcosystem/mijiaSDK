@@ -13,6 +13,15 @@ android {
         multiDexEnabled true
     }
 
+    signingConfigs {
+        release {
+            storeFile file('miot-demo.keystore')
+            storePassword 'miotsdk'
+            keyAlias 'miot'
+            keyPassword 'miotsdk'
+        }
+    }
+
     buildTypes {
         debug {
             minifyEnabled false
@@ -38,14 +47,14 @@ android {
     }
 
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize '4g'
     }
     buildToolsVersion '25.0.0'
 }
 
 repositories {
-    maven {
-        url 'http://mijia.sdk.westm.cn'
+    flatDir {
+        dirs 'libs'
     }
 }
 
@@ -55,8 +64,13 @@ dependencies {
     compile rootProject.ext.dependencies['joda-time']
     compile rootProject.ext.dependencies['multidex']
 
-    compile 'com.xiaomi.miot:mijia-controller-client:3.2.15'
-    compile 'com.xiaomi.miot:mijia-controller-service:3.2.15'
-    compile 'com.xiaomi.miot:mijia-controller-bluetooth:3.2.15'
+    compile(name: 'mijiaClient-3-3-2', ext: 'aar')
+    compile(name: 'mijiaService-3-3-2', ext: 'aar')
+    compile(name: 'mijiaBluetooth-3-3-2', ext: 'aar')
+    compile 'com.google.code.gson:gson:2.4'
+    compile 'commons-io:commons-io:2.4'
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
+    compile 'javax.jmdns:jmdns:3.4.1'
+
     compile files('libs/oauth-xiaomiopenauth.jar')
 }

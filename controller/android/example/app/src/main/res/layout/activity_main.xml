@@ -8,73 +8,97 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin">
-
-        <TextView
-            style="@style/Label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_toolbar_accountmanager" />
-
-        <Button
-            android:id="@+id/btn_account"
-            style="@style/Device"
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:text="@string/account_manager" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin">
 
-        <TextView
-            style="@style/Label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_toolbar_devicemanager" />
+            <TextView
+                style="@style/Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_toolbar_accountmanager" />
 
-        <TextView
-            style="@style/Label.Desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/desc_devicemanager" />
+            <Button
+                android:id="@+id/btn_account"
+                style="@style/Device"
+                android:layout_width="match_parent"
+                android:text="@string/account_manager" />
 
-        <Button
-            android:id="@+id/btn_device"
-            style="@style/Device"
-            android:layout_width="match_parent"
-            android:text="@string/device_manager" />
+            <TextView
+                style="@style/Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_toolbar_devicemanager" />
 
-        <TextView
-            style="@style/Label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_toolbar_sharerequest" />
+            <TextView
+                style="@style/Label.Desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/desc_devicemanager" />
 
-        <Button
-            android:id="@+id/btn_request"
-            style="@style/Device"
-            android:layout_width="match_parent"
-            android:text="sharedRequest" />
+            <Button
+                android:id="@+id/btn_device"
+                style="@style/Device"
+                android:layout_width="match_parent"
+                android:text="@string/device_manager" />
 
-        <Button
-            android:id="@+id/btn_accept"
-            style="@style/Device"
-            android:layout_width="match_parent"
-            android:text="accept" />
+            <TextView
+                style="@style/Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_toolbar_sharerequest" />
 
-        <TextView
-            style="@style/Label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_toolbar_devicemanipulate" />
+            <Button
+                android:id="@+id/btn_request"
+                style="@style/Device"
+                android:layout_width="match_parent"
+                android:text="sharedRequest" />
 
-        <Button
-            android:id="@+id/btn_security_conn"
-            style="@style/Device"
-            android:layout_width="match_parent"
-            android:text="security_conn" />
+            <Button
+                android:id="@+id/btn_accept"
+                style="@style/Device"
+                android:layout_width="match_parent"
+                android:text="accept" />
 
-    </LinearLayout>
+            <TextView
+                style="@style/Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_toolbar_devicemanipulate" />
+
+            <Button
+                android:id="@+id/btn_security_conn"
+                style="@style/Device"
+                android:layout_width="match_parent"
+                android:text="security_conn" />
+
+            <Button
+                android:visibility="visible"
+                android:id="@+id/btn_test"
+                style="@style/Device"
+                android:layout_width="match_parent"
+                android:text="test" />
+
+            <EditText
+                android:id="@+id/input_bindkey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="input bindKey"/>
+
+            <Button
+                android:id="@+id/btn_bindkey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="bind QR Code bindkey"/>
+
+        </LinearLayout>
+    </ScrollView>
+
 </LinearLayout>

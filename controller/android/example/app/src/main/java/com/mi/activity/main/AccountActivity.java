@@ -30,7 +30,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class AccountActivity extends ToolbarActivity {
-    private static final String TAG = AccountActivity.class.getSimpleName();
+    private static final String TAG = "AccountActivity";
 
     @InjectView(R.id.tv_account_info)
     TextView tvAccountInfo;

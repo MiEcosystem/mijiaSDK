@@ -33,6 +33,7 @@ import com.miot.common.device.Service;
 import com.miot.common.device.firmware.MiotFirmware;
 import com.miot.common.exception.MiotException;
 import com.miot.common.property.Property;
+import com.miot.common.share.SharedRequest;
 import com.miot.common.share.SharedUser;
 import com.miot.common.timer.CrontabTime;
 import com.miot.common.timer.DayOfWeek;
@@ -157,7 +158,8 @@ public class UniversalDeviceActivity extends ToolbarActivity {
                                 break;
 
                             case 10:
-                                queryShareUsers();
+//                                queryShareUsers();
+                                querySharedRequests();
                                 break;
                         }
                     }
@@ -532,7 +534,7 @@ public class UniversalDeviceActivity extends ToolbarActivity {
         }
     }
 
-    private String mUserId = ".....";
+    private String mUserId = "133027961";
 
     public void shareDevice() {
         try {
@@ -584,6 +586,27 @@ public class UniversalDeviceActivity extends ToolbarActivity {
                 @Override
                 public void onFailed(int errCode, String description) {
                     showLog("queryShareUsers: failed: " + errCode + " - " + description);
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void querySharedRequests(){
+        try {
+            MiotManager.getDeviceManager().querySharedRequests(new CommonHandler<List<SharedRequest>>() {
+                @Override
+                public void onSucceed(List<SharedRequest> sharedRequests) {
+                    for (SharedRequest sr : sharedRequests) {
+                        Log.d(TAG, sr.getMessageId() + " , " + sr.getSender() + " , " + sr.getSenderName());
+                    }
+                    showLog("querySharedRequests: onSucceed");
+                }
+
+                @Override
+                public void onFailed(int i, String s) {
+                    showLog("querySharedRequests: failed: " + i + " - " + s);
                 }
             });
         } catch (MiotException e) {

@@ -5,21 +5,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.mi.test.R;
 import com.mi.utils.TestConstants;
 import com.mi.utils.ToolbarActivity;
 import com.miot.api.CommonHandler;
 import com.miot.api.CompletionHandler;
+import com.miot.api.DeviceManager;
 import com.miot.api.MiotManager;
 import com.miot.common.device.Device;
 import com.miot.common.exception.MiotException;
 import com.miot.common.share.ShareStatus;
 import com.miot.common.share.SharedRequest;
+import com.miot.common.voice.VoiceSession;
 
 import java.util.List;
 
@@ -39,6 +44,12 @@ public class MainActivity extends ToolbarActivity {
     Button mBtnAccept;
     @InjectView(R.id.btn_security_conn)
     Button mBtnSConn;
+    @InjectView(R.id.btn_test)
+    Button mBtnTest;
+    @InjectView(R.id.input_bindkey)
+    EditText mInputBindKey;
+    @InjectView(R.id.btn_bindkey)
+    Button mBtnBindKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +98,55 @@ public class MainActivity extends ToolbarActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ConnActivity.class);
                 startActivity(intent);
+            }
+        });
+        mBtnTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    MiotManager.getVoiceAssistant().startSession(2, "442ba9b551728dfb959a713b22e2c54c", new CommonHandler<VoiceSession>() {
+                        @Override
+                        public void onSucceed(VoiceSession voiceSession) {
+
+                        }
+
+                        @Override
+                        public void onFailed(int i, String s) {
+
+                        }
+                    });
+                } catch (MiotException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        mBtnBindKey.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String bindKey = mInputBindKey.getText().toString();
+                if (TextUtils.isEmpty(bindKey)) {
+                    Toast.makeText(view.getContext(), "请输入从设备获取的bindkey", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                DeviceManager deviceManager = MiotManager.getDeviceManager();
+                if (deviceManager != null) {
+                    try {
+                        deviceManager.bindWithBindKey(bindKey, new CommonHandler<String>() {
+                            @Override
+                            public void onSucceed(String result) {
+                                Log.d(TAG, "bindWithBindKey onSuccess result = " + result);
+                            }
+
+                            @Override
+                            public void onFailed(int errCode, String description) {
+                                Log.d(TAG, "bindWithBindKey onFailed errCode = " + errCode + ", description = " + description);
+                            }
+                        });
+                    } catch (MiotException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
     }

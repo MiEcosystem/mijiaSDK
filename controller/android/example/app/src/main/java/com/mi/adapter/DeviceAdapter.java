@@ -15,7 +15,7 @@ import butterknife.InjectView;
  * Created by stephen on 16-1-18.
  */
 public class DeviceAdapter extends LBaseAdapter<AbstractDevice> {
-    private static final String TAG = DeviceAdapter.class.getSimpleName();
+    private static final String TAG = "DeviceAdapter";
 
     public DeviceAdapter(Context context) {
         super(context);

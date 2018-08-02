@@ -16,7 +16,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 public class CrashHandler implements Thread.UncaughtExceptionHandler {
-    private static final String TAG = CrashHandler.class.getSimpleName();
+    private static final String TAG = "CrashHandler";
 
     private Thread.UncaughtExceptionHandler mDefaultHandler;
     private Context mContext;

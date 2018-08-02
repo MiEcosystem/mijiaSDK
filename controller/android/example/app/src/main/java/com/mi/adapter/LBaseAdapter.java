@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class LBaseAdapter<T> extends BaseAdapter {
-    private static final String TAG = LBaseAdapter.class.getSimpleName();
+    private static final String TAG = "LBaseAdapter";
 
     protected Context mContext;
     protected LayoutInflater mInflater;

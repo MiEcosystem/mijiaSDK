@@ -1,5 +1,5 @@
 ## mijiaSDK文档
-> sdk的详细api使用介绍见项目项目根目录
+> sdk的详细api使用介绍见项目根目录
 
 ## mijiaSDK添加
 

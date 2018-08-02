@@ -84,6 +84,8 @@ public class DeviceListActivity extends ToolbarActivity {
             @Override
             public void onClick(View v) {
                 if (hasPermission()) {
+                    mDeviceAdapter.clearItems();
+                    mMiDeviceManager.clearDevices();
                     mMiDeviceManager.startScan();
                 } else {
                     requestPermission();
