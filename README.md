@@ -70,9 +70,9 @@ java -jar codegenerator.jar src/main/assets/ddd_SmartSocket.xml
 * mijiaSDK支持的最低android版本
  
 ```xml
-	<uses-sdk
-	    android:minSdkVersion="16"
-	    android:targetSdkVersion="18" />
+    <uses-sdk
+        android:minSdkVersion="16"
+        android:targetSdkVersion="18" />
 ```
 
 * mijiaSDK需要的权限列表
@@ -97,15 +97,15 @@ java -jar codegenerator.jar src/main/assets/ddd_SmartSocket.xml
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
-	<!--小米帐号SDK需要的权限-->   
-	<uses-permission android:name="com.xiaomi.permission.AUTH_SERVICE" />
-	
-	<!--MiPush需要的权限，这里的com.mi.test改成app的包名-->   
-	<permission
-	    android:name="com.mi.test.permission.MIPUSH_RECEIVE"
-	    android:protectionLevel="signature" />
-	<!--MiPush需要的权限，这里的com.mi.test改成app的包名-->
-	<uses-permission android:name="com.mi.test.permission.MIPUSH_RECEIVE" />
+    <!--小米帐号SDK需要的权限-->   
+    <uses-permission android:name="com.xiaomi.permission.AUTH_SERVICE" />
+    
+    <!--MiPush需要的权限，这里的com.mi.test改成app的包名-->   
+    <permission
+        android:name="com.mi.test.permission.MIPUSH_RECEIVE"
+        android:protectionLevel="signature" />
+    <!--MiPush需要的权限，这里的com.mi.test改成app的包名-->
+    <uses-permission android:name="com.mi.test.permission.MIPUSH_RECEIVE" />
 ```
 
 ### 2. 初始化SDK
@@ -147,7 +147,7 @@ java -jar codegenerator.jar src/main/assets/ddd_SmartSocket.xml
 * 最后bindService：
 
 ```Java
-	// 注意：只能在非UI线程调用open，open会阻塞线程
+    // 注意：只能在非UI线程调用open，open会阻塞线程
     MiotManager.getInstance().open();
 ```
 

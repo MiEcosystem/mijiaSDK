@@ -116,23 +116,23 @@
 * 快连设备，获取到设备列表后，如果设备是待连接的设备，可以调用以下方法连接到云端，具体可以参考demo中DeviceActivity.class：
 
 ```Java
-	private void connectDevice(AbstractDevice device) {
-	    try {
-	        MiotManager.getDeviceConnector().connectToCloud(device, new CompletionHandler() {
-	            @Override
-	            public void onSucceed() {
-	                Logger.d(TAG, "connect device onSucceed");
-	            }
-	
-	            @Override
-	            public void onFailed(int errCode, String description) {
-	                Logger.e(TAG, "connect device onFailed: " + errCode + description);
-	            }
-	        });
-	    } catch (MiotException e) {
-	        e.printStackTrace();
-	    }
-	}
+    private void connectDevice(AbstractDevice device) {
+        try {
+            MiotManager.getDeviceConnector().connectToCloud(device, new CompletionHandler() {
+                @Override
+                public void onSucceed() {
+                    Logger.d(TAG, "connect device onSucceed");
+                }
+    
+                @Override
+                public void onFailed(int errCode, String description) {
+                    Logger.e(TAG, "connect device onFailed: " + errCode + description);
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
+    }
 ```
 
 ### 绑定设备
@@ -205,21 +205,21 @@
 说明：只能分享给小米账号ID，如果要分享的是手机号/邮箱，需要先通过getUserProfile接口获取对应小米账号ID信息。
 
 ```Java
-	try {
-	    MiotManager.getDeviceManager().shareDevice(mAbstractDevice, userId, new CompletionHandler() {
-	        @Override
-	        public void onSucceed() {
-	            Logger.d(TAG, "shareDevice onSucceed");
-	        }
-	
-	        @Override
-	        public void onFailed(int errCode, String description) {
-	            Logger.e(TAG, "shareDevice onFailed: " + errCode + " " + description);
-	        }
-	    });
-	} catch (MiotException e) {
-	    e.printStackTrace();
-	}
+    try {
+        MiotManager.getDeviceManager().shareDevice(mAbstractDevice, userId, new CompletionHandler() {
+            @Override
+            public void onSucceed() {
+                Logger.d(TAG, "shareDevice onSucceed");
+            }
+    
+            @Override
+            public void onFailed(int errCode, String description) {
+                Logger.e(TAG, "shareDevice onFailed: " + errCode + " " + description);
+            }
+        });
+    } catch (MiotException e) {
+        e.printStackTrace();
+    }
 ```
 其中userId为用户小米帐号ID。
 
@@ -228,21 +228,21 @@
 可以获取到指定用户的小米账号ID、昵称、头像信息。
 
 ```Java
-	try {
-	    MiotManager.getDeviceManager().getUserProfile(userId, new CommonHandler<UserInfo>() {
-	        @Override
-	        public void onSucceed(UserInfo result) {
-	            
-	        }
-	    
-	        @Override
-	        public void onFailed(int errCode, String description) {
-	    
-	        }
-	    });
-	} catch (MiotException e) {
-	    e.printStackTrace();
-	}
+    try {
+        MiotManager.getDeviceManager().getUserProfile(userId, new CommonHandler<UserInfo>() {
+            @Override
+            public void onSucceed(UserInfo result) {
+                
+            }
+        
+            @Override
+            public void onFailed(int errCode, String description) {
+        
+            }
+        });
+    } catch (MiotException e) {
+        e.printStackTrace();
+    }
 ```
 
 * 取消分享
@@ -335,117 +335,117 @@
 * 获取设备状态
 
 ```Java
-	public void getProperties() {
-	    try {
-	        mBaseService.getProperties(new PlugBaseService.GetPropertiesCompletionHandler() {
-	            @Override
-	            public void onSucceed(final PlugBaseService.Power power, final PlugBaseService.WifiLed wifiLed, final Integer temperature) {
-	                show("getProperties", String.format("Power=%s WifiLed=%s Temperature=%s", power, wifiLed, temperature));
-	                mHandler.post(new Runnable() {
-	                    @Override
-	                    public void run() {
-	                        tvPower.setText(String.valueOf(power));
-	                        tvWifiLed.setText(String.valueOf(wifiLed));
-	                        tvTemperature.setText(String.valueOf(temperature));
-	                    }
-	                });
-	            }
-	
-	            @Override
-	            public void onFailed(int errCode, String description) {
-	                show("getProperties", String.format("Failed, code: %d %s", errCode, description));
-	            }
-	        });
-	    } catch (MiotException e) {
-	        e.printStackTrace();
-	    }
-	}
+    public void getProperties() {
+        try {
+            mBaseService.getProperties(new PlugBaseService.GetPropertiesCompletionHandler() {
+                @Override
+                public void onSucceed(final PlugBaseService.Power power, final PlugBaseService.WifiLed wifiLed, final Integer temperature) {
+                    show("getProperties", String.format("Power=%s WifiLed=%s Temperature=%s", power, wifiLed, temperature));
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvPower.setText(String.valueOf(power));
+                            tvWifiLed.setText(String.valueOf(wifiLed));
+                            tvTemperature.setText(String.valueOf(temperature));
+                        }
+                    });
+                }
+    
+                @Override
+                public void onFailed(int errCode, String description) {
+                    show("getProperties", String.format("Failed, code: %d %s", errCode, description));
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
+    }
 ```
 
 * 下发命令
 
 ```Java
-	public void setPower() {
-	    try {
-	        PlugBaseService.Power power = PlugBaseService.Power.on;
-	        mBaseService.setPower(power, new CompletionHandler() {
-	            @Override
-	            public void onSucceed() {
-	                show("setPower", "OK");
-	            }
-	
-	            @Override
-	            public void onFailed(int errCode, String description) {
-	                show("setPower", String.format("Failed, code: %d %s", errCode, description));
-	            }
-	
-	        });
-	    } catch (MiotException e) {
-	        e.printStackTrace();
-	    }
-	}
+    public void setPower() {
+        try {
+            PlugBaseService.Power power = PlugBaseService.Power.on;
+            mBaseService.setPower(power, new CompletionHandler() {
+                @Override
+                public void onSucceed() {
+                    show("setPower", "OK");
+                }
+    
+                @Override
+                public void onFailed(int errCode, String description) {
+                    show("setPower", String.format("Failed, code: %d %s", errCode, description));
+                }
+    
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
+    }
 ```
 
 * 订阅状态变化
 需要注意的是订阅部分使用的是MiPush的服务，其与应用包名绑定。
 ```Java
-	public void subscribeNotification() {
-	    try {
-	        mBaseService.subscribeNotifications(new CompletionHandler() {
-	            @Override
-	            public void onSucceed() {
-	                show("subscribe", "OK");
-	            }
-	
-	            @Override
-	            public void onFailed(int errCode, String description) {
-	                show("subscribe", String.format("Failed, code: %d %s", errCode, description));
-	            }
-	        }, new PlugBaseService.PropertyNotificationListener() {
-	            @Override
-	            public void onPowerChanged(final PlugBaseService.Power power) {
-	                show("onPowerChanged: ", String.valueOf(power));
-	                mHandler.post(new Runnable() {
-	                    @Override
-	                    public void run() {
-	                        tvPower.setText(String.valueOf(power));
-	                    }
-	                });
-	            }
-	
-	            @Override
-	            public void onWifiLedChanged(final PlugBaseService.WifiLed wifiLed) {
-	                show("onWifiLedChanged: ", String.valueOf(wifiLed));
-	                mHandler.post(new Runnable() {
-	                    @Override
-	                    public void run() {
-	                        tvWifiLed.setText(String.valueOf(wifiLed));
-	                    }
-	                });
-	            }
-	
-	            @Override
-	            public void onTemperatureChanged(final Integer temperature) {
-	                show("onWifiLedChanged: ", String.valueOf(temperature));
-	                mHandler.post(new Runnable() {
-	                    @Override
-	                    public void run() {
-	                        tvTemperature.setText(String.valueOf(temperature));
-	                    }
-	                });
-	            }
-	        });
-	    } catch (MiotException e) {
-	        e.printStackTrace();
-	    }
-	}
+    public void subscribeNotification() {
+        try {
+            mBaseService.subscribeNotifications(new CompletionHandler() {
+                @Override
+                public void onSucceed() {
+                    show("subscribe", "OK");
+                }
+    
+                @Override
+                public void onFailed(int errCode, String description) {
+                    show("subscribe", String.format("Failed, code: %d %s", errCode, description));
+                }
+            }, new PlugBaseService.PropertyNotificationListener() {
+                @Override
+                public void onPowerChanged(final PlugBaseService.Power power) {
+                    show("onPowerChanged: ", String.valueOf(power));
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvPower.setText(String.valueOf(power));
+                        }
+                    });
+                }
+    
+                @Override
+                public void onWifiLedChanged(final PlugBaseService.WifiLed wifiLed) {
+                    show("onWifiLedChanged: ", String.valueOf(wifiLed));
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvWifiLed.setText(String.valueOf(wifiLed));
+                        }
+                    });
+                }
+    
+                @Override
+                public void onTemperatureChanged(final Integer temperature) {
+                    show("onWifiLedChanged: ", String.valueOf(temperature));
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvTemperature.setText(String.valueOf(temperature));
+                        }
+                    });
+                }
+            });
+        } catch (MiotException e) {
+            e.printStackTrace();
+        }
+    }
 ```
 
 * 局域网控制
 局域网控制是默认打开的，可以通过通过下面接口进行关闭
 
 ```Java
-	MiotManager.getDeviceManipulator().enableLanCtrl(false);
+    MiotManager.getDeviceManipulator().enableLanCtrl(false);
 ```
 
 * 修改服务端记录的设备名称
@@ -474,19 +474,19 @@
 检查是否有新的固件可以更新。
 
 ```Java
-	try {
-	        MiotManager.getDeviceManager().queryFirmwareInfo(mAbstractDevice, new DeviceManager.QueryFirmwareHandler() {
-	            @Override
-	            public void onSucceed(MiotFirmware firmware) {
-	                showLog("queryFirmwareUpgradeInfo: OK");
-	                logFirmware(firmware);
-	            }
-	    
-	            @Override
-	            public void onFailed(int errCode, String description) {
-	                showLog(String.format("queryFirmwareInfo Failed, code: %d %s", errCode, description));
-	            }
-	        });
+    try {
+            MiotManager.getDeviceManager().queryFirmwareInfo(mAbstractDevice, new DeviceManager.QueryFirmwareHandler() {
+                @Override
+                public void onSucceed(MiotFirmware firmware) {
+                    showLog("queryFirmwareUpgradeInfo: OK");
+                    logFirmware(firmware);
+                }
+        
+                @Override
+                public void onFailed(int errCode, String description) {
+                    showLog(String.format("queryFirmwareInfo Failed, code: %d %s", errCode, description));
+                }
+            });
     } catch (MiotException e) {
         e.printStackTrace();
     }
