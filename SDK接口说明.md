@@ -9,6 +9,7 @@
 6. **控制设备**：包括获取设备状态、下发指令和订阅设备事件
 7. **固件更新**：查询最新固件、下发新的固件
 8. **蓝牙操作**：包含蓝牙各种操作接口
+9. **蓝牙双模快连**: 支持双模设备通过蓝牙传递配网信息
 
 目前这些操作的log信息是默认打开的，可以通过一下接口关闭log信息
 
@@ -695,7 +696,7 @@
     XmBluetoothManager.getInstance().getBluetoothFirmwareUpdateInfo(String model,GetFirmwareUpdateInfoResponse response);
 ```
 
-*** 蓝牙Combo快连
+### 蓝牙双模快连
 
 对于WiFi蓝牙双模设备，支持通过蓝牙传递配网信息。
 
