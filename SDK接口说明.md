@@ -694,3 +694,81 @@
 ```Java
     XmBluetoothManager.getInstance().getBluetoothFirmwareUpdateInfo(String model,GetFirmwareUpdateInfoResponse response);
 ```
+
+*** 蓝牙Combo快连
+
+对于WiFi蓝牙双模设备，支持通过蓝牙传递配网信息。
+
+* 在Application里添加设备Model信息
+
+例如：
+
+```Java
+    DeviceModel testModel = DeviceModelFactory.createDeviceModel(
+            TestApplication.this,
+            "com.xiaomi.test",
+            "com.xiaomi.test.xml"
+    );
+    MiotManager.getInstance().addModel(testModel);
+```
+
+* 配置蓝牙基本信息
+
+例如：
+
+```Java
+    private void config() {
+        if (MiotManager.getBluetoothManager() == null) {
+            IntentFilter intentFilter = new IntentFilter(TestConstants.ACTION_BIND_SERVICE_SUCCEED);
+            LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, intentFilter);
+        } else {
+            setDeviceConfig();
+        }
+    }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            setDeviceConfig();
+        }
+    };
+
+    private void setDeviceConfig() {
+        BluetoothDeviceConfig config = new BluetoothDeviceConfig();
+        config.bindStyle = BindStyle.STRONG;
+        config.model = "com.xiaomi.test";
+        config.productId = 0;
+        XmBluetoothManager.getInstance().setDeviceConfig(config);
+    }
+```
+
+* 设备要开启ap热点
+
+ap热点名称要符合米家定义的规范，最末尾四个字节是ComboKey，用于找到对应的蓝牙设备。
+
+* 设备要广播蓝牙beacon信息
+
+参考米家规范，beacon要广播ComboKey字段，这个字段与上述ap热点里面的ComboKey要一致。
+
+* 扫描周围的ap设备，然后点击连接设备
+
+点击连接的时候会优先使用蓝牙传输配网信息，如果蓝牙传输失败，会继续通过ap来传输配网信息。
+
+```Java
+    List<DiscoveryType> types = new ArrayList<>();
+    types.add(DiscoveryType.MIOT_WIFI);
+    try {
+        MiotManager.getDeviceManager().startScan(types, new DeviceManager.DeviceHandler() {
+            @Override
+            public void onSucceed(List<AbstractDevice> devices) {
+                //TODO
+            }
+
+            @Override
+            public void onFailed(int errCode, String description) {
+                //TODO
+            });
+    } catch (MiotException e) {
+        e.printStackTrace();
+    }
+```
