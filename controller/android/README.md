@@ -12,9 +12,9 @@ repositories {
 
 }
 dependencies {
-    compile(name: 'mijiaClient-3-3-5', ext: 'aar')
-    compile(name: 'mijiaService-3-3-5', ext: 'aar')
-    compile(name: 'mijiaBluetooth-3-3-5', ext: 'aar')
+    compile(name: 'mijiaClient-3-3-6', ext: 'aar')
+    compile(name: 'mijiaService-3-3-6', ext: 'aar')
+    compile(name: 'mijiaBluetooth-3-3-6', ext: 'aar')
     compile 'com.google.code.gson:gson:2.4'
     compile 'commons-io:commons-io:2.4'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
@@ -101,5 +101,7 @@ dependencies {
 ### 3.3.5
 - 优化wifi热点ssid格式解析
 
+### 3.3.6
+- 给蓝牙设备提供直接登录的接口
 
 
