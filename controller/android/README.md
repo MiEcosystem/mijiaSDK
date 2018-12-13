@@ -104,4 +104,6 @@ dependencies {
 ### 3.3.6
 - 给蓝牙设备提供直接登录的接口
 
-
+### 3.3.7
+- fix rpc timeout 修改RPC请求超时
+- bugfix：请求单个Property时value为数组时返回只有数组第一项
