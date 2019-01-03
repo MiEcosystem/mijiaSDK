@@ -4,35 +4,41 @@
 ## mijiaSDK添加
 
 方式一，下载aar添加：
-//需要将aar拷贝到libs下   
-repositories {  
-    flatDir {  
-        dirs 'libs'  
-    }  
-}  
-dependencies {  
-    compile(name: 'mijiaClient-3-3-8', ext: 'aar')  
-    compile(name: 'mijiaService-3-3-8', ext: 'aar')  
-    compile(name: 'mijiaBluetooth-3-3-8', ext: 'aar')  
-    compile 'com.google.code.gson:gson:2.4'  
-    compile 'commons-io:commons-io:2.4'  
-    compile 'com.squareup.okhttp:okhttp:2.5.0'  
-    compile 'javax.jmdns:jmdns:3.4.1'  
-}  
+```
+//需要将aar拷贝到libs下
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+
+}
+dependencies {
+    compile(name: 'mijiaClient-3-3-8', ext: 'aar')
+    compile(name: 'mijiaService-3-3-8', ext: 'aar')
+    compile(name: 'mijiaBluetooth-3-3-8', ext: 'aar')
+    compile 'com.google.code.gson:gson:2.4'
+    compile 'commons-io:commons-io:2.4'
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
+    compile 'javax.jmdns:jmdns:3.4.1'
+}
+``` 
 
 方式二，maven添加：  
-repositories {  
-    maven {url "https://raw.githubusercontent.com/MiEcosystem/mijiaSDK/stable3.0/repository"}  
-}  
-dependencies {  
-    compile 'com.miot.bluetooth:mijia:3.3.8@aar'  
-    compile 'com.miot.api:mijia:3.3.8@aar'  
-    compile 'com.miot.service:mijia:3.3.8@aar'  
-    compile 'com.google.code.gson:gson:2.4'  
-    compile 'commons-io:commons-io:2.4'  
-    compile 'com.squareup.okhttp:okhttp:2.5.0'  
-    compile 'javax.jmdns:jmdns:3.4.1'  
-}  
+```
+//在build.gradle中添加
+repositories {
+    maven {url "https://raw.githubusercontent.com/MiEcosystem/mijiaSDK/stable3.0/repository"}
+}
+dependencies {
+    compile 'com.miot.bluetooth:mijia:3.3.8@aar'
+    compile 'com.miot.api:mijia:3.3.8@aar'
+    compile 'com.miot.service:mijia:3.3.8@aar'
+    compile 'com.google.code.gson:gson:2.4'
+    compile 'commons-io:commons-io:2.4'
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
+    compile 'javax.jmdns:jmdns:3.4.1'
+}
+```
   
 ## 版本更新说明
 
