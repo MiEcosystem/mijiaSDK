@@ -3,12 +3,13 @@
   <groupId>com.miot.service</groupId>
   <artifactId>mijia</artifactId>
   <versioning>
-    <release>3.3.9</release>
+    <release>3.3.10</release>
     <versions>
       <version>3.3.8</version>
       <version>3.3.7</version>
       <version>3.3.9</version>
+      <version>3.3.10</version>
     </versions>
-    <lastUpdated>20190120063930</lastUpdated>
+    <lastUpdated>20190219121348</lastUpdated>
   </versioning>
 </metadata>

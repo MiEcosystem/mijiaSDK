@@ -13,9 +13,9 @@ repositories {
 
 }
 dependencies {
-    compile(name: 'mijiaClient-3-3-9', ext: 'aar')
-    compile(name: 'mijiaService-3-3-9', ext: 'aar')
-    compile(name: 'mijiaBluetooth-3-3-9', ext: 'aar')
+    compile(name: 'mijiaClient-3-3-10', ext: 'aar')
+    compile(name: 'mijiaService-3-3-10', ext: 'aar')
+    compile(name: 'mijiaBluetooth-3-3-10', ext: 'aar')
     compile 'com.google.code.gson:gson:2.4'
     compile 'commons-io:commons-io:2.4'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
@@ -30,9 +30,9 @@ repositories {
     maven {url "https://raw.githubusercontent.com/MiEcosystem/mijiaSDK/stable3.0/repository"}
 }
 dependencies {
-    compile 'com.miot.bluetooth:mijia:3.3.9@aar'
-    compile 'com.miot.api:mijia:3.3.9@aar'
-    compile 'com.miot.service:mijia:3.3.9@aar'
+    compile 'com.miot.bluetooth:mijia:3.3.10@aar'
+    compile 'com.miot.api:mijia:3.3.10@aar'
+    compile 'com.miot.service:mijia:3.3.10@aar'
     compile 'com.google.code.gson:gson:2.4'
     compile 'commons-io:commons-io:2.4'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
@@ -46,6 +46,10 @@ dependencies {
 ```
 
 ## 版本更新说明
+
+### 3.3.10
+- 增加接口addModels
+- 解决Device加密属性始终为false问题
 
 ### 3.3.9
 - 修改ap直连界面沉浸式效果
