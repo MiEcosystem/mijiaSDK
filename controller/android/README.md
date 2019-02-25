@@ -41,8 +41,7 @@ dependencies {
 ```
 注意：请不要对mijia SDK进行混淆处理，如果在app中有做混淆，需声明：
 ```
--keep class com.miot.service.** { *; }
--keep class com.miot.api.** { *; }
+-keep class com.miot.** { *; }
 ```
 
 ## 版本更新说明
