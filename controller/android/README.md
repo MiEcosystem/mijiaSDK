@@ -46,8 +46,9 @@ dependencies {
 
 ## 版本更新说明
 
-### 3.3.10
+### 3.3.11
 - 修复ota升级前后混淆不一致必现crash的问题
+- 修复QR方式wifi界面退出重进crash问题
 
 ### 3.3.10
 - 增加接口addModels
