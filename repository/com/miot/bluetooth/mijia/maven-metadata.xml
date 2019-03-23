@@ -3,14 +3,15 @@
   <groupId>com.miot.bluetooth</groupId>
   <artifactId>mijia</artifactId>
   <versioning>
-    <release>3.3.12</release>
+    <release>3.3.13</release>
     <versions>
       <version>3.3.8</version>
       <version>3.3.9</version>
       <version>3.3.10</version>
       <version>3.3.11</version>
       <version>3.3.12</version>
+      <version>3.3.13</version>
     </versions>
-    <lastUpdated>20190311012558</lastUpdated>
+    <lastUpdated>20190323022454</lastUpdated>
   </versioning>
 </metadata>
