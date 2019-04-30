@@ -3,3 +3,6 @@
 
 # SDK及Demo
 SDK及Demo见controller/android目录。
+
+# ISSUE
+提issue请在这里发帖：[链接](https://github.com/MiEcosystem/MiJiaConnectDemo/issues)
