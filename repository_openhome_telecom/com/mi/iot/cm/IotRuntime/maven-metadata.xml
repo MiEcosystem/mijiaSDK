@@ -3,11 +3,12 @@
   <groupId>com.mi.iot.cm</groupId>
   <artifactId>IotRuntime</artifactId>
   <versioning>
-    <release>1.0.32</release>
+    <release>1.0.33</release>
     <versions>
       <version>1.0.22</version>
       <version>1.0.32</version>
+      <version>1.0.33</version>
     </versions>
-    <lastUpdated>20190802070156</lastUpdated>
+    <lastUpdated>20190806085919</lastUpdated>
   </versioning>
 </metadata>
