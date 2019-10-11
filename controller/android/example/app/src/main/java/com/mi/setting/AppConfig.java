@@ -11,13 +11,9 @@ public class AppConfig {
     static {
         String packageName = TestApplication.getAppContext().getPackageName();
         if ("com.mijiasdk.demo".equals(packageName)) {
-            OAUTH_APP_ID = 2882303761517532465L;
-            OAUTH_APP_KEY = "5161753214465";
-            OAUTH_REDIRECT_URI = "http://www.xiaomi.com/mijiasdk";
-        } else if("com.xiaomi.xhome".equals(packageName)){
-            OAUTH_APP_ID = 2882303761517461087L;
-            OAUTH_APP_KEY = "5901746197087";
-            OAUTH_REDIRECT_URI = "http://www.xiaomi.com/xhome";
+            OAUTH_APP_ID = 12345L;
+            OAUTH_APP_KEY = "123";
+            OAUTH_REDIRECT_URI = "http://www.xiaomi.com/abc";
         }
     }
 }
